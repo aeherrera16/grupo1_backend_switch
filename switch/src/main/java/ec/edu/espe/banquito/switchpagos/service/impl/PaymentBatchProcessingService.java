@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
+import org.springframework.util.StringUtils;
 
 import ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO;
+import ec.edu.espe.banquito.switchpagos.dto.PaymentSuccessNotificationRequestDTO;
 import ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO;
 import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.enums.PaymentDetailStatusEnum;
@@ -25,6 +27,7 @@ import ec.edu.espe.banquito.switchpagos.repository.DetailStatusLogRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentDetailRepository;
 import ec.edu.espe.banquito.switchpagos.service.ICoreBankingClient;
+import ec.edu.espe.banquito.switchpagos.service.IPaymentNotificationClient;
 import ec.edu.espe.banquito.switchpagos.service.IPaymentBatchProcessingService;
 
 @Service
@@ -37,6 +40,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
     private final BatchStatusLogRepository batchStatusLogRepository;
     private final DetailStatusLogRepository detailStatusLogRepository;
     private final ICoreBankingClient coreBankingClient;
+    private final IPaymentNotificationClient paymentNotificationClient;
     private final BillingService billingService;
     
     @Autowired
@@ -45,12 +49,14 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                                         BatchStatusLogRepository batchStatusLogRepository,
                                         DetailStatusLogRepository detailStatusLogRepository,
                                         ICoreBankingClient coreBankingClient,
+                                        IPaymentNotificationClient paymentNotificationClient,
                                         BillingService billingService) {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.batchStatusLogRepository = batchStatusLogRepository;
         this.detailStatusLogRepository = detailStatusLogRepository;
         this.coreBankingClient = coreBankingClient;
+        this.paymentNotificationClient = paymentNotificationClient;
         this.billingService = billingService;
     }
     
@@ -75,6 +81,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                     detail.setStatus(PaymentDetailStatusEnum.SUCCESS);
                     detail.setExecutedAt(LocalDateTime.now());
                     recordDetailStatusChange(detail, previousStatus, PaymentDetailStatusEnum.SUCCESS, null, null);
+                    notifySuccessfulPayment(batch, detail);
                 } catch (Exception e) {
                     logger.error("Error processing payment detail {}: {}", detail.getId(), e.getMessage());
                     PaymentDetailStatusEnum previousStatus = detail.getStatus();
@@ -163,6 +170,52 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
             throw new IllegalStateException(reason);
         }
         logger.info("Transfer completed successfully for detail {}", detail.getId());
+    }
+
+    private void notifySuccessfulPayment(PaymentBatch batch, PaymentDetail detail) {
+        detail.setNotificationStatus("PENDING");
+
+        if (!StringUtils.hasText(detail.getBeneficiaryEmail())) {
+            logger.warn("No se envia notificacion RF-05 para detail {} porque no tiene email", detail.getId());
+            detail.setNotificationStatus("FAILED");
+            return;
+        }
+
+        String companyName = resolveCompanyName(batch);
+        if (!StringUtils.hasText(companyName)) {
+            logger.warn("No se envia notificacion RF-05 para detail {} porque Core no devolvio empresa", detail.getId());
+            detail.setNotificationStatus("FAILED");
+            return;
+        }
+
+        PaymentSuccessNotificationRequestDTO request = new PaymentSuccessNotificationRequestDTO();
+        request.setPaymentDetailId(detail.getId());
+        request.setBeneficiaryEmail(detail.getBeneficiaryEmail());
+        request.setBeneficiaryName(detail.getBeneficiaryName());
+        request.setAmount(detail.getAmount());
+        request.setConcept(StringUtils.hasText(detail.getReference()) ? detail.getReference() : "Pago masivo");
+        request.setCompanyName(companyName);
+
+        boolean sent = paymentNotificationClient.sendPaymentSuccessNotification(request);
+        detail.setNotificationStatus(sent ? "SENT" : "FAILED");
+    }
+
+    private String resolveCompanyName(PaymentBatch batch) {
+        if (batch == null || !StringUtils.hasText(batch.getRuc())) {
+            return null;
+        }
+
+        String parameterCode = "EMPRESA_" + batch.getRuc().trim() + "_NAME";
+        try {
+            CoreParameterResponseDTO parameter = coreBankingClient.getParameter(parameterCode);
+            if (parameter == null || !StringUtils.hasText(parameter.getValueString())) {
+                return null;
+            }
+            return parameter.getValueString().trim();
+        } catch (RestClientException e) {
+            logger.warn("No se pudo obtener la empresa emisora {} desde Core: {}", parameterCode, e.getMessage());
+            return null;
+        }
     }
 
     private BigDecimal resolveMaxAmountForTransfer(PaymentBatch batch) {

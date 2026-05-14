@@ -97,7 +97,7 @@ public class SwitchApiClient {
      */
     public boolean isSwitchAvailable() {
         try {
-            String url = baseUrl + "/actuator/health";
+            String url = baseUrl + "/api/payment-batch";
             LOG.debug("Verificando disponibilidad del Switch principal: {}", url);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {

@@ -176,6 +176,17 @@ public class DataInitializer implements CommandLineRunner {
             maxTransferPrv.setLastUpdate(LocalDateTime.now());
             coreParameterRepository.save(maxTransferPrv);
         }
+
+        if (coreParameterRepository.findByCode("EMPRESA_1790012345001_NAME").isEmpty()) {
+            CoreParameter companyName = new CoreParameter();
+            companyName.setCode("EMPRESA_1790012345001_NAME");
+            companyName.setName("Nombre empresa emisora pagos masivos");
+            companyName.setValueString("Pagos Masivos Demo S.A.");
+            companyName.setDataType("STRING");
+            companyName.setDescription("Nombre legal de la empresa emisora para notificaciones RF-05");
+            companyName.setLastUpdate(LocalDateTime.now());
+            coreParameterRepository.save(companyName);
+        }
         log.info("CoreParameters creados");
     }
 
@@ -313,19 +324,24 @@ public class DataInitializer implements CommandLineRunner {
             accountRepository.save(cuenta2);
         }
 
-        if (accountRepository.findByAccountNumber("0050000202").isEmpty()) {
-            Account cuentaEmpresaPm = new Account();
-            cuentaEmpresaPm.setAccountNumber("0050000202");
-            cuentaEmpresaPm.setCustomer(empresaPm);
-            cuentaEmpresaPm.setBranch(sucursal);
-            cuentaEmpresaPm.setAccountSubtype(ahorros);
-            cuentaEmpresaPm.setStatus(AccountStatusEnum.ACTIVO);
+        Account cuentaEmpresaPm = accountRepository.findByAccountNumber("0050000202")
+                .orElseGet(Account::new);
+        cuentaEmpresaPm.setAccountNumber("0050000202");
+        cuentaEmpresaPm.setCustomer(empresaPm);
+        cuentaEmpresaPm.setBranch(sucursal);
+        cuentaEmpresaPm.setAccountSubtype(ahorros);
+        cuentaEmpresaPm.setStatus(AccountStatusEnum.ACTIVO);
+        if (cuentaEmpresaPm.getAccountingBalance() == null) {
             cuentaEmpresaPm.setAccountingBalance(new BigDecimal("100000.00"));
-            cuentaEmpresaPm.setAvailableBalance(new BigDecimal("100000.00"));
-            cuentaEmpresaPm.setIsFavorite(false);
-            cuentaEmpresaPm.setOpeningDate(LocalDateTime.now());
-            accountRepository.save(cuentaEmpresaPm);
         }
+        if (cuentaEmpresaPm.getAvailableBalance() == null) {
+            cuentaEmpresaPm.setAvailableBalance(new BigDecimal("100000.00"));
+        }
+        cuentaEmpresaPm.setIsFavorite(true);
+        if (cuentaEmpresaPm.getOpeningDate() == null) {
+            cuentaEmpresaPm.setOpeningDate(LocalDateTime.now());
+        }
+        accountRepository.save(cuentaEmpresaPm);
 
         log.info("Accounts creadas");
     }

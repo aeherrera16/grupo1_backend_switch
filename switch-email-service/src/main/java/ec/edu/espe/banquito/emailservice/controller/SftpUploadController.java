@@ -78,11 +78,15 @@ public class SftpUploadController {
             response.put("timestamp", java.time.LocalDateTime.now());
 
             if (sentToSwitch) {
+                Path processedPath = moveToSubdirectory(filePath, "procesados");
                 LOG.info("Archivo procesado y enviado al Switch exitosamente");
+                response.put("processedPath", processedPath.toString());
                 response.put("status", "SUCCESS");
                 return ResponseEntity.ok(response);
             } else {
+                Path errorPath = moveToSubdirectory(filePath, "errores");
                 LOG.error("Error enviando archivo al Switch");
+                response.put("errorPath", errorPath.toString());
                 response.put("status", "ERROR_SENDING_TO_SWITCH");
                 return ResponseEntity.internalServerError().body(response);
             }
@@ -94,6 +98,14 @@ public class SftpUploadController {
                 "status", "ERROR_PROCESSING_FILE"
             ));
         }
+    }
+
+    private Path moveToSubdirectory(Path filePath, String subdirectory) throws IOException {
+        Path targetDirectory = filePath.getParent().resolve(subdirectory);
+        Files.createDirectories(targetDirectory);
+        Path targetPath = targetDirectory.resolve(filePath.getFileName());
+        Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        return targetPath;
     }
 
     /**

@@ -1,0 +1,2039 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< ec.edu.espe.banquito:switch-pagos >------------------
+[INFO] Building switch-pagos 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.6:run (default-cli) > test-compile @ switch-pagos >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ switch-pagos ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ switch-pagos ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ switch-pagos ---
+[INFO] skip non existing resourceDirectory C:\Users\USER\Switch_Banco\grupo1_backend_switch\switch\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ switch-pagos ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.6:run (default-cli) < test-compile @ switch-pagos <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.6:run (default-cli) @ switch-pagos ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-05-14T01:58:48.496-05:00  INFO 36276 --- [switch-pagos] [           main] e.e.e.b.s.SwitchPagosApplication         : Starting SwitchPagosApplication using Java 21.0.9 with PID 36276 (C:\Users\USER\Switch_Banco\grupo1_backend_switch\switch\target\classes started by USER in C:\Users\USER\Switch_Banco\grupo1_backend_switch\switch)
+2026-05-14T01:58:48.498-05:00  INFO 36276 --- [switch-pagos] [           main] e.e.e.b.s.SwitchPagosApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-05-14T01:58:48.499-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.boot.SpringApplication               : Loading source class ec.edu.espe.banquito.switchpagos.SwitchPagosApplication
+2026-05-14T01:58:48.540-05:00 DEBUG 36276 --- [switch-pagos] [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext@32c4e8b2
+2026-05-14T01:58:49.090-05:00  INFO 36276 --- [switch-pagos] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-14T01:58:49.109-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'ec.edu.espe.banquito.switchpagos'. Automatic @Repository and @Entity scanning is enabled.
+2026-05-14T01:58:49.172-05:00  INFO 36276 --- [switch-pagos] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 72 ms. Found 8 JPA repository interfaces.
+2026-05-14T01:58:49.685-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: C:\Users\USER\.m2\repository\org\springframework\boot\spring-boot-web-server\4.0.6\spring-boot-web-server-4.0.6.jar
+2026-05-14T01:58:49.686-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: C:\Users\USER\.m2\repository\org\springframework\boot\spring-boot-web-server\4.0.6\spring-boot-web-server-4.0.6.jar
+2026-05-14T01:58:49.686-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.t.s.TomcatServletWebServerFactory  : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2026-05-14T01:58:49.714-05:00  INFO 36276 --- [switch-pagos] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-05-14T01:58:49.728-05:00  INFO 36276 --- [switch-pagos] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-14T01:58:49.729-05:00  INFO 36276 --- [switch-pagos] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-05-14T01:58:49.775-05:00 DEBUG 36276 --- [switch-pagos] [           main] b.w.c.s.WebApplicationContextInitializer : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2026-05-14T01:58:49.776-05:00  INFO 36276 --- [switch-pagos] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1236 ms
+2026-05-14T01:58:49.804-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: corsFilterRegistration urls=[/*] order=-2147483648, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105
+2026-05-14T01:58:49.805-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
+2026-05-14T01:58:49.826-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.s.f.OrderedRequestContextFilter    : Filter 'requestContextFilter' configured for use
+2026-05-14T01:58:49.828-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
+2026-05-14T01:58:49.829-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.springframework.web.filter.CorsFilter  : Filter 'corsFilterRegistration' configured for use
+2026-05-14T01:58:49.829-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.s.filter.OrderedFormContentFilter  : Filter 'formContentFilter' configured for use
+2026-05-14T01:58:49.968-05:00  INFO 36276 --- [switch-pagos] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-14T01:58:50.027-05:00  INFO 36276 --- [switch-pagos] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-05-14T01:58:50.482-05:00  INFO 36276 --- [switch-pagos] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-14T01:58:50.517-05:00  INFO 36276 --- [switch-pagos] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-14T01:58:50.571-05:00  INFO 36276 --- [switch-pagos] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@164dea80
+2026-05-14T01:58:50.573-05:00  INFO 36276 --- [switch-pagos] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-14T01:58:50.642-05:00  INFO 36276 --- [switch-pagos] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/switch_pagos]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.1
+	Default catalog/schema: switch_pagos/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-14T01:58:51.744-05:00  INFO 36276 --- [switch-pagos] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-14T01:58:51.845-05:00  INFO 36276 --- [switch-pagos] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14T01:58:51.943-05:00  INFO 36276 --- [switch-pagos] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-14T01:58:53.261-05:00 DEBUG 36276 --- [switch-pagos] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 20 mappings in 'requestMappingHandlerMapping'
+2026-05-14T01:58:53.286-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2026-05-14T01:58:53.309-05:00 DEBUG 36276 --- [switch-pagos] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-05-14T01:58:53.354-05:00 DEBUG 36276 --- [switch-pagos] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-05-14T01:58:53.428-05:00  INFO 36276 --- [switch-pagos] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-05-14T01:58:53.435-05:00 DEBUG 36276 --- [switch-pagos] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+
+============================
+CONDITIONS EVALUATION REPORT
+============================
+
+
+Positive matches:
+-----------------
+
+   AopAutoConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.aop.auto=true) matched (OnPropertyCondition)
+
+   AopAutoConfiguration.AspectJAutoProxyingConfiguration matched:
+      - @ConditionalOnClass found required class 'org.aspectj.weaver.Advice' (OnClassCondition)
+
+   AopAutoConfiguration.AspectJAutoProxyingConfiguration.CglibAutoProxyConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=true) matched (OnPropertyCondition)
+
+   ApplicationAvailabilityAutoConfiguration#applicationAvailability matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.availability.ApplicationAvailability; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataJpaRepositoriesAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.data.jpa.repository.JpaRepository' (OnClassCondition)
+      - @ConditionalOnBooleanProperty (spring.data.jpa.repositories.enabled=true) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: javax.sql.DataSource; SearchStrategy: all) found bean 'dataSource'; @ConditionalOnMissingBean (types: org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean,org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType' (OnClassCondition)
+      - @ConditionalOnMissingBean (types: io.r2dbc.spi.ConnectionFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceAutoConfiguration.PooledDataSourceConfiguration matched:
+      - AnyNestedCondition 1 matched 1 did not; NestedCondition on DataSourceAutoConfiguration.PooledDataSourceCondition.PooledDataSourceAvailable PooledDataSource found supported DataSource; NestedCondition on DataSourceAutoConfiguration.PooledDataSourceCondition.ExplicitType @ConditionalOnProperty (spring.datasource.type) did not find property 'spring.datasource.type' (DataSourceAutoConfiguration.PooledDataSourceCondition)
+      - @ConditionalOnMissingBean (types: javax.sql.DataSource,javax.sql.XADataSource; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceAutoConfiguration.PooledDataSourceConfiguration#jdbcConnectionDetails matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.jdbc.autoconfigure.JdbcConnectionDetails; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceConfiguration.Hikari matched:
+      - @ConditionalOnClass found required class 'com.zaxxer.hikari.HikariDataSource' (OnClassCondition)
+      - @ConditionalOnProperty (spring.datasource.type=com.zaxxer.hikari.HikariDataSource) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: javax.sql.DataSource; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceInitializationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.jdbc.datasource.init.DatabasePopulator' (OnClassCondition)
+      - SQL InitializationDatabase Initialization default value is EMBEDDED (OnSqlInitializationCondition)
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource'; @ConditionalOnMissingBean (types: org.springframework.boot.sql.autoconfigure.init.ApplicationScriptDatabaseInitializer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.HikariPoolDataSourceMetadataProviderConfiguration matched:
+      - @ConditionalOnClass found required class 'com.zaxxer.hikari.HikariDataSource' (OnClassCondition)
+
+   DataSourceTransactionManagerAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.core.JdbcTemplate', 'org.springframework.transaction.TransactionManager' (OnClassCondition)
+
+   DataSourceTransactionManagerAutoConfiguration.JdbcTransactionManagerConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource' (OnBeanCondition)
+
+   DataWebAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'org.springframework.data.web.PageableHandlerMethodArgumentResolver', 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.PageableHandlerMethodArgumentResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataWebAutoConfiguration#pageableCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataWebAutoConfiguration#sortCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataWebAutoConfiguration#springDataWebSettings matched:
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.config.SpringDataWebSettings; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DispatcherServletAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.web.servlet.DispatcherServlet' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.servlet.ServletRegistration' (OnClassCondition)
+      - Default DispatcherServlet did not find dispatcher servlet beans (DispatcherServletAutoConfiguration.DefaultDispatcherServletCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletRegistrationConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.servlet.ServletRegistration' (OnClassCondition)
+      - DispatcherServlet Registration did not find servlet registration bean (DispatcherServletAutoConfiguration.DispatcherServletRegistrationCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletRegistrationConfiguration#dispatcherServletRegistration matched:
+      - @ConditionalOnBean (names: dispatcherServlet types: org.springframework.web.servlet.DispatcherServlet; SearchStrategy: all) found bean 'dispatcherServlet' (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.Servlet', 'org.springframework.web.servlet.DispatcherServlet' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   ErrorMvcAutoConfiguration#basicErrorController matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.webmvc.error.ErrorController; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration#errorAttributes matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.webmvc.error.ErrorAttributes; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration.DefaultErrorViewResolverConfiguration#conventionErrorViewResolver matched:
+      - @ConditionalOnBean (types: org.springframework.web.servlet.DispatcherServlet; SearchStrategy: all) found bean 'dispatcherServlet'; @ConditionalOnMissingBean (types: org.springframework.boot.webmvc.autoconfigure.error.ErrorViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration.WhitelabelErrorViewConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.web.error.whitelabel.enabled=true) matched (OnPropertyCondition)
+      - ErrorTemplate Missing did not find error template view (ErrorMvcAutoConfiguration.ErrorTemplateMissingCondition)
+
+   ErrorMvcAutoConfiguration.WhitelabelErrorViewConfiguration#beanNameViewResolver matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.servlet.view.BeanNameViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration.WhitelabelErrorViewConfiguration#defaultErrorView matched:
+      - @ConditionalOnMissingBean (names: error; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   HibernateJpaAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean', 'jakarta.persistence.EntityManager', 'org.hibernate.engine.spi.SessionImplementor' (OnClassCondition)
+
+   HibernateJpaConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource' (OnBeanCondition)
+
+   HttpEncodingAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.web.filter.CharacterEncodingFilter' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnBooleanProperty (spring.servlet.encoding.enabled=true) matched (OnPropertyCondition)
+
+   HttpEncodingAutoConfiguration#characterEncodingFilter matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.filter.CharacterEncodingFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   HttpMessageConvertersAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.http.converter.HttpMessageConverter' (OnClassCondition)
+      - NoneNestedConditions 0 matched 1 did not; NestedCondition on HttpMessageConvertersAutoConfiguration.NotReactiveWebApplicationCondition.ReactiveWebApplication did not find reactive web application classes (HttpMessageConvertersAutoConfiguration.NotReactiveWebApplicationCondition)
+
+   HttpMessageConvertersAutoConfiguration.StringHttpMessageConverterConfiguration#stringHttpMessageConvertersCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.http.converter.StringHttpMessageConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JacksonAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'tools.jackson.databind.json.JsonMapper' (OnClassCondition)
+
+   JacksonAutoConfiguration#jacksonJsonMapper matched:
+      - @ConditionalOnMissingBean (types: tools.jackson.databind.json.JsonMapper; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JacksonAutoConfiguration#jsonMapperBuilder matched:
+      - @ConditionalOnMissingBean (types: tools.jackson.databind.json.JsonMapper$Builder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JacksonAutoConfiguration.JsonProblemDetailsConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.http.ProblemDetail' (OnClassCondition)
+
+   JacksonHttpMessageConvertersConfiguration.JacksonJsonHttpMessageConverterConfiguration matched:
+      - @ConditionalOnClass found required class 'tools.jackson.databind.json.JsonMapper' (OnClassCondition)
+      - @ConditionalOnProperty (spring.http.converters.preferred-json-mapper=jackson) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: tools.jackson.databind.json.JsonMapper; SearchStrategy: all) found bean 'jacksonJsonMapper' (OnBeanCondition)
+
+   JacksonHttpMessageConvertersConfiguration.JacksonJsonHttpMessageConverterConfiguration#jacksonJsonHttpMessageConvertersCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.http.converter.json.JacksonJsonHttpMessageConverter ignored: org.springframework.hateoas.server.mvc.TypeConstrainedJacksonJsonHttpMessageConverter,org.springframework.data.rest.webmvc.alps.AlpsJacksonJsonHttpMessageConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JdbcClientAutoConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate; SearchStrategy: all) found a single bean 'namedParameterJdbcTemplate'; @ConditionalOnMissingBean (types: org.springframework.jdbc.core.simple.JdbcClient; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JdbcTemplateAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.core.JdbcTemplate' (OnClassCondition)
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource' (OnBeanCondition)
+
+   JdbcTemplateConfiguration matched:
+      - @ConditionalOnMissingBean (types: org.springframework.jdbc.core.JdbcOperations; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#entityManagerFactory matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean,jakarta.persistence.EntityManagerFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#entityManagerFactoryBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.jpa.EntityManagerFactoryBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#jpaVendorAdapter matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.JpaVendorAdapter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#transactionManager matched:
+      - @ConditionalOnMissingBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration.PersistenceManagedTypesConfiguration matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean,jakarta.persistence.EntityManagerFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration.PersistenceManagedTypesConfiguration#persistenceManagedTypes matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JtaAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.transaction.Transaction' (OnClassCondition)
+      - @ConditionalOnBooleanProperty (spring.jta.enabled=true) matched (OnPropertyCondition)
+
+   LifecycleAutoConfiguration#defaultLifecycleProcessor matched:
+      - @ConditionalOnMissingBean (names: lifecycleProcessor; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   MultipartAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.Servlet', 'org.springframework.web.multipart.support.StandardServletMultipartResolver', 'jakarta.servlet.MultipartConfigElement' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnBooleanProperty (spring.servlet.multipart.enabled=true) matched (OnPropertyCondition)
+
+   MultipartAutoConfiguration#multipartConfigElement matched:
+      - @ConditionalOnMissingBean (types: jakarta.servlet.MultipartConfigElement; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   MultipartAutoConfiguration#multipartResolver matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.multipart.MultipartResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   NamedParameterJdbcTemplateConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: org.springframework.jdbc.core.JdbcTemplate; SearchStrategy: all) found a single bean 'jdbcTemplate'; @ConditionalOnMissingBean (types: org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   PersistenceExceptionTranslationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor' (OnClassCondition)
+
+   PersistenceExceptionTranslationAutoConfiguration#persistenceExceptionTranslationPostProcessor matched:
+      - @ConditionalOnBooleanProperty (spring.persistence.exceptiontranslation.enabled=true) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   PropertyPlaceholderAutoConfiguration#propertySourcesPlaceholderConfigurer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.context.support.PropertySourcesPlaceholderConfigurer; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   SslAutoConfiguration#sslBundleRegistry matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.ssl.SslBundleRegistry,org.springframework.boot.ssl.SslBundles; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutionAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor' (OnClassCondition)
+
+   TaskExecutorConfigurations.AsyncConfigurerConfiguration matched:
+      - @ConditionalOnMissingBean (types: org.springframework.scheduling.annotation.AsyncConfigurer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutorConfigurations.SimpleAsyncTaskExecutorBuilderConfiguration#simpleAsyncTaskExecutorBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration matched:
+      - AnyNestedCondition 1 matched 1 did not; NestedCondition on TaskExecutorConfigurations.OnExecutorCondition.ModelCondition @ConditionalOnProperty (spring.task.execution.mode=force) did not find property 'spring.task.execution.mode'; NestedCondition on TaskExecutorConfigurations.OnExecutorCondition.ExecutorBeanCondition @ConditionalOnMissingBean (types: java.util.concurrent.Executor; SearchStrategy: all) did not find any beans (TaskExecutorConfigurations.OnExecutorCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutor matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskExecutorConfigurations.ThreadPoolTaskExecutorBuilderConfiguration#threadPoolTaskExecutorBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.ThreadPoolTaskExecutorBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskSchedulingAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler' (OnClassCondition)
+
+   TaskSchedulingConfigurations.SimpleAsyncTaskSchedulerBuilderConfiguration#simpleAsyncTaskSchedulerBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.ThreadPoolTaskSchedulerBuilderConfiguration#threadPoolTaskSchedulerBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.ThreadPoolTaskSchedulerBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TomcatServletWebServerAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.ServletRequest', 'org.apache.catalina.startup.Tomcat', 'org.apache.coyote.UpgradeProtocol', 'org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   TomcatServletWebServerAutoConfiguration#tomcatServletWebServerFactory matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.web.server.servlet.ServletWebServerFactory; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   TomcatWebServerConfiguration matched:
+      - @ConditionalOnWarDeployment the application is not deployed as a WAR file. (OnWarDeploymentCondition)
+
+   TomcatWebServerConfiguration.TomcatWebSocketConfiguration matched:
+      - @ConditionalOnClass found required class 'org.apache.tomcat.websocket.server.WsSci' (OnClassCondition)
+
+   TransactionAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.transaction.PlatformTransactionManager' (OnClassCondition)
+
+   TransactionAutoConfiguration.EnableTransactionManagementConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) found bean 'transactionManager'; @ConditionalOnMissingBean (types: org.springframework.transaction.annotation.AbstractTransactionManagementConfiguration; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TransactionAutoConfiguration.EnableTransactionManagementConfiguration.CglibAutoProxyConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=true) matched (OnPropertyCondition)
+
+   TransactionAutoConfiguration.TransactionTemplateConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: org.springframework.transaction.PlatformTransactionManager; SearchStrategy: all) found a single bean 'transactionManager' (OnBeanCondition)
+
+   TransactionAutoConfiguration.TransactionTemplateConfiguration#transactionTemplate matched:
+      - @ConditionalOnMissingBean (types: org.springframework.transaction.support.TransactionOperations; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TransactionManagerCustomizationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.transaction.PlatformTransactionManager' (OnClassCondition)
+
+   TransactionManagerCustomizationAutoConfiguration#platformTransactionManagerCustomizers matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizers; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ValidationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.validation.executable.ExecutableValidator' (OnClassCondition)
+      - @ConditionalOnResource found location classpath:META-INF/services/jakarta.validation.spi.ValidationProvider (OnResourceCondition)
+
+   ValidationAutoConfiguration#defaultValidator matched:
+      - @ConditionalOnMissingBean (types: jakarta.validation.Validator; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ValidationAutoConfiguration#methodValidationPostProcessor matched:
+      - @ConditionalOnMissingBean (types: org.springframework.validation.beanvalidation.MethodValidationPostProcessor; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.Servlet', 'org.springframework.web.servlet.DispatcherServlet', 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration#formContentFilter matched:
+      - @ConditionalOnBooleanProperty (spring.mvc.formcontent.filter.enabled=true) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.web.filter.FormContentFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.EnableWebMvcConfiguration#flashMapManager matched:
+      - @ConditionalOnMissingBean (names: flashMapManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.EnableWebMvcConfiguration#localeResolver matched:
+      - @ConditionalOnMissingBean (names: localeResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.EnableWebMvcConfiguration#viewNameTranslator matched:
+      - @ConditionalOnMissingBean (names: viewNameTranslator; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#defaultViewResolver matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.servlet.view.InternalResourceViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#requestContextFilter matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.context.request.RequestContextListener,org.springframework.web.filter.RequestContextFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#viewResolver matched:
+      - @ConditionalOnBean (types: org.springframework.web.servlet.ViewResolver; SearchStrategy: all) found beans 'defaultViewResolver', 'beanNameViewResolver', 'mvcViewResolver'; @ConditionalOnMissingBean (names: viewResolver types: org.springframework.web.servlet.view.ContentNegotiatingViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+   AopAutoConfiguration.AspectJAutoProxyingConfiguration.JdkDynamicAutoProxyConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=false) did not find property 'spring.aop.proxy-target-class' (OnPropertyCondition)
+
+   AopAutoConfiguration.ClassProxyingConfiguration:
+      Did not match:
+         - @ConditionalOnMissingClass found unwanted class 'org.aspectj.weaver.Advice' (OnClassCondition)
+
+   DataJpaRepositoriesAutoConfiguration#entityManagerFactoryBootstrapExecutorCustomizer:
+      Did not match:
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on DataJpaRepositoriesAutoConfiguration.BootstrapExecutorCondition.LazyBootstrapMode @ConditionalOnProperty (spring.data.jpa.repositories.bootstrap-mode=lazy) did not find property 'spring.data.jpa.repositories.bootstrap-mode'; NestedCondition on DataJpaRepositoriesAutoConfiguration.BootstrapExecutorCondition.DeferredBootstrapMode @ConditionalOnProperty (spring.data.jpa.repositories.bootstrap-mode=deferred) did not find property 'spring.data.jpa.repositories.bootstrap-mode' (DataJpaRepositoriesAutoConfiguration.BootstrapExecutorCondition)
+
+   DataRepositoryMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean did not find required type 'io.micrometer.core.instrument.MeterRegistry' (OnBeanCondition)
+
+   DataSourceAutoConfiguration.EmbeddedDatabaseConfiguration:
+      Did not match:
+         - EmbeddedDataSource spring.datasource.url is set (DataSourceAutoConfiguration.EmbeddedDatabaseCondition)
+
+   DataSourceCheckpointRestoreConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.crac.Resource' (OnClassCondition)
+
+   DataSourceConfiguration.Dbcp2:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.commons.dbcp2.BasicDataSource' (OnClassCondition)
+
+   DataSourceConfiguration.Generic:
+      Did not match:
+         - @ConditionalOnProperty (spring.datasource.type) did not find property 'spring.datasource.type' (OnPropertyCondition)
+
+   DataSourceConfiguration.OracleUcp:
+      Did not match:
+         - @ConditionalOnClass did not find required classes 'oracle.ucp.jdbc.PoolDataSourceImpl', 'oracle.jdbc.OracleConnection' (OnClassCondition)
+
+   DataSourceConfiguration.Tomcat:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.tomcat.jdbc.pool.DataSource' (OnClassCondition)
+
+   DataSourceHealthContributorAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator' (OnClassCondition)
+
+   DataSourceJmxConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.jmx.enabled=true) did not find property 'spring.jmx.enabled' (OnPropertyCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.CommonsDbcp2PoolDataSourceMetadataProviderConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.commons.dbcp2.BasicDataSource' (OnClassCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.OracleUcpPoolDataSourceMetadataProviderConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required classes 'oracle.ucp.jdbc.PoolDataSource', 'oracle.jdbc.OracleConnection' (OnClassCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.TomcatDataSourcePoolMetadataProviderConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.tomcat.jdbc.pool.DataSource' (OnClassCondition)
+
+   DataSourcePoolMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'io.micrometer.core.instrument.MeterRegistry' (OnClassCondition)
+
+   DataSourceTransactionManagerAutoConfiguration.JdbcTransactionManagerConfiguration#transactionManager:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) found beans of type 'org.springframework.transaction.TransactionManager' transactionManager (OnBeanCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletConfiguration#multipartResolver:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.web.multipart.MultipartResolver; SearchStrategy: all) did not find any beans of type org.springframework.web.multipart.MultipartResolver (OnBeanCondition)
+
+   GsonHttpMessageConvertersConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.google.gson.Gson' (OnClassCondition)
+
+   HibernateMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'io.micrometer.core.instrument.MeterRegistry' (OnClassCondition)
+
+   Jackson2HttpMessageConvertersConfiguration.MappingJackson2HttpMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.fasterxml.jackson.databind.ObjectMapper' (OnClassCondition)
+
+   Jackson2HttpMessageConvertersConfiguration.MappingJackson2XmlHttpMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.fasterxml.jackson.dataformat.xml.XmlMapper' (OnClassCondition)
+
+   JacksonAutoConfiguration.CborConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'tools.jackson.dataformat.cbor.CBORMapper' (OnClassCondition)
+
+   JacksonAutoConfiguration.XmlConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'tools.jackson.dataformat.xml.XmlMapper' (OnClassCondition)
+
+   JacksonHttpMessageConvertersConfiguration.JacksonXmlHttpMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'tools.jackson.dataformat.xml.XmlMapper' (OnClassCondition)
+
+   JmxAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.jmx.enabled=true) did not find property 'spring.jmx.enabled' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.jmx.export.MBeanExporter' (OnClassCondition)
+
+   JndiDataSourceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnProperty (spring.datasource.jndi-name) did not find property 'spring.datasource.jndi-name' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType' (OnClassCondition)
+
+   JndiJtaConfiguration:
+      Did not match:
+         - @ConditionalOnJndi JNDI environment is not available (OnJndiCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.transaction.jta.JtaTransactionManager' (OnClassCondition)
+
+   JpaBaseConfiguration.JpaWebConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.jpa.open-in-view=true) found different value in property 'spring.jpa.open-in-view' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+         - found 'session' scope (OnWebApplicationCondition)
+
+   JsonbHttpMessageConvertersConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'jakarta.json.bind.Jsonb' (OnClassCondition)
+
+   KotlinSerializationHttpMessageConvertersConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required classes 'kotlinx.serialization.Serializable', 'kotlinx.serialization.json.Json' (OnClassCondition)
+
+   MessageSourceAutoConfiguration:
+      Did not match:
+         - ResourceBundle did not find bundle with basename messages (MessageSourceAutoConfiguration.ResourceBundleCondition)
+
+   ProjectInfoAutoConfiguration#buildProperties:
+      Did not match:
+         - @ConditionalOnResource did not find resource '${spring.info.build.location:classpath:META-INF/build-info.properties}' (OnResourceCondition)
+
+   ProjectInfoAutoConfiguration#gitProperties:
+      Did not match:
+         - GitResource did not find git info at classpath:git.properties (ProjectInfoAutoConfiguration.GitResourceAvailableCondition)
+
+   ServletHttpExchangesAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean did not find required type 'org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository' (OnBeanCondition)
+
+   ServletManagementContextAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties' (OnClassCondition)
+
+   ServletMappingsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint' (OnClassCondition)
+
+   ServletWebServerConfiguration#forwardedHeaderFilter:
+      Did not match:
+         - @ConditionalOnProperty (server.forward-headers-strategy=framework) did not find property 'server.forward-headers-strategy' (OnPropertyCondition)
+
+   SpringApplicationAdminJmxAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.application.admin.enabled=true) did not find property 'spring.application.admin.enabled' (OnPropertyCondition)
+
+   TaskExecutorConfigurations.AsyncConfigurerWrapperConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.scheduling.annotation.AsyncConfigurer; SearchStrategy: all) did not find any beans of type org.springframework.scheduling.annotation.AsyncConfigurer (OnBeanCondition)
+
+   TaskExecutorConfigurations.SimpleAsyncTaskExecutorBuilderConfiguration#simpleAsyncTaskExecutorBuilderVirtualThreads:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder; SearchStrategy: all) found beans of type 'org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder' simpleAsyncTaskExecutorBuilder (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutorVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TaskSchedulingAutoConfiguration#scheduledBeanLazyInitializationExcludeFilter:
+      Did not match:
+         - @ConditionalOnBean (names: org.springframework.scheduling.config.internalScheduledAnnotationProcessor; SearchStrategy: all) did not find any beans named org.springframework.scheduling.config.internalScheduledAnnotationProcessor (OnBeanCondition)
+
+   TaskSchedulingConfigurations.SimpleAsyncTaskSchedulerBuilderConfiguration#simpleAsyncTaskSchedulerBuilderVirtualThreads:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder; SearchStrategy: all) found beans of type 'org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder' simpleAsyncTaskSchedulerBuilder (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration:
+      Did not match:
+         - @ConditionalOnBean (names: org.springframework.scheduling.config.internalScheduledAnnotationProcessor; SearchStrategy: all) did not find any beans named org.springframework.scheduling.config.internalScheduledAnnotationProcessor (OnBeanCondition)
+
+   TomcatMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'io.micrometer.core.instrument.binder.tomcat.TomcatMetrics' (OnClassCondition)
+
+   TomcatReactiveManagementContextAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextFactory' (OnClassCondition)
+
+   TomcatReactiveWebServerAutoConfiguration:
+      Did not match:
+         - @ConditionalOnWebApplication did not find reactive web application classes (OnWebApplicationCondition)
+
+   TomcatServletManagementContextAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextFactory' (OnClassCondition)
+
+   TomcatServletWebServerAutoConfiguration#tomcatForwardedHeaderFilterCustomizer:
+      Did not match:
+         - @ConditionalOnProperty (server.forward-headers-strategy=framework) did not find property 'server.forward-headers-strategy' (OnPropertyCondition)
+
+   TomcatWebServerConfiguration#tomcatVirtualThreadsProtocolHandlerCustomizer:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TransactionAutoConfiguration#transactionalOperator:
+      Did not match:
+         - @ConditionalOnSingleCandidate (types: org.springframework.transaction.ReactiveTransactionManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TransactionAutoConfiguration.AspectJTransactionManagementConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.transaction.aspectj.AbstractTransactionAspect; SearchStrategy: all) did not find any beans of type org.springframework.transaction.aspectj.AbstractTransactionAspect (OnBeanCondition)
+
+   TransactionAutoConfiguration.EnableTransactionManagementConfiguration.JdkDynamicAutoProxyConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=false) did not find property 'spring.aop.proxy-target-class' (OnPropertyCondition)
+
+   WebMvcAutoConfiguration#hiddenHttpMethodFilter:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.mvc.hiddenmethod.filter.enabled=true) did not find property 'spring.mvc.hiddenmethod.filter.enabled' (OnPropertyCondition)
+
+   WebMvcAutoConfiguration.ProblemDetailsErrorHandlingConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.mvc.problemdetails.enabled=true) did not find property 'spring.mvc.problemdetails.enabled' (OnPropertyCondition)
+
+   WebMvcAutoConfiguration.ResourceChainCustomizerConfiguration:
+      Did not match:
+         - @ConditionalOnEnabledResourceChain did not find class org.webjars.WebJarVersionLocator (OnEnabledResourceChainCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#beanNameViewResolver:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.web.servlet.view.BeanNameViewResolver; SearchStrategy: all) found beans of type 'org.springframework.web.servlet.view.BeanNameViewResolver' beanNameViewResolver (OnBeanCondition)
+
+   WebMvcHealthEndpointExtensionAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.health.actuate.endpoint.HealthEndpoint' (OnClassCondition)
+
+   WebMvcMappingsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint' (OnClassCondition)
+
+   WebMvcObservationAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.micrometer.observation.autoconfigure.ObservationProperties' (OnClassCondition)
+
+   XADataSourceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.boot.jdbc.XADataSourceWrapper; SearchStrategy: all) did not find any beans of type org.springframework.boot.jdbc.XADataSourceWrapper (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'jakarta.transaction.TransactionManager', 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration
+
+    org.springframework.boot.autoconfigure.ssl.SslAutoConfiguration
+
+    org.springframework.boot.autoconfigure.context.LifecycleAutoConfiguration
+
+    org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+
+    org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration
+
+    org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration
+
+
+
+2026-05-14T01:58:53.437-05:00  INFO 36276 --- [switch-pagos] [           main] e.e.e.b.s.SwitchPagosApplication         : Started SwitchPagosApplication in 5.657 seconds (process running for 6.09)
+2026-05-14T01:58:53.437-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
+2026-05-14T01:58:53.440-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.jdbc.core.JdbcTemplate               : Executing SQL statement [ALTER TABLE service_fee_rule ADD COLUMN IF NOT EXISTS fee_amount NUMERIC(18,2)]
+2026-05-14T01:58:53.442-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.jdbc.core.JdbcTemplate               : SQLWarning ignored: SQL state '42701', error code '0', message [column "fee_amount" of relation "service_fee_rule" already exists, skipping]
+2026-05-14T01:58:53.446-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.jdbc.core.JdbcTemplate               : Executing SQL update [UPDATE service_fee_rule SET fee_amount = unit_fee WHERE fee_amount IS NULL]
+2026-05-14T01:58:53.447-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.jdbc.core.JdbcTemplate               : Executing SQL statement [ALTER TABLE service_fee_rule ALTER COLUMN fee_amount SET NOT NULL]
+2026-05-14T01:58:53.515-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0
+2026-05-14T01:58:53.552-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.id=?
+2026-05-14T01:58:53.565-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0
+2026-05-14T01:58:53.568-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.id=?
+2026-05-14T01:58:53.570-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0
+2026-05-14T01:58:53.572-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.id=?
+2026-05-14T01:58:53.574-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0
+2026-05-14T01:58:53.575-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.id=?
+2026-05-14T01:58:53.577-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0
+2026-05-14T01:58:53.579-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.id=?
+2026-05-14T01:58:53.582-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0
+2026-05-14T01:58:53.584-05:00 DEBUG 36276 --- [switch-pagos] [           main] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.id=?
+2026-05-14T01:58:53.585-05:00  INFO 36276 --- [switch-pagos] [           main] e.e.e.b.s.config.SwitchDataInitializer   : Reglas tarifarias SERVICE_FEE_RULE verificadas correctamente
+2026-05-14T01:58:53.586-05:00 DEBUG 36276 --- [switch-pagos] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2026-05-14T01:58:53.667-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-14T01:58:53.668-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-14T01:58:53.669-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-05-14T01:58:53.669-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-05-14T01:58:53.672-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@1a4132b2
+2026-05-14T01:58:53.672-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@a23ecf4
+2026-05-14T01:58:53.672-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-05-14T01:58:53.674-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2026-05-14T01:58:53.683-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/payment-batch", parameters={}
+2026-05-14T01:58:53.689-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#findAll()
+2026-05-14T01:58:53.704-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0
+2026-05-14T01:58:53.717-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-05-14T01:58:53.719-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[PaymentBatch{id=1, fileName='test_rf05_valid.csv', ruc='1790012345001', status='Procesado', headerT (truncated)...]
+2026-05-14T01:58:53.777-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T01:59:13.043-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/api/payment-batch/upload-from-sftp-buzon", parameters={multipart}
+2026-05-14T01:59:13.060-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#uploadFromSftpBuzon(MultipartFile)
+2026-05-14T01:59:13.071-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Nueva solicitud de carga CSV
+2026-05-14T01:59:13.071-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Archivo: test_rf05_valid_sftp_2.csv, Tama├▒o: 222 bytes, Canal: SFTP Seguro
+2026-05-14T01:59:13.072-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Parseando archivo CSV
+2026-05-14T01:59:13.075-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : CSV parseado exitosamente - 2 detalles
+2026-05-14T01:59:13.075-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.s.impl.CoreFacadeService       : Consultando cuenta favorita de pagos en Core
+2026-05-14T01:59:13.085-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/accounts/default/favorite
+2026-05-14T01:59:13.090-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:13.105-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:13.106-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T01:59:13.135-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/api/holidays/is-business-day?date=2026-05-14
+2026-05-14T01:59:13.136-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:13.143-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:13.144-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Reading to [java.util.Map<?, ?>]
+2026-05-14T01:59:13.145-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Dentro del horario y d├¡a h├íbil. Procesamiento inmediato.
+2026-05-14T01:59:13.145-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n temprana RF-02
+2026-05-14T01:59:13.218-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.file_name=? 
+        and pb1_0.file_hash=? 
+        and pb1_0.status=? 
+        and pb1_0.received_at>? 
+    fetch
+        first ? rows only
+2026-05-14T01:59:13.222-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/integration/customer/mass-payments/1790012345001/active
+2026-05-14T01:59:13.222-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:13.226-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:13.228-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Reading to [java.lang.Boolean]
+2026-05-14T01:59:13.229-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.s.impl.FileValidationService   : Validación RF-02 temprana aprobada para archivo test_rf05_valid_sftp_2.csv
+2026-05-14T01:59:13.231-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Validaci├│n temprana exitosa
+2026-05-14T01:59:13.253-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        payment_batch
+        (channel, file_hash, file_name, generated_at, header_total_amount, header_total_records, received_at, rejected_records, ruc, service_type, source_account_number, status, successful_records, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:13.273-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        payment_detail
+        (amount, beneficiary_email, beneficiary_identification, beneficiary_name, destination_account_number, executed_at, line_number, notification_status, payment_batch_id, reference, rejection_reason, status, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:13.276-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        payment_detail
+        (amount, beneficiary_email, beneficiary_identification, beneficiary_name, destination_account_number, executed_at, line_number, notification_status, payment_batch_id, reference, rejection_reason, status, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:13.282-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n completa
+2026-05-14T01:59:13.282-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.s.impl.FileValidationService   : Validating batch 2 with 2 details
+2026-05-14T01:59:13.284-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        file_validation
+        (customer_active_valid, duplicate_file_valid, payment_batch_id, structure_valid, totals_match, validated_at, validation_result) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:13.288-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] .e.b.s.s.i.PaymentBatchProcessingService : Processing batch 2 with 2 details
+2026-05-14T01:59:13.289-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        batch_status_log
+        (changed_at, new_status, payment_batch_id, previous_status) 
+    values
+        (?, ?, ?, ?)
+2026-05-14T01:59:13.291-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.id=?
+2026-05-14T01:59:13.356-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T01:59:13.370-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] .e.b.s.s.i.PaymentBatchProcessingService : Sending transfer to core: 0050000202 -> 001-00001234 amount: 100.50
+2026-05-14T01:59:13.372-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Writing [{beneficiaryIdentification=1234567890, originAccountNumber=0050000202, transactionUuid=833e4cf8-62de-4663-bd5b-28a52d7b0980, amount=100.50, destinationAccountNumber=001-00001234}] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T01:59:13.402-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO]
+2026-05-14T01:59:13.406-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] .e.b.s.s.i.PaymentBatchProcessingService : Transfer completed successfully for detail 3
+2026-05-14T01:59:13.408-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        detail_status_log
+        (changed_at, error_code, error_description, new_status, payment_detail_id, previous_status) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:13.416-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T01:59:13.416-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Writing [ec.edu.espe.banquito.switchpagos.dto.PaymentSuccessNotificationRequestDTO@58d56a8] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T01:59:16.639-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        pd1_0.id,
+        pd1_0.amount,
+        pd1_0.beneficiary_email,
+        pd1_0.beneficiary_identification,
+        pd1_0.beneficiary_name,
+        pd1_0.destination_account_number,
+        pd1_0.executed_at,
+        pd1_0.line_number,
+        pd1_0.notification_status,
+        pd1_0.payment_batch_id,
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version,
+        pd1_0.reference,
+        pd1_0.rejection_reason,
+        pd1_0.status,
+        pd1_0.version 
+    from
+        payment_detail pd1_0 
+    join
+        payment_batch pb1_0 
+            on pb1_0.id=pd1_0.payment_batch_id 
+    where
+        pd1_0.id=?
+2026-05-14T01:59:16.652-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T01:59:16.652-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] .e.b.s.s.i.PaymentBatchProcessingService : Sending transfer to core: 0050000202 -> 001-00005678 amount: 250.75
+2026-05-14T01:59:16.653-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Writing [{beneficiaryIdentification=0987654321, originAccountNumber=0050000202, transactionUuid=89d632d8-76f1-48ff-b528-06e3def4b29c, amount=250.75, destinationAccountNumber=001-00005678}] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T01:59:16.670-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO]
+2026-05-14T01:59:16.671-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] .e.b.s.s.i.PaymentBatchProcessingService : Transfer completed successfully for detail 4
+2026-05-14T01:59:16.671-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        detail_status_log
+        (changed_at, error_code, error_description, new_status, payment_detail_id, previous_status) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:16.679-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T01:59:16.680-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.DefaultRestClient         : Writing [ec.edu.espe.banquito.switchpagos.dto.PaymentSuccessNotificationRequestDTO@6e738fb9] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T01:59:19.777-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        pd1_0.id,
+        pd1_0.amount,
+        pd1_0.beneficiary_email,
+        pd1_0.beneficiary_identification,
+        pd1_0.beneficiary_name,
+        pd1_0.destination_account_number,
+        pd1_0.executed_at,
+        pd1_0.line_number,
+        pd1_0.notification_status,
+        pd1_0.payment_batch_id,
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version,
+        pd1_0.reference,
+        pd1_0.rejection_reason,
+        pd1_0.status,
+        pd1_0.version 
+    from
+        payment_detail pd1_0 
+    join
+        payment_batch pb1_0 
+            on pb1_0.id=pd1_0.payment_batch_id 
+    where
+        pd1_0.id=?
+2026-05-14T01:59:19.779-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : === INICIO GENERACI├ôN DE COBRO RF-06 ===
+2026-05-14T01:59:19.780-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : Lote ID: 2, Archivo: test_rf05_valid_sftp_2.csv
+2026-05-14T01:59:19.780-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : Resultado del lote - Exitosos: 2, Rechazados: 0
+2026-05-14T01:59:19.788-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.service_type='PAGOS_MASIVOS' 
+        and sfr1_0.fee_type='UNIT_FEE' 
+        and ?>=sfr1_0.min_amount 
+        and (
+            ?<=sfr1_0.max_amount 
+            or sfr1_0.max_amount is null
+        )
+2026-05-14T01:59:19.790-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : Tarifa aplicada: 0.50 por transacci├│n (Regla ID: 1)
+2026-05-14T01:59:19.790-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : C├ílculo de comisi├│n:
+2026-05-14T01:59:19.791-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    :   Subtotal (tarifa x exitosos): 0.50 x 2 = 1.00
+2026-05-14T01:59:19.791-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    :   IVA (15%): 0.15
+2026-05-14T01:59:19.791-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    :   Total: 1.15
+2026-05-14T01:59:19.793-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        service_charge
+        (charge_status, charged_at, commission_subtotal, fee_amount, iva_amount, payment_batch_id, service_fee_rule_id, status, successful_transactions, total_amount, total_charge, unit_fee, vat_amount, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T01:59:19.796-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : ServiceCharge creado con ID: 2
+2026-05-14T01:59:19.796-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : Enviando cobro al Core - Cuenta: 0050000202, Total: 1.15, UUID: f4d5af06-4c64-495d-a231-a29d9f12d25a
+2026-05-14T01:59:19.796-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.s.impl.CoreFacadeService       : Cobro de comision al Core - Cuenta: 0050000202, Subtotal: 1.00, IVA: 0.15, Total: 1.15, UUID: f4d5af06-4c64-495d-a231-a29d9f12d25a
+2026-05-14T01:59:19.797-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : HTTP POST http://localhost:8080/core/v1/integration/commission
+2026-05-14T01:59:19.797-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:19.797-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Writing [{subtypeCode=COMISION, description=Cobro de comision por pagos masivos, commissionSubtotal=1.00, amount=1.15, accountNumber=0050000202, transactionUuid=f4d5af06-4c64-495d-a231-a29d9f12d25a, vatAmount=0.15}] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T01:59:19.819-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:19.820-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T01:59:19.820-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.s.impl.CoreFacadeService       : Cobro de comision exitoso: f4d5af06-4c64-495d-a231-a29d9f12d25a
+2026-05-14T01:59:19.820-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : Cobro exitoso - Status actualizado a CHARGED
+2026-05-14T01:59:19.821-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : Lote actualizado - successful_records: 2, rejected_records: 0
+2026-05-14T01:59:19.821-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.service.impl.BillingService    : === FIN GENERACI├ôN DE COBRO RF-06 ===
+2026-05-14T01:59:19.821-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        batch_status_log
+        (changed_at, new_status, payment_batch_id, previous_status) 
+    values
+        (?, ?, ?, ?)
+2026-05-14T01:59:19.823-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] .e.b.s.s.i.PaymentBatchProcessingService : Batch 2 processed successfully
+2026-05-14T01:59:19.828-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    update
+        payment_batch 
+    set
+        channel=?,
+        file_hash=?,
+        file_name=?,
+        generated_at=?,
+        header_total_amount=?,
+        header_total_records=?,
+        received_at=?,
+        rejected_records=?,
+        ruc=?,
+        service_type=?,
+        source_account_number=?,
+        status=?,
+        successful_records=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T01:59:19.830-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    update
+        payment_detail 
+    set
+        amount=?,
+        beneficiary_email=?,
+        beneficiary_identification=?,
+        beneficiary_name=?,
+        destination_account_number=?,
+        executed_at=?,
+        line_number=?,
+        notification_status=?,
+        payment_batch_id=?,
+        reference=?,
+        rejection_reason=?,
+        status=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T01:59:19.831-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    update
+        payment_detail 
+    set
+        amount=?,
+        beneficiary_email=?,
+        beneficiary_identification=?,
+        beneficiary_name=?,
+        destination_account_number=?,
+        executed_at=?,
+        line_number=?,
+        notification_status=?,
+        payment_batch_id=?,
+        reference=?,
+        rejection_reason=?,
+        status=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T01:59:19.831-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    update
+        service_charge 
+    set
+        charge_status=?,
+        charged_at=?,
+        commission_subtotal=?,
+        fee_amount=?,
+        iva_amount=?,
+        payment_batch_id=?,
+        service_fee_rule_id=?,
+        status=?,
+        successful_transactions=?,
+        total_amount=?,
+        total_charge=?,
+        unit_fee=?,
+        vat_amount=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T01:59:19.835-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-3] e.e.e.b.s.c.PaymentBatchController       : Proceso completado - Resultado: SUCCESS, Status: Procesado
+2026-05-14T01:59:19.835-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T01:59:19.836-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{fileValidation=FileValidation{id=2, totalsMatch=true, duplicateFileValid=true, validationResult='SU (truncated)...]
+2026-05-14T01:59:19.841-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T01:59:25.881-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/payment-batch", parameters={}
+2026-05-14T01:59:25.881-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#findAll()
+2026-05-14T01:59:25.887-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0
+2026-05-14T01:59:25.891-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-05-14T01:59:25.891-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[PaymentBatch{id=1, fileName='test_rf05_valid.csv', ruc='1790012345001', status='Procesado', headerT (truncated)...]
+2026-05-14T01:59:25.894-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T01:59:32.686-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/billing/batches/2/detail", parameters={}
+2026-05-14T01:59:32.687-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.BillingController#obtenerDetallesBatch(Integer)
+2026-05-14T01:59:32.688-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-5] e.e.e.b.s.controller.BillingController   : GET /api/billing/batches/2/detail
+2026-05-14T01:59:32.689-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-5] e.e.e.b.s.service.impl.BillingService    : Consultando detalles para lote ID: 2
+2026-05-14T01:59:32.690-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.id=?
+2026-05-14T01:59:32.702-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        pd1_0.id,
+        pd1_0.amount,
+        pd1_0.beneficiary_email,
+        pd1_0.beneficiary_identification,
+        pd1_0.beneficiary_name,
+        pd1_0.destination_account_number,
+        pd1_0.executed_at,
+        pd1_0.line_number,
+        pd1_0.notification_status,
+        pd1_0.payment_batch_id,
+        pd1_0.reference,
+        pd1_0.rejection_reason,
+        pd1_0.status,
+        pd1_0.version 
+    from
+        payment_detail pd1_0 
+    where
+        pd1_0.payment_batch_id=?
+2026-05-14T01:59:32.706-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.id=?
+2026-05-14T01:59:32.709-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-5] e.e.e.b.s.service.impl.BillingService    : Se encontraron 2 detalles para el lote
+2026-05-14T01:59:32.709-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-5] e.e.e.b.s.controller.BillingController   : Se obtuvieron 2 detalles para el lote 2
+2026-05-14T01:59:32.710-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-05-14T01:59:32.710-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{detalles=[PaymentDetail{id=3, lineNumber=1, destinationAccountNumber='001-00001234', amount=100.50, (truncated)...]
+2026-05-14T01:59:32.715-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T01:59:41.026-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : POST "/api/payment-batch/upload-from-sftp-buzon", parameters={multipart}
+2026-05-14T01:59:41.029-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#uploadFromSftpBuzon(MultipartFile)
+2026-05-14T01:59:41.030-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : Nueva solicitud de carga CSV
+2026-05-14T01:59:41.030-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : Archivo: test_rf05_valid.csv, Tama├▒o: 222 bytes, Canal: SFTP Seguro
+2026-05-14T01:59:41.030-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : Parseando archivo CSV
+2026-05-14T01:59:41.031-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : CSV parseado exitosamente - 2 detalles
+2026-05-14T01:59:41.032-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.s.impl.CoreFacadeService       : Consultando cuenta favorita de pagos en Core
+2026-05-14T01:59:41.032-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/accounts/default/favorite
+2026-05-14T01:59:41.033-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:41.043-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:41.044-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T01:59:41.045-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/api/holidays/is-business-day?date=2026-05-14
+2026-05-14T01:59:41.045-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:41.049-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:41.049-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.client.RestTemplate              : Reading to [java.util.Map<?, ?>]
+2026-05-14T01:59:41.050-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : Dentro del horario y d├¡a h├íbil. Procesamiento inmediato.
+2026-05-14T01:59:41.050-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n temprana RF-02
+2026-05-14T01:59:41.052-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.file_name=? 
+        and pb1_0.file_hash=? 
+        and pb1_0.status=? 
+        and pb1_0.received_at>? 
+    fetch
+        first ? rows only
+2026-05-14T01:59:41.054-05:00 ERROR 36276 --- [switch-pagos] [nio-8081-exec-6] e.e.e.b.s.c.PaymentBatchController       : Rechazo temprano RF-02: Duplicidad: el archivo 'test_rf05_valid.csv' con el mismo hash ya fue procesado con éxito en los últimos 30 días (lote 1, recibido el 2026-05-14T01:54:03.607300)
+2026-05-14T01:59:41.055-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T01:59:41.055-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{error=RF-02 Validaci├│n rechazada: Duplicidad: el archivo 'test_rf05_valid.csv' con el mismo hash y (truncated)...]
+2026-05-14T01:59:41.057-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-05-14T01:59:41.063-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : POST "/api/payment-batch/upload-from-sftp-buzon", parameters={multipart}
+2026-05-14T01:59:41.065-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#uploadFromSftpBuzon(MultipartFile)
+2026-05-14T01:59:41.065-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : Nueva solicitud de carga CSV
+2026-05-14T01:59:41.066-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : Archivo: test_rf05_valid_sftp_2.csv, Tama├▒o: 222 bytes, Canal: SFTP Seguro
+2026-05-14T01:59:41.066-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : Parseando archivo CSV
+2026-05-14T01:59:41.067-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : CSV parseado exitosamente - 2 detalles
+2026-05-14T01:59:41.067-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.s.impl.CoreFacadeService       : Consultando cuenta favorita de pagos en Core
+2026-05-14T01:59:41.068-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/accounts/default/favorite
+2026-05-14T01:59:41.068-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:41.078-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:41.078-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T01:59:41.081-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/api/holidays/is-business-day?date=2026-05-14
+2026-05-14T01:59:41.081-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T01:59:41.087-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T01:59:41.087-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.client.RestTemplate              : Reading to [java.util.Map<?, ?>]
+2026-05-14T01:59:41.088-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : Dentro del horario y d├¡a h├íbil. Procesamiento inmediato.
+2026-05-14T01:59:41.088-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n temprana RF-02
+2026-05-14T01:59:41.090-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.file_name=? 
+        and pb1_0.file_hash=? 
+        and pb1_0.status=? 
+        and pb1_0.received_at>? 
+    fetch
+        first ? rows only
+2026-05-14T01:59:41.091-05:00 ERROR 36276 --- [switch-pagos] [nio-8081-exec-7] e.e.e.b.s.c.PaymentBatchController       : Rechazo temprano RF-02: Duplicidad: el archivo 'test_rf05_valid_sftp_2.csv' con el mismo hash ya fue procesado con éxito en los últimos 30 días (lote 2, recibido el 2026-05-14T01:59:13.075508)
+2026-05-14T01:59:41.092-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T01:59:41.092-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{error=RF-02 Validaci├│n rechazada: Duplicidad: el archivo 'test_rf05_valid_sftp_2.csv' con el mismo (truncated)...]
+2026-05-14T01:59:41.093-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-05-14T02:00:41.025-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/api/payment-batch/upload-from-sftp-buzon", parameters={multipart}
+2026-05-14T02:00:41.027-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#uploadFromSftpBuzon(MultipartFile)
+2026-05-14T02:00:41.027-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : Nueva solicitud de carga CSV
+2026-05-14T02:00:41.028-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : Archivo: test_rf05_valid.csv, Tama├▒o: 222 bytes, Canal: SFTP Seguro
+2026-05-14T02:00:41.028-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : Parseando archivo CSV
+2026-05-14T02:00:41.030-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : CSV parseado exitosamente - 2 detalles
+2026-05-14T02:00:41.030-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.s.impl.CoreFacadeService       : Consultando cuenta favorita de pagos en Core
+2026-05-14T02:00:41.031-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/accounts/default/favorite
+2026-05-14T02:00:41.031-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:00:41.040-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:00:41.040-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T02:00:41.041-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/api/holidays/is-business-day?date=2026-05-14
+2026-05-14T02:00:41.041-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:00:41.045-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:00:41.046-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.client.RestTemplate              : Reading to [java.util.Map<?, ?>]
+2026-05-14T02:00:41.046-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : Dentro del horario y d├¡a h├íbil. Procesamiento inmediato.
+2026-05-14T02:00:41.046-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n temprana RF-02
+2026-05-14T02:00:41.048-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.file_name=? 
+        and pb1_0.file_hash=? 
+        and pb1_0.status=? 
+        and pb1_0.received_at>? 
+    fetch
+        first ? rows only
+2026-05-14T02:00:41.050-05:00 ERROR 36276 --- [switch-pagos] [nio-8081-exec-8] e.e.e.b.s.c.PaymentBatchController       : Rechazo temprano RF-02: Duplicidad: el archivo 'test_rf05_valid.csv' con el mismo hash ya fue procesado con éxito en los últimos 30 días (lote 1, recibido el 2026-05-14T01:54:03.607300)
+2026-05-14T02:00:41.050-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T02:00:41.051-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{error=RF-02 Validaci├│n rechazada: Duplicidad: el archivo 'test_rf05_valid.csv' con el mismo hash y (truncated)...]
+2026-05-14T02:00:41.052-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-05-14T02:00:41.056-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : POST "/api/payment-batch/upload-from-sftp-buzon", parameters={multipart}
+2026-05-14T02:00:41.058-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#uploadFromSftpBuzon(MultipartFile)
+2026-05-14T02:00:41.058-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : Nueva solicitud de carga CSV
+2026-05-14T02:00:41.058-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : Archivo: test_rf05_valid_sftp_2.csv, Tama├▒o: 222 bytes, Canal: SFTP Seguro
+2026-05-14T02:00:41.058-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : Parseando archivo CSV
+2026-05-14T02:00:41.060-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : CSV parseado exitosamente - 2 detalles
+2026-05-14T02:00:41.060-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.s.impl.CoreFacadeService       : Consultando cuenta favorita de pagos en Core
+2026-05-14T02:00:41.061-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/accounts/default/favorite
+2026-05-14T02:00:41.061-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:00:41.070-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:00:41.071-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T02:00:41.072-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/api/holidays/is-business-day?date=2026-05-14
+2026-05-14T02:00:41.073-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:00:41.077-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:00:41.078-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.client.RestTemplate              : Reading to [java.util.Map<?, ?>]
+2026-05-14T02:00:41.078-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : Dentro del horario y d├¡a h├íbil. Procesamiento inmediato.
+2026-05-14T02:00:41.078-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n temprana RF-02
+2026-05-14T02:00:41.080-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.file_name=? 
+        and pb1_0.file_hash=? 
+        and pb1_0.status=? 
+        and pb1_0.received_at>? 
+    fetch
+        first ? rows only
+2026-05-14T02:00:41.083-05:00 ERROR 36276 --- [switch-pagos] [nio-8081-exec-9] e.e.e.b.s.c.PaymentBatchController       : Rechazo temprano RF-02: Duplicidad: el archivo 'test_rf05_valid_sftp_2.csv' con el mismo hash ya fue procesado con éxito en los últimos 30 días (lote 2, recibido el 2026-05-14T01:59:13.075508)
+2026-05-14T02:00:41.083-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T02:00:41.083-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{error=RF-02 Validaci├│n rechazada: Duplicidad: el archivo 'test_rf05_valid_sftp_2.csv' con el mismo (truncated)...]
+2026-05-14T02:00:41.085-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-05-14T02:01:28.553-05:00 DEBUG 36276 --- [switch-pagos] [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/payment-batch", parameters={}
+2026-05-14T02:01:28.554-05:00 DEBUG 36276 --- [switch-pagos] [io-8081-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#findAll()
+2026-05-14T02:01:28.555-05:00 DEBUG 36276 --- [switch-pagos] [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0
+2026-05-14T02:01:28.557-05:00 DEBUG 36276 --- [switch-pagos] [io-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T02:01:28.557-05:00 DEBUG 36276 --- [switch-pagos] [io-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[PaymentBatch{id=1, fileName='test_rf05_valid.csv', ruc='1790012345001', status='Procesado', headerT (truncated)...]
+2026-05-14T02:01:28.558-05:00 DEBUG 36276 --- [switch-pagos] [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T02:01:43.906-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/payment-batch", parameters={}
+2026-05-14T02:01:43.906-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#findAll()
+2026-05-14T02:01:43.907-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0
+2026-05-14T02:01:43.910-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T02:01:43.910-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[PaymentBatch{id=1, fileName='test_rf05_valid.csv', ruc='1790012345001', status='Procesado', headerT (truncated)...]
+2026-05-14T02:01:43.910-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T02:01:44.569-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/api/payment-batch/upload-from-sftp-buzon", parameters={multipart}
+2026-05-14T02:01:44.572-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#uploadFromSftpBuzon(MultipartFile)
+2026-05-14T02:01:44.573-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Nueva solicitud de carga CSV
+2026-05-14T02:01:44.573-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Archivo: test_rf05_valid_sftp_3.csv, Tama├▒o: 224 bytes, Canal: SFTP Seguro
+2026-05-14T02:01:44.573-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Parseando archivo CSV
+2026-05-14T02:01:44.574-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : CSV parseado exitosamente - 2 detalles
+2026-05-14T02:01:44.574-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.s.impl.CoreFacadeService       : Consultando cuenta favorita de pagos en Core
+2026-05-14T02:01:44.575-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/accounts/default/favorite
+2026-05-14T02:01:44.575-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:01:44.583-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:01:44.583-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T02:01:44.584-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/api/holidays/is-business-day?date=2026-05-14
+2026-05-14T02:01:44.584-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:01:44.597-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:01:44.597-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Reading to [java.util.Map<?, ?>]
+2026-05-14T02:01:44.598-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Dentro del horario y d├¡a h├íbil. Procesamiento inmediato.
+2026-05-14T02:01:44.598-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n temprana RF-02
+2026-05-14T02:01:44.601-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.file_name=? 
+        and pb1_0.file_hash=? 
+        and pb1_0.status=? 
+        and pb1_0.received_at>? 
+    fetch
+        first ? rows only
+2026-05-14T02:01:44.603-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : HTTP GET http://localhost:8080/core/v1/integration/customer/mass-payments/1790012345001/active
+2026-05-14T02:01:44.604-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:01:44.612-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:01:44.613-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Reading to [java.lang.Boolean]
+2026-05-14T02:01:44.614-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.s.impl.FileValidationService   : Validación RF-02 temprana aprobada para archivo test_rf05_valid_sftp_3.csv
+2026-05-14T02:01:44.614-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Validaci├│n temprana exitosa
+2026-05-14T02:01:44.615-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        payment_batch
+        (channel, file_hash, file_name, generated_at, header_total_amount, header_total_records, received_at, rejected_records, ruc, service_type, source_account_number, status, successful_records, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:44.619-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        payment_detail
+        (amount, beneficiary_email, beneficiary_identification, beneficiary_name, destination_account_number, executed_at, line_number, notification_status, payment_batch_id, reference, rejection_reason, status, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:44.621-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        payment_detail
+        (amount, beneficiary_email, beneficiary_identification, beneficiary_name, destination_account_number, executed_at, line_number, notification_status, payment_batch_id, reference, rejection_reason, status, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:44.622-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Iniciando validaci├│n completa
+2026-05-14T02:01:44.623-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.s.impl.FileValidationService   : Validating batch 3 with 2 details
+2026-05-14T02:01:44.625-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        file_validation
+        (customer_active_valid, duplicate_file_valid, payment_batch_id, structure_valid, totals_match, validated_at, validation_result) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:44.630-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] .e.b.s.s.i.PaymentBatchProcessingService : Processing batch 3 with 2 details
+2026-05-14T02:01:44.631-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        batch_status_log
+        (changed_at, new_status, payment_batch_id, previous_status) 
+    values
+        (?, ?, ?, ?)
+2026-05-14T02:01:44.635-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.id=?
+2026-05-14T02:01:44.647-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T02:01:44.648-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] .e.b.s.s.i.PaymentBatchProcessingService : Sending transfer to core: 0050000202 -> 001-00001234 amount: 100.50
+2026-05-14T02:01:44.648-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Writing [{beneficiaryIdentification=1234567890, originAccountNumber=0050000202, transactionUuid=b794d9c9-f05b-4981-ac0d-f215277be0bc, amount=100.50, destinationAccountNumber=001-00001234}] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T02:01:44.673-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO]
+2026-05-14T02:01:44.673-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] .e.b.s.s.i.PaymentBatchProcessingService : Transfer completed successfully for detail 5
+2026-05-14T02:01:44.674-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        detail_status_log
+        (changed_at, error_code, error_description, new_status, payment_detail_id, previous_status) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:44.681-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T02:01:44.682-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Writing [ec.edu.espe.banquito.switchpagos.dto.PaymentSuccessNotificationRequestDTO@7bc508c0] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T02:01:47.979-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        pd1_0.id,
+        pd1_0.amount,
+        pd1_0.beneficiary_email,
+        pd1_0.beneficiary_identification,
+        pd1_0.beneficiary_name,
+        pd1_0.destination_account_number,
+        pd1_0.executed_at,
+        pd1_0.line_number,
+        pd1_0.notification_status,
+        pd1_0.payment_batch_id,
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version,
+        pd1_0.reference,
+        pd1_0.rejection_reason,
+        pd1_0.status,
+        pd1_0.version 
+    from
+        payment_detail pd1_0 
+    join
+        payment_batch pb1_0 
+            on pb1_0.id=pd1_0.payment_batch_id 
+    where
+        pd1_0.id=?
+2026-05-14T02:01:47.985-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T02:01:47.986-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] .e.b.s.s.i.PaymentBatchProcessingService : Sending transfer to core: 0050000202 -> 001-00005678 amount: 250.75
+2026-05-14T02:01:47.986-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Writing [{beneficiaryIdentification=0987654321, originAccountNumber=0050000202, transactionUuid=a18c6afc-26c6-4415-b6bf-1ddadeadb37d, amount=250.75, destinationAccountNumber=001-00005678}] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T02:01:48.010-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO]
+2026-05-14T02:01:48.010-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] .e.b.s.s.i.PaymentBatchProcessingService : Transfer completed successfully for detail 6
+2026-05-14T02:01:48.012-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        detail_status_log
+        (changed_at, error_code, error_description, new_status, payment_detail_id, previous_status) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:48.018-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Reading to [ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO]
+2026-05-14T02:01:48.018-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.DefaultRestClient         : Writing [ec.edu.espe.banquito.switchpagos.dto.PaymentSuccessNotificationRequestDTO@63839c11] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T02:01:50.963-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        pd1_0.id,
+        pd1_0.amount,
+        pd1_0.beneficiary_email,
+        pd1_0.beneficiary_identification,
+        pd1_0.beneficiary_name,
+        pd1_0.destination_account_number,
+        pd1_0.executed_at,
+        pd1_0.line_number,
+        pd1_0.notification_status,
+        pd1_0.payment_batch_id,
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version,
+        pd1_0.reference,
+        pd1_0.rejection_reason,
+        pd1_0.status,
+        pd1_0.version 
+    from
+        payment_detail pd1_0 
+    join
+        payment_batch pb1_0 
+            on pb1_0.id=pd1_0.payment_batch_id 
+    where
+        pd1_0.id=?
+2026-05-14T02:01:50.966-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : === INICIO GENERACI├ôN DE COBRO RF-06 ===
+2026-05-14T02:01:50.967-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : Lote ID: 3, Archivo: test_rf05_valid_sftp_3.csv
+2026-05-14T02:01:50.967-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : Resultado del lote - Exitosos: 2, Rechazados: 0
+2026-05-14T02:01:50.970-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        sfr1_0.id,
+        sfr1_0.fee_amount,
+        sfr1_0.fee_type,
+        sfr1_0.max_amount,
+        sfr1_0.max_successful_transactions,
+        sfr1_0.min_amount,
+        sfr1_0.min_successful_transactions,
+        sfr1_0.service_type,
+        sfr1_0.unit_fee 
+    from
+        service_fee_rule sfr1_0 
+    where
+        sfr1_0.service_type='PAGOS_MASIVOS' 
+        and sfr1_0.fee_type='UNIT_FEE' 
+        and ?>=sfr1_0.min_amount 
+        and (
+            ?<=sfr1_0.max_amount 
+            or sfr1_0.max_amount is null
+        )
+2026-05-14T02:01:50.972-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : Tarifa aplicada: 0.50 por transacci├│n (Regla ID: 1)
+2026-05-14T02:01:50.972-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : C├ílculo de comisi├│n:
+2026-05-14T02:01:50.973-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    :   Subtotal (tarifa x exitosos): 0.50 x 2 = 1.00
+2026-05-14T02:01:50.973-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    :   IVA (15%): 0.15
+2026-05-14T02:01:50.973-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    :   Total: 1.15
+2026-05-14T02:01:50.973-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        service_charge
+        (charge_status, charged_at, commission_subtotal, fee_amount, iva_amount, payment_batch_id, service_fee_rule_id, status, successful_transactions, total_amount, total_charge, unit_fee, vat_amount, version) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-14T02:01:50.975-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : ServiceCharge creado con ID: 3
+2026-05-14T02:01:50.975-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : Enviando cobro al Core - Cuenta: 0050000202, Total: 1.15, UUID: 52ec8991-1324-492c-9b9e-55b829f6f84b
+2026-05-14T02:01:50.975-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.s.impl.CoreFacadeService       : Cobro de comision al Core - Cuenta: 0050000202, Subtotal: 1.00, IVA: 0.15, Total: 1.15, UUID: 52ec8991-1324-492c-9b9e-55b829f6f84b
+2026-05-14T02:01:50.975-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : HTTP POST http://localhost:8080/core/v1/integration/commission
+2026-05-14T02:01:50.976-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2026-05-14T02:01:50.976-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Writing [{subtypeCode=COMISION, description=Cobro de comision por pagos masivos, commissionSubtotal=1.00, amount=1.15, accountNumber=0050000202, transactionUuid=52ec8991-1324-492c-9b9e-55b829f6f84b, vatAmount=0.15}] with org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+2026-05-14T02:01:50.993-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Response 200 OK
+2026-05-14T02:01:50.994-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2026-05-14T02:01:50.995-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.s.impl.CoreFacadeService       : Cobro de comision exitoso: 52ec8991-1324-492c-9b9e-55b829f6f84b
+2026-05-14T02:01:50.995-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : Cobro exitoso - Status actualizado a CHARGED
+2026-05-14T02:01:50.996-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : Lote actualizado - successful_records: 2, rejected_records: 0
+2026-05-14T02:01:50.996-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.service.impl.BillingService    : === FIN GENERACI├ôN DE COBRO RF-06 ===
+2026-05-14T02:01:50.996-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    insert 
+    into
+        batch_status_log
+        (changed_at, new_status, payment_batch_id, previous_status) 
+    values
+        (?, ?, ?, ?)
+2026-05-14T02:01:50.999-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] .e.b.s.s.i.PaymentBatchProcessingService : Batch 3 processed successfully
+2026-05-14T02:01:51.001-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    update
+        payment_batch 
+    set
+        channel=?,
+        file_hash=?,
+        file_name=?,
+        generated_at=?,
+        header_total_amount=?,
+        header_total_records=?,
+        received_at=?,
+        rejected_records=?,
+        ruc=?,
+        service_type=?,
+        source_account_number=?,
+        status=?,
+        successful_records=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T02:01:51.005-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    update
+        payment_detail 
+    set
+        amount=?,
+        beneficiary_email=?,
+        beneficiary_identification=?,
+        beneficiary_name=?,
+        destination_account_number=?,
+        executed_at=?,
+        line_number=?,
+        notification_status=?,
+        payment_batch_id=?,
+        reference=?,
+        rejection_reason=?,
+        status=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T02:01:51.007-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    update
+        payment_detail 
+    set
+        amount=?,
+        beneficiary_email=?,
+        beneficiary_identification=?,
+        beneficiary_name=?,
+        destination_account_number=?,
+        executed_at=?,
+        line_number=?,
+        notification_status=?,
+        payment_batch_id=?,
+        reference=?,
+        rejection_reason=?,
+        status=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T02:01:51.007-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] org.hibernate.SQL                        : 
+    update
+        service_charge 
+    set
+        charge_status=?,
+        charged_at=?,
+        commission_subtotal=?,
+        fee_amount=?,
+        iva_amount=?,
+        payment_batch_id=?,
+        service_fee_rule_id=?,
+        status=?,
+        successful_transactions=?,
+        total_amount=?,
+        total_charge=?,
+        unit_fee=?,
+        vat_amount=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2026-05-14T02:01:51.010-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-2] e.e.e.b.s.c.PaymentBatchController       : Proceso completado - Resultado: SUCCESS, Status: Procesado
+2026-05-14T02:01:51.010-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json]
+2026-05-14T02:01:51.010-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{fileValidation=FileValidation{id=3, totalsMatch=true, duplicateFileValid=true, validationResult='SU (truncated)...]
+2026-05-14T02:01:51.012-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T02:01:56.765-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/payment-batch", parameters={}
+2026-05-14T02:01:56.766-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.PaymentBatchController#findAll()
+2026-05-14T02:01:56.768-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0
+2026-05-14T02:01:56.771-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-05-14T02:01:56.772-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[PaymentBatch{id=1, fileName='test_rf05_valid.csv', ruc='1790012345001', status='Procesado', headerT (truncated)...]
+2026-05-14T02:01:56.773-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-14T02:02:01.090-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/billing/batches/3/detail", parameters={}
+2026-05-14T02:02:01.091-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to ec.edu.espe.banquito.switchpagos.controller.BillingController#obtenerDetallesBatch(Integer)
+2026-05-14T02:02:01.092-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-4] e.e.e.b.s.controller.BillingController   : GET /api/billing/batches/3/detail
+2026-05-14T02:02:01.092-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-4] e.e.e.b.s.service.impl.BillingService    : Consultando detalles para lote ID: 3
+2026-05-14T02:02:01.093-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.id=?
+2026-05-14T02:02:01.095-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        pd1_0.id,
+        pd1_0.amount,
+        pd1_0.beneficiary_email,
+        pd1_0.beneficiary_identification,
+        pd1_0.beneficiary_name,
+        pd1_0.destination_account_number,
+        pd1_0.executed_at,
+        pd1_0.line_number,
+        pd1_0.notification_status,
+        pd1_0.payment_batch_id,
+        pd1_0.reference,
+        pd1_0.rejection_reason,
+        pd1_0.status,
+        pd1_0.version 
+    from
+        payment_detail pd1_0 
+    where
+        pd1_0.payment_batch_id=?
+2026-05-14T02:02:01.095-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        pb1_0.id,
+        pb1_0.channel,
+        pb1_0.file_hash,
+        pb1_0.file_name,
+        pb1_0.generated_at,
+        pb1_0.header_total_amount,
+        pb1_0.header_total_records,
+        pb1_0.received_at,
+        pb1_0.rejected_records,
+        pb1_0.ruc,
+        pb1_0.service_type,
+        pb1_0.source_account_number,
+        pb1_0.status,
+        pb1_0.successful_records,
+        pb1_0.version 
+    from
+        payment_batch pb1_0 
+    where
+        pb1_0.id=?
+2026-05-14T02:02:01.097-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-4] e.e.e.b.s.service.impl.BillingService    : Se encontraron 2 detalles para el lote
+2026-05-14T02:02:01.098-05:00  INFO 36276 --- [switch-pagos] [nio-8081-exec-4] e.e.e.b.s.controller.BillingController   : Se obtuvieron 2 detalles para el lote 3
+2026-05-14T02:02:01.098-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-05-14T02:02:01.098-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{detalles=[PaymentDetail{id=5, lineNumber=1, destinationAccountNumber='001-00001234', amount=100.50, (truncated)...]
+2026-05-14T02:02:01.099-05:00 DEBUG 36276 --- [switch-pagos] [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13:08 min
+[INFO] Finished at: 2026-05-14T02:11:53-05:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.0.6:run (default-cli) on project switch-pagos: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

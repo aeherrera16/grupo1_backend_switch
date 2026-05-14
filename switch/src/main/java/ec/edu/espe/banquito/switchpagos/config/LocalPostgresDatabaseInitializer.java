@@ -30,7 +30,7 @@ public class LocalPostgresDatabaseInitializer implements ApplicationContextIniti
         String port = env.getProperty("DB_PORT", "5432");
         String databaseName = env.getProperty("DB_NAME", "switch_pagos");
         String username = env.getProperty("DB_USER", "postgres");
-        String password = env.getProperty("DB_PASSWORD", "1234");
+        String password = env.getProperty("DB_PASSWORD", "123");
         String adminDatabase = env.getProperty("APP_DB_ADMIN_DB", "postgres");
 
         if (!databaseName.matches("[a-zA-Z0-9_]+")) {

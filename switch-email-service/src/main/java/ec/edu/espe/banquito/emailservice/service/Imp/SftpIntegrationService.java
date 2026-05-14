@@ -174,7 +174,7 @@ public class SftpIntegrationService implements ISftpIntegrationService {
     @Override
     public boolean isIntegrationHealthy() {
         if (!integrationEnabled) {
-            return false;
+            return true;
         }
         
         try {

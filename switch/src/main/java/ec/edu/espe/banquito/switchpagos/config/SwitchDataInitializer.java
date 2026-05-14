@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import ec.edu.espe.banquito.switchpagos.model.ServiceFeeRule;
@@ -18,13 +19,17 @@ public class SwitchDataInitializer implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(SwitchDataInitializer.class);
 
     private final ServiceFeeRuleRepository serviceFeeRuleRepository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public SwitchDataInitializer(ServiceFeeRuleRepository serviceFeeRuleRepository) {
+    public SwitchDataInitializer(ServiceFeeRuleRepository serviceFeeRuleRepository, JdbcTemplate jdbcTemplate) {
         this.serviceFeeRuleRepository = serviceFeeRuleRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void run(String... args) {
+        ensureServiceFeeRuleSchema();
+
         upsertFeeRule(1, 10, "0.50");
         upsertFeeRule(11, 100, "0.40");
         upsertFeeRule(101, 500, "0.30");
@@ -33,6 +38,12 @@ public class SwitchDataInitializer implements CommandLineRunner {
         upsertFeeRule(10001, null, "0.05");
 
         logger.info("Reglas tarifarias SERVICE_FEE_RULE verificadas correctamente");
+    }
+
+    private void ensureServiceFeeRuleSchema() {
+        jdbcTemplate.execute("ALTER TABLE service_fee_rule ADD COLUMN IF NOT EXISTS fee_amount NUMERIC(18,2)");
+        jdbcTemplate.update("UPDATE service_fee_rule SET fee_amount = unit_fee WHERE fee_amount IS NULL");
+        jdbcTemplate.execute("ALTER TABLE service_fee_rule ALTER COLUMN fee_amount SET NOT NULL");
     }
 
     private void upsertFeeRule(Integer min, Integer max, String unitFee) {
