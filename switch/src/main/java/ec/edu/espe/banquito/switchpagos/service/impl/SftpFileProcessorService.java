@@ -1,21 +1,21 @@
 package ec.edu.espe.banquito.switchpagos.service.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser;
+import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
 import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.enums.ChannelEnum;
 import ec.edu.espe.banquito.switchpagos.model.FileValidation;
-import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser;
-import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
 import ec.edu.espe.banquito.switchpagos.service.IFileValidationService;
 import ec.edu.espe.banquito.switchpagos.service.ISftpFileProcessorService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class SftpFileProcessorService implements ISftpFileProcessorService {
@@ -46,7 +46,11 @@ public class SftpFileProcessorService implements ISftpFileProcessorService {
             fileValidationService.validateEarlyRejection(parseResult);
 
             return fileValidationService.validateBatch(batch, parseResult.getDetails());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new RuntimeException("Error leyendo archivo SFTP: " + e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Archivo SFTP inválido: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
             throw new RuntimeException("Error procesando archivo SFTP: " + e.getMessage(), e);
         }
     }
