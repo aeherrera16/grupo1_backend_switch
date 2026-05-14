@@ -2,6 +2,7 @@ package ec.edu.espe.banquito.switchpagos.repository;
 
 import java.util.List;
 
+import ec.edu.espe.banquito.switchpagos.enums.PaymentDetailStatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,9 @@ public interface PaymentDetailRepository extends JpaRepository<PaymentDetail, In
     List<PaymentDetail> findByPaymentBatchIdOrderByLineNumberAsc(Integer paymentBatchId);
 
     List<PaymentDetail> findByPaymentBatchId(Integer paymentBatchId);
+
+    List<PaymentDetail> findByPaymentBatchIdAndStatus(
+            Integer paymentBatchId,
+            PaymentDetailStatusEnum status
+    );
 }

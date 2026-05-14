@@ -20,4 +20,27 @@ public interface ServiceFeeRuleRepository extends JpaRepository<ServiceFeeRule, 
             "AND :txCount >= r.minAmount " +
             "AND (:txCount <= r.maxAmount OR r.maxAmount IS NULL)")
     Optional<ServiceFeeRule> findRuleByTransactionCount(@Param("txCount") BigDecimal txCount);
+
+    /**
+     * RF-08:
+     * Obtiene la regla tarifaria según
+     * la cantidad de transacciones exitosas.
+     */
+    @Query("""
+        SELECT r
+        FROM ServiceFeeRule r
+        WHERE r.serviceType = 'PAGOS_MASIVOS'
+        AND r.feeType = 'UNIT_FEE'
+        AND :transactions >= r.minSuccessfulTransactions
+        AND (
+            :transactions <= r.maxSuccessfulTransactions
+            OR r.maxSuccessfulTransactions IS NULL
+        )
+        ORDER BY r.minSuccessfulTransactions DESC
+    """)
+    Optional<ServiceFeeRule> findRule(
+            @Param("transactions") Integer transactions
+    );
+
+
 }

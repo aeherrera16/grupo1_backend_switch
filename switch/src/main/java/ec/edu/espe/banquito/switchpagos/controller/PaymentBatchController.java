@@ -3,16 +3,15 @@ package ec.edu.espe.banquito.switchpagos.controller;
 import java.io.IOException;
 import java.util.Map;
 
+import ec.edu.espe.banquito.switchpagos.service.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser;
@@ -43,6 +42,10 @@ public class PaymentBatchController {
     private final PaymentBatchRepository paymentBatchRepository;
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
+    //Se inyecan servicio para repores
+    private final CorporateClosingServiceImpl corporateClosingServiceImpl;
+    private final ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl;
+    private final NoveltyReportServiceImpl noveltyReportServiceImpl;
     private final DateTimeProvider dateTimeProvider;
 
     @Autowired
@@ -53,6 +56,10 @@ public class PaymentBatchController {
                                   PaymentBatchRepository paymentBatchRepository,
                                   PaymentDetailRepository paymentDetailRepository,
                                   PaymentBatchProcessingService paymentBatchProcessingService,
+                                  CorporateClosingServiceImpl corporateClosingServiceImpl,
+                                  ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl,
+                                  NoveltyReportServiceImpl noveltyReportServiceImpl) {
+                                  PaymentBatchProcessingService paymentBatchProcessingService,
                                   DateTimeProvider dateTimeProvider) {
         this.fileValidationService = fileValidationService;
         this.cutoffTimeService = cutoffTimeService;
@@ -61,6 +68,9 @@ public class PaymentBatchController {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.paymentBatchProcessingService = paymentBatchProcessingService;
+        this.corporateClosingServiceImpl = corporateClosingServiceImpl;
+        this.receiptGeneratorServiceImpl = receiptGeneratorServiceImpl;
+        this.noveltyReportServiceImpl = noveltyReportServiceImpl;
         this.dateTimeProvider = dateTimeProvider;
     }
 
@@ -176,5 +186,51 @@ public class PaymentBatchController {
     public ResponseEntity<?> uploadFromSftpBuzon(@RequestParam("file") MultipartFile file) {
         return uploadCsv(file, ChannelEnum.SFTP);
     }
+
+    //REPORTES
+    @PostMapping("/{id}/close")
+    public ResponseEntity<Void> closeBatch(
+            @PathVariable Integer id
+    ) {
+
+        corporateClosingServiceImpl.closeBatch(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/receipt")
+    public ResponseEntity<byte[]> downloadReceipt(
+            @PathVariable Integer id
+    ) {
+
+        byte[] pdf =
+                receiptGeneratorServiceImpl.generateReceipt(id);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=receipt.pdf"
+                )
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
+    @GetMapping("/{id}/novelties")
+    public ResponseEntity<byte[]> downloadNovelties(
+            @PathVariable Integer id
+    ) {
+
+        byte[] csv =
+                noveltyReportServiceImpl.generateReport(id);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=novelties.csv"
+                )
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(csv);
+    }
+
 }
 
