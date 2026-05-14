@@ -58,8 +58,7 @@ public class PaymentBatchController {
                                   PaymentBatchProcessingService paymentBatchProcessingService,
                                   CorporateClosingServiceImpl corporateClosingServiceImpl,
                                   ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl,
-                                  NoveltyReportServiceImpl noveltyReportServiceImpl) {
-                                  PaymentBatchProcessingService paymentBatchProcessingService,
+                                  NoveltyReportServiceImpl noveltyReportServiceImpl,
                                   DateTimeProvider dateTimeProvider) {
         this.fileValidationService = fileValidationService;
         this.cutoffTimeService = cutoffTimeService;
