@@ -1,21 +1,39 @@
 package com.banquito.core.config;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import com.banquito.core.enums.AccountStatusEnum;
 import com.banquito.core.enums.CommonStatusEnum;
 import com.banquito.core.enums.CustomerStatusEnum;
 import com.banquito.core.enums.CustomerSubtypeStatusEnum;
 import com.banquito.core.enums.CustomerTypeEnum;
-import com.banquito.core.model.*;
-import com.banquito.core.repository.*;
+import com.banquito.core.model.Account;
+import com.banquito.core.model.AccountSubtype;
+import com.banquito.core.model.Branch;
+import com.banquito.core.model.CoreParameter;
+import com.banquito.core.model.CoreUser;
+import com.banquito.core.model.Customer;
+import com.banquito.core.model.CustomerSubtype;
+import com.banquito.core.model.InstitutionalAccount;
+import com.banquito.core.model.TransactionSubtype;
+import com.banquito.core.repository.AccountRepository;
+import com.banquito.core.repository.AccountSubtypeRepository;
+import com.banquito.core.repository.BranchRepository;
+import com.banquito.core.repository.CoreParameterRepository;
+import com.banquito.core.repository.CoreUserRepository;
+import com.banquito.core.repository.CustomerRepository;
+import com.banquito.core.repository.CustomerSubtypeRepository;
+import com.banquito.core.repository.InstitutionalAccountRepository;
+import com.banquito.core.repository.TransactionSubtypeRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Slf4j
 @Component
@@ -26,6 +44,7 @@ public class DataInitializer implements CommandLineRunner {
     private final BranchRepository branchRepository;
     private final AccountSubtypeRepository accountSubtypeRepository;
     private final TransactionSubtypeRepository transactionSubtypeRepository;
+    private final CoreParameterRepository coreParameterRepository;
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
     private final InstitutionalAccountRepository institutionalAccountRepository;
@@ -38,6 +57,7 @@ public class DataInitializer implements CommandLineRunner {
         if (branchRepository.count() == 0) initBranches();
         if (accountSubtypeRepository.count() == 0) initAccountSubtypes();
         initTransactionSubtypes();
+        initCoreParameters();
         initInstitutionalAccounts();
         if (coreUserRepository.count() == 0) initCoreUsers();
         initCustomers();
@@ -121,6 +141,42 @@ public class DataInitializer implements CommandLineRunner {
             transactionSubtypeRepository.save(commission);
         }
         log.info("TransactionSubtypes creados");
+    }
+
+    private void initCoreParameters() {
+        if (coreParameterRepository.findByCode("MAX_TRANSFER_AMOUNT").isEmpty()) {
+            CoreParameter maxTransferAmount = new CoreParameter();
+            maxTransferAmount.setCode("MAX_TRANSFER_AMOUNT");
+            maxTransferAmount.setName("Monto maximo permitido para transferencias");
+            maxTransferAmount.setValueString("99999999.99");
+            maxTransferAmount.setDataType("DECIMAL");
+            maxTransferAmount.setDescription("Límite máximo permitido por el banco para transferencias");
+            maxTransferAmount.setLastUpdate(LocalDateTime.now());
+            coreParameterRepository.save(maxTransferAmount);
+        }
+
+        if (coreParameterRepository.findByCode("MAX_TRANSFER_NOM").isEmpty()) {
+            CoreParameter maxTransferNom = new CoreParameter();
+            maxTransferNom.setCode("MAX_TRANSFER_NOM");
+            maxTransferNom.setName("Monto maximo permitido para nómina");
+            maxTransferNom.setValueString("99999999.99");
+            maxTransferNom.setDataType("DECIMAL");
+            maxTransferNom.setDescription("Límite máximo permitido para transferencias de nómina");
+            maxTransferNom.setLastUpdate(LocalDateTime.now());
+            coreParameterRepository.save(maxTransferNom);
+        }
+
+        if (coreParameterRepository.findByCode("MAX_TRANSFER_PRV").isEmpty()) {
+            CoreParameter maxTransferPrv = new CoreParameter();
+            maxTransferPrv.setCode("MAX_TRANSFER_PRV");
+            maxTransferPrv.setName("Monto maximo permitido para proveedores");
+            maxTransferPrv.setValueString("99999999.99");
+            maxTransferPrv.setDataType("DECIMAL");
+            maxTransferPrv.setDescription("Límite máximo permitido para transferencias a proveedores");
+            maxTransferPrv.setLastUpdate(LocalDateTime.now());
+            coreParameterRepository.save(maxTransferPrv);
+        }
+        log.info("CoreParameters creados");
     }
 
     private void initInstitutionalAccounts() {
