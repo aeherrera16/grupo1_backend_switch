@@ -20,6 +20,8 @@ import com.banquito.core.repository.CustomerRepository;
 import com.banquito.core.repository.InstitutionalAccountRepository;
 import com.banquito.core.repository.TransactionSubtypeRepository;
 import com.banquito.core.service.ITransactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class CoreSwitchServiceImpl implements CoreSwitchService {
+
+    private static final Logger log = LoggerFactory.getLogger(CoreSwitchServiceImpl.class);
 
     public static final String MASS_PAYMENTS_SUBTYPE_NAME = "EMPRESA_PAGOS_MASIVOS";
     private static final String MASS_SERVICE_INCOME_ACCOUNT = "9000000001";
@@ -178,6 +182,10 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
             accountRepository.save(companyAccount);
             registerCompanyMovement(companyAccount, totalAmount, uuid, subtype,
                     "Debito global por servicio de pagos masivos");
+            if (companyAccount.getAccountingBalance().compareTo(BigDecimal.ZERO) < 0) {
+                log.warn("Cuenta matriz {} ingresó en sobregiro tras débito de comisión. Saldo resultante: {}",
+                        companyAccountNumber, companyAccount.getAccountingBalance());
+            }
 
             creditInstitutionalAccount(MASS_SERVICE_INCOME_ACCOUNT, commissionSubtotal);
             creditInstitutionalAccount(VAT_PAYABLE_ACCOUNT, vatAmount);
@@ -239,5 +247,7 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
         }
         account.setAccountingBalance(account.getAccountingBalance().add(amount));
         institutionalAccountRepository.save(account);
+        log.info("Crédito contable aplicado: Cuenta {} [{}], Monto {}, Saldo resultante: {}",
+                accountNumber, account.getName(), amount, account.getAccountingBalance());
     }
 }
