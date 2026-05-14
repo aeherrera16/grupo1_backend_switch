@@ -22,4 +22,6 @@ public interface AccountTransactionRepository extends JpaRepository<AccountTrans
             Integer accountId, String transactionUuid, LocalDateTime start, LocalDateTime end);
 
     List<AccountTransaction> findTop10ByAccount_IdOrderByTransactionDateDesc(Integer accountId);
+
+    List<AccountTransaction> findTop10ByAccount_Customer_IdOrderByTransactionDateDesc(Integer customerId);
 }

@@ -22,6 +22,7 @@ import com.banquito.core.model.Customer;
 import com.banquito.core.model.CustomerSubtype;
 import com.banquito.core.model.InstitutionalAccount;
 import com.banquito.core.model.TransactionSubtype;
+import com.banquito.core.model.WebCredential;
 import com.banquito.core.repository.AccountRepository;
 import com.banquito.core.repository.AccountSubtypeRepository;
 import com.banquito.core.repository.BranchRepository;
@@ -31,6 +32,7 @@ import com.banquito.core.repository.CustomerRepository;
 import com.banquito.core.repository.CustomerSubtypeRepository;
 import com.banquito.core.repository.InstitutionalAccountRepository;
 import com.banquito.core.repository.TransactionSubtypeRepository;
+import com.banquito.core.repository.WebCredentialRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,7 @@ public class DataInitializer implements CommandLineRunner {
     private final AccountRepository accountRepository;
     private final InstitutionalAccountRepository institutionalAccountRepository;
     private final CoreUserRepository coreUserRepository;
+    private final WebCredentialRepository webCredentialRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -61,6 +64,7 @@ public class DataInitializer implements CommandLineRunner {
         initInstitutionalAccounts();
         if (coreUserRepository.count() == 0) initCoreUsers();
         initCustomers();
+        initWebCredentials();
         initAccounts();
         log.info("Datos de prueba cargados correctamente");
     }
@@ -283,6 +287,34 @@ public class DataInitializer implements CommandLineRunner {
         empresaPm.setStatus(CustomerStatusEnum.ACTIVO);
         customerRepository.save(empresaPm);
         log.info("Customers creados");
+    }
+
+    private void initWebCredentials() {
+        Customer bryan = customerRepository.findByIdentificationTypeAndIdentification("CEDULA", "1234567890")
+                .orElseThrow(() -> new IllegalStateException("Cliente Bryan no existe en seed"));
+        Customer ana = customerRepository.findByIdentificationTypeAndIdentification("CEDULA", "0987654321")
+                .orElseThrow(() -> new IllegalStateException("Cliente Ana no existe en seed"));
+        Customer empresaPm = customerRepository.findByIdentificationTypeAndIdentification("RUC", "1790012345001")
+                .orElseThrow(() -> new IllegalStateException("Cliente empresa PM no existe en seed"));
+
+        createWebCredentialIfMissing(bryan, "bryan.web", "1234");
+        createWebCredentialIfMissing(ana, "ana.web", "1234");
+        createWebCredentialIfMissing(empresaPm, "empresa.pm", "1234");
+        log.info("WebCredentials creadas");
+    }
+
+    private void createWebCredentialIfMissing(Customer customer, String username, String password) {
+        if (webCredentialRepository.findByUsername(username).isPresent()) {
+            return;
+        }
+
+        WebCredential credential = new WebCredential();
+        credential.setCustomer(customer);
+        credential.setUsername(username);
+        credential.setPasswordHash(passwordEncoder.encode(password));
+        credential.setStatus(CommonStatusEnum.ACTIVO);
+        credential.setCreationDate(LocalDateTime.now());
+        webCredentialRepository.save(credential);
     }
 
     private void initAccounts() {

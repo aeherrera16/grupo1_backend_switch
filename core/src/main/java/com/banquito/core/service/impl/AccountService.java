@@ -68,6 +68,19 @@ public class AccountService implements IAccountService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<TransactionResponseDTO> findTransactionsByCustomerId(Integer customerId, Integer coreUserId) {
+        authenticationService.validateActiveCoreUser(coreUserId);
+        return transactionRepository.findTop10ByAccount_Customer_IdOrderByTransactionDateDesc(customerId)
+                .stream()
+                .map(transaction -> toTransactionResponse(
+                        transaction,
+                        transaction.getAccount().getAccountNumber(),
+                        transaction.getDescription()))
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
     public AccountResponseDTO create(AccountRequestDTO request, Integer coreUserId) {

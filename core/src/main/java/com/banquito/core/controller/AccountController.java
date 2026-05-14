@@ -41,6 +41,13 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findByCustomerId(customerId, coreUserId));
     }
 
+    @GetMapping("/customer/{customerId}/transactions")
+    public ResponseEntity<List<TransactionResponseDTO>> findTransactionsByCustomerId(
+            @PathVariable Integer customerId,
+            @RequestHeader(CORE_USER_HEADER) Integer coreUserId) {
+        return ResponseEntity.ok(accountService.findTransactionsByCustomerId(customerId, coreUserId));
+    }
+
     @GetMapping("/{accountNumber}")
     public ResponseEntity<AccountResponseDTO> findByAccountNumber(
             @PathVariable String accountNumber,

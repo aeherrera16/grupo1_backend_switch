@@ -14,6 +14,8 @@ public interface IAccountService {
 
     List<AccountResponseDTO> findByCustomerId(Integer customerId, Integer coreUserId);
 
+    List<TransactionResponseDTO> findTransactionsByCustomerId(Integer customerId, Integer coreUserId);
+
     AccountResponseDTO create(AccountRequestDTO request, Integer coreUserId);
 
     AccountResponseDTO inactivate(String accountNumber, Integer coreUserId);

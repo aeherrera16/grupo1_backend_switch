@@ -1,0 +1,17 @@
+{
+  "name": "banca-web-switch",
+  "version": "1.0.0",
+  "description": "Frontend Node.js para banca web empresarial y consumo del Switch de pagos masivos.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "banquito",
+    "switch",
+    "banca-web"
+  ],
+  "author": "Grupo 1",
+  "license": "UNLICENSED"
+}
