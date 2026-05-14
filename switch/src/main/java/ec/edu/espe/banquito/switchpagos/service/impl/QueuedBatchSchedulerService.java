@@ -12,6 +12,7 @@ import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentDetailRepository;
+import ec.edu.espe.banquito.switchpagos.util.DateTimeProvider;
 
 /**
  * Procesa lotes ENCOLADOS a las 00:01 del siguiente día hábil.
@@ -28,15 +29,18 @@ public class QueuedBatchSchedulerService {
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
     private final BusinessDayService businessDayService;
+    private final DateTimeProvider dateTimeProvider;
 
     public QueuedBatchSchedulerService(PaymentBatchRepository paymentBatchRepository,
                                        PaymentDetailRepository paymentDetailRepository,
                                        PaymentBatchProcessingService paymentBatchProcessingService,
-                                       BusinessDayService businessDayService) {
+                                       BusinessDayService businessDayService,
+                                       DateTimeProvider dateTimeProvider) {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.paymentBatchProcessingService = paymentBatchProcessingService;
         this.businessDayService = businessDayService;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
     /**
@@ -45,7 +49,7 @@ public class QueuedBatchSchedulerService {
      */
     @Scheduled(cron = "${app.queue.processing.cron:0 1 0 * * *}")
     public void processQueuedBatches() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = dateTimeProvider.today();
         if (!businessDayService.isBusinessDay(today)) {
             LOG.info("Hoy no es día hábil ({}). Se omite el procesamiento de lotes encolados.", today);
             return;

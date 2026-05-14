@@ -19,6 +19,7 @@ import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.model.PaymentDetail;
 import ec.edu.espe.banquito.switchpagos.repository.FileValidationRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
+import ec.edu.espe.banquito.switchpagos.util.DateTimeProvider;
 
 @Service
 public class FileValidationService {
@@ -29,17 +30,20 @@ public class FileValidationService {
     private final FileValidationRepository fileValidationRepository;
     private final PaymentBatchRepository paymentBatchRepository;
     private final CoreFacadeService coreFacadeService;
+    private final DateTimeProvider dateTimeProvider;
 
     @Autowired
     public FileValidationService(
             ValidationRulesProperties validationRules,
             FileValidationRepository fileValidationRepository,
             PaymentBatchRepository paymentBatchRepository,
-            CoreFacadeService coreFacadeService) {
+            CoreFacadeService coreFacadeService,
+            DateTimeProvider dateTimeProvider) {
         this.validationRules = validationRules;
         this.fileValidationRepository = fileValidationRepository;
         this.paymentBatchRepository = paymentBatchRepository;
         this.coreFacadeService = coreFacadeService;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
     @Transactional
@@ -48,7 +52,7 @@ public class FileValidationService {
 
         FileValidation validation = new FileValidation();
         validation.setPaymentBatch(batch);
-        validation.setValidatedAt(LocalDateTime.now());
+        validation.setValidatedAt(dateTimeProvider.now());
         validation.setStructureValid(true);
         validation.setTotalsMatch(true);
         validation.setDuplicateFileValid(true);
@@ -119,7 +123,7 @@ public class FileValidationService {
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {
-        LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : LocalDateTime.now())
+        LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : dateTimeProvider.now())
             .minusDays(validationRules.getDuplicateWindowDays());
 
         paymentBatchRepository

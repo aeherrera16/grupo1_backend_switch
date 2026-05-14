@@ -1,0 +1,102 @@
+{
+  "info": {
+    "_postman_id": "f2d8a0b8-8e08-4d4e-9f4d-7e5c7f1f8d01",
+    "name": "Switch Demo",
+    "description": "Coleccion para validar los flujos del Switch: carga directa, carga SFTP y consulta de lotes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Validar lotes - GET",
+      "item": [
+        {
+          "name": "Listar lotes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{payment_batch_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{payment_batch_path}}"
+              ]
+            },
+            "description": "Retorna todos los lotes guardados en el Switch."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cargas de archivo",
+      "item": [
+        {
+          "name": "Carga manual CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Selecciona el CSV a cargar"
+                },
+                {
+                  "key": "channel",
+                  "value": "MANUAL",
+                  "type": "text",
+                  "description": "Canal de carga"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}{{upload_csv_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{upload_csv_path}}"
+              ]
+            },
+            "description": "Carga un archivo CSV y deja que el Switch decida si procesa inmediato o encola segun hora y dia."
+          },
+          "response": []
+        },
+        {
+          "name": "Carga SFTP buzon",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Selecciona el CSV a cargar desde el buzon SFTP"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}{{upload_sftp_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{upload_sftp_path}}"
+              ]
+            },
+            "description": "Carga un archivo como si viniera del buzon SFTP. Usa la cuenta favorita del Core."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

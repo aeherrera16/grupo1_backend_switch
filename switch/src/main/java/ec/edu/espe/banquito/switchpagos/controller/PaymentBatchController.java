@@ -1,8 +1,6 @@
 package ec.edu.espe.banquito.switchpagos.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,6 +28,7 @@ import ec.edu.espe.banquito.switchpagos.service.impl.CoreFacadeService;
 import ec.edu.espe.banquito.switchpagos.service.impl.CutoffTimeService;
 import ec.edu.espe.banquito.switchpagos.service.impl.FileValidationService;
 import ec.edu.espe.banquito.switchpagos.service.impl.PaymentBatchProcessingService;
+import ec.edu.espe.banquito.switchpagos.util.DateTimeProvider;
 
 @RestController
 @RequestMapping("/api/payment-batch")
@@ -44,6 +43,7 @@ public class PaymentBatchController {
     private final PaymentBatchRepository paymentBatchRepository;
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
+    private final DateTimeProvider dateTimeProvider;
 
     @Autowired
     public PaymentBatchController(FileValidationService fileValidationService,
@@ -52,7 +52,8 @@ public class PaymentBatchController {
                                   CoreFacadeService coreFacadeService,
                                   PaymentBatchRepository paymentBatchRepository,
                                   PaymentDetailRepository paymentDetailRepository,
-                                  PaymentBatchProcessingService paymentBatchProcessingService) {
+                                  PaymentBatchProcessingService paymentBatchProcessingService,
+                                  DateTimeProvider dateTimeProvider) {
         this.fileValidationService = fileValidationService;
         this.cutoffTimeService = cutoffTimeService;
         this.businessDayService = businessDayService;
@@ -60,6 +61,7 @@ public class PaymentBatchController {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.paymentBatchProcessingService = paymentBatchProcessingService;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
     @GetMapping
@@ -102,13 +104,13 @@ public class PaymentBatchController {
 
             PaymentBatch batch = parseResult.getBatch();
             batch.setChannel(channel);
-            batch.setReceivedAt(LocalDateTime.now());
+            batch.setReceivedAt(dateTimeProvider.now());
 
             if (ChannelEnum.SFTP.equals(channel)) {
                 batch.setSourceAccountNumber(coreFacadeService.obtenerCuentaFavoritaPagos());
             }
 
-            boolean isBusinessDay = businessDayService.isBusinessDay(LocalDate.now());
+            boolean isBusinessDay = businessDayService.isBusinessDay(dateTimeProvider.today());
             boolean withinIngestionWindow = cutoffTimeService.isWithinIngestionWindow();
             boolean shouldEnqueue = !isBusinessDay || !withinIngestionWindow;
 

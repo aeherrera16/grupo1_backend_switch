@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ec.edu.espe.banquito.switchpagos.service.ICutoffTimeService;
+import ec.edu.espe.banquito.switchpagos.util.DateTimeProvider;
 
 /**
  * Servicio para manejar la lógica de horarios de corte.
@@ -24,9 +25,11 @@ public class CutoffTimeService implements ICutoffTimeService {
     private int cutoffHour;
 
     private final BusinessDayService businessDayService;
+    private final DateTimeProvider dateTimeProvider;
 
-    public CutoffTimeService(BusinessDayService businessDayService) {
+    public CutoffTimeService(BusinessDayService businessDayService, DateTimeProvider dateTimeProvider) {
         this.businessDayService = businessDayService;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
     /**
@@ -35,7 +38,7 @@ public class CutoffTimeService implements ICutoffTimeService {
      */
     @Override
     public boolean isWithinIngestionWindow() {
-        LocalTime now = LocalTime.now();
+        LocalTime now = dateTimeProvider.currentTime();
         LocalTime cutoff = LocalTime.of(cutoffHour, 0);
         return now.isBefore(cutoff);
     }
@@ -60,7 +63,7 @@ public class CutoffTimeService implements ICutoffTimeService {
      * Se encola cuando: la hora actual es >= hora de corte, O el dia es fin de semana, O es feriado.
      */
     public boolean shouldQueue() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = dateTimeProvider.today();
         if (!isWithinIngestionWindow()) {
             logger.info("Hora actual fuera de ventana de ingesta (corte: {}). Lote sera encolado.", getCutoffTime());
             return true;
