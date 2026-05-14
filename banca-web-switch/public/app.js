@@ -5,7 +5,8 @@ const state = {
   accounts: [],
   transactions: [],
   batches: [],
-  charges: []
+  charges: [],
+  companyAccount: null
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -38,6 +39,16 @@ function statusClass(value) {
     return "is-danger";
   }
   return "is-neutral";
+}
+
+function compactAccount(value) {
+  const text = String(value || "N/D");
+  return text.length > 4 ? `**** ${text.slice(-4)}` : text;
+}
+
+function resolveCompanyAccountFallback() {
+  const favorite = state.accounts.find((account) => account.isFavorite);
+  return favorite?.accountNumber || state.accounts[0]?.accountNumber || null;
 }
 
 function movementClass(value) {
@@ -371,6 +382,25 @@ async function loadCharges() {
   $("#chargesMetric").textContent = state.charges.length;
 }
 
+async function loadCompanyAccount() {
+  if (state.customerType !== "JURIDICO") return;
+
+  try {
+    const response = await api("/api/switch/api/billing/empresa-account");
+    state.companyAccount = response.cuentaEmpresa || null;
+  } catch (error) {
+    state.companyAccount = resolveCompanyAccountFallback();
+  }
+
+  if (!state.companyAccount) {
+    state.companyAccount = resolveCompanyAccountFallback();
+  }
+
+  const value = compactAccount(state.companyAccount);
+  $("#companyAccountMetric").textContent = value;
+  $("#companyAccountHero").textContent = value;
+}
+
 function renderBatches() {
   $("#batchesMetric").textContent = state.batches.length;
   const table = $("#batchesTable");
@@ -458,7 +488,8 @@ async function processBatch(batchId) {
   if (state.customerType !== "JURIDICO") return;
 
   try {
-    await api(`/api/switch/api/payment-processor/process/${batchId}`, { method: "POST" });
+    const response = await api(`/api/switch/api/payment-processor/process/${batchId}`, { method: "POST" });
+    $("#reportOutput").textContent = typeof response === "string" ? response : JSON.stringify(response, null, 2);
     await refreshCompanyData();
   } catch (error) {
     $("#reportOutput").textContent = error.message;
@@ -475,7 +506,9 @@ async function runReport(type) {
   const endpoints = {
     summary: `/api/switch/api/billing/batches/${batchId}/summary`,
     detail: `/api/switch/api/billing/batches/${batchId}/detail`,
-    history: `/api/switch/api/billing/batches/${batchId}/history`
+    history: `/api/switch/api/billing/batches/${batchId}/history`,
+    charge: `/api/switch/api/billing/batches/${batchId}/charge`,
+    receipt: `/api/switch/api/billing/batches/${batchId}/receipt`
   };
 
   try {
@@ -494,12 +527,12 @@ async function runDownload(type) {
   }
 
   const endpoints = {
-    comprobante: `/api/switch/api/billing/batches/${batchId}/download/comprobante`,
-    novedades: `/api/switch/api/billing/batches/${batchId}/download/novedades`
+    "receipt-pdf": `/api/switch/api/payment-batch/${batchId}/receipt`,
+    "billing-novelties": `/api/switch/api/billing/batches/${batchId}/novelties`
   };
   const fileNames = {
-    comprobante: `comprobante_${batchId}.txt`,
-    novedades: `novedades_${batchId}.csv`
+    "receipt-pdf": `recibo_lote_${batchId}.pdf`,
+    "billing-novelties": `novedades_${batchId}.csv`
   };
 
   try {
@@ -512,7 +545,7 @@ async function runDownload(type) {
 
 async function refreshCompanyData() {
   if (state.customerType !== "JURIDICO") return;
-  await Promise.all([loadBatches(), loadCharges()]);
+  await Promise.all([loadBatches(), loadCharges(), loadCompanyAccount()]);
 }
 
 async function refreshAll() {
@@ -523,6 +556,7 @@ function bindEvents() {
   $("#loginForm").addEventListener("submit", login);
   $("#logoutButton").addEventListener("click", logout);
   $("#refreshButton").addEventListener("click", refreshAll);
+  $("#globalSearch").addEventListener("input", (event) => filterVisibleRows(event.target.value));
   $("#uploadForm").addEventListener("submit", uploadCsv);
   $("#loadBatchesButton").addEventListener("click", loadBatches);
   $("#csvFile").addEventListener("change", (event) => {
@@ -542,6 +576,14 @@ function bindEvents() {
 
     const downloadButton = event.target.closest("[data-download]");
     if (downloadButton) runDownload(downloadButton.dataset.download);
+  });
+}
+
+function filterVisibleRows(query) {
+  const normalized = query.trim().toLowerCase();
+  document.querySelectorAll("tbody tr, .account-card").forEach((element) => {
+    const matches = !normalized || element.textContent.toLowerCase().includes(normalized);
+    element.classList.toggle("is-filtered", !matches);
   });
 }
 

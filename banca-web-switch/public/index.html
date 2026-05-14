@@ -47,8 +47,8 @@
           <div class="bank-mark">
             <span>BQ</span>
             <div>
-              <p class="eyebrow">BanQuito</p>
-              <h2>Banca Web</h2>
+              <p class="eyebrow">Banco BanQuito</p>
+              <h2>Core + Switch</h2>
             </div>
           </div>
           <nav class="nav-list" aria-label="Secciones">
@@ -63,7 +63,7 @@
             <span id="sidebarType">Cliente</span>
             <small>Sesion activa</small>
           </div>
-          <button id="logoutButton" class="ghost-button" type="button">Salir</button>
+          <button id="logoutButton" class="ghost-button" type="button">Cerrar sesion</button>
         </aside>
 
         <section class="content">
@@ -74,6 +74,11 @@
               <span id="sessionMeta" class="session-meta">Core Banking</span>
             </div>
             <div class="toolbar">
+              <label class="search-box">
+                <span>Buscar</span>
+                <input id="globalSearch" placeholder="Buscar operacion..." />
+              </label>
+              <span class="version-pill">V1</span>
               <button id="refreshButton" class="secondary-button" type="button">Actualizar</button>
             </div>
           </header>
@@ -99,6 +104,10 @@
               <article class="metric-card company-only">
                 <span>Cargos registrados</span>
                 <strong id="chargesMetric">0</strong>
+              </article>
+              <article class="metric-card company-only">
+                <span>Cuenta empresa</span>
+                <strong id="companyAccountMetric">N/D</strong>
               </article>
             </div>
 
@@ -148,6 +157,19 @@
           </section>
 
           <section class="section-panel is-hidden company-only" data-section-panel="payments">
+            <div class="business-hero">
+              <div>
+                <p class="eyebrow">Banca web empresas - pagos masivos</p>
+                <h2>Operacion empresarial BanQuito</h2>
+                <p>Remite archivos por Portal Web, valida estructura, procesa lotes y consulta el cuadre corporativo del Switch.</p>
+              </div>
+              <div class="hero-balance">
+                <span>Cuenta empresa</span>
+                <strong id="companyAccountHero">N/D</strong>
+                <small>Parametro Switch</small>
+              </div>
+            </div>
+
             <form id="uploadForm" class="upload-panel">
               <div>
                 <h2>Cargar archivo de pagos</h2>
@@ -174,7 +196,7 @@
             <div class="lookup-panel">
               <div>
                 <h2>Reportes del lote</h2>
-                <p>Resumen, detalles, historial, comprobante y novedades.</p>
+                <p>Consulta el resumen, detalle, historial, cargo, comprobante y novedades del Switch.</p>
               </div>
               <label class="field compact">
                 <span>ID lote</span>
@@ -184,8 +206,10 @@
                 <button class="secondary-button" data-report="summary" type="button">Resumen</button>
                 <button class="secondary-button" data-report="detail" type="button">Detalle</button>
                 <button class="secondary-button" data-report="history" type="button">Historial</button>
-                <button class="secondary-button" data-download="comprobante" type="button">Comprobante</button>
-                <button class="secondary-button" data-download="novedades" type="button">Novedades</button>
+                <button class="secondary-button" data-report="charge" type="button">Cargo</button>
+                <button class="secondary-button" data-report="receipt" type="button">Comprobante</button>
+                <button class="secondary-button" data-download="receipt-pdf" type="button">PDF</button>
+                <button class="secondary-button" data-download="billing-novelties" type="button">Novedades CSV</button>
               </div>
             </div>
             <pre id="reportOutput" class="report-output">Selecciona un lote para consultar.</pre>
