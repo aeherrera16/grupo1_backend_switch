@@ -26,6 +26,7 @@ import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentDetailRepository;
 import ec.edu.espe.banquito.switchpagos.service.impl.BusinessDayService;
+import ec.edu.espe.banquito.switchpagos.service.impl.CoreFacadeService;
 import ec.edu.espe.banquito.switchpagos.service.impl.CutoffTimeService;
 import ec.edu.espe.banquito.switchpagos.service.impl.FileValidationService;
 import ec.edu.espe.banquito.switchpagos.service.impl.PaymentBatchProcessingService;
@@ -39,6 +40,7 @@ public class PaymentBatchController {
     private final FileValidationService fileValidationService;
     private final CutoffTimeService cutoffTimeService;
     private final BusinessDayService businessDayService;
+    private final CoreFacadeService coreFacadeService;
     private final PaymentBatchRepository paymentBatchRepository;
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
@@ -47,12 +49,14 @@ public class PaymentBatchController {
     public PaymentBatchController(FileValidationService fileValidationService,
                                   CutoffTimeService cutoffTimeService,
                                   BusinessDayService businessDayService,
+                                  CoreFacadeService coreFacadeService,
                                   PaymentBatchRepository paymentBatchRepository,
                                   PaymentDetailRepository paymentDetailRepository,
                                   PaymentBatchProcessingService paymentBatchProcessingService) {
         this.fileValidationService = fileValidationService;
         this.cutoffTimeService = cutoffTimeService;
         this.businessDayService = businessDayService;
+        this.coreFacadeService = coreFacadeService;
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.paymentBatchProcessingService = paymentBatchProcessingService;
@@ -99,6 +103,10 @@ public class PaymentBatchController {
             PaymentBatch batch = parseResult.getBatch();
             batch.setChannel(channel);
             batch.setReceivedAt(LocalDateTime.now());
+
+            if (ChannelEnum.SFTP.equals(channel)) {
+                batch.setSourceAccountNumber(coreFacadeService.obtenerCuentaFavoritaPagos());
+            }
 
             boolean isBusinessDay = businessDayService.isBusinessDay(LocalDate.now());
             boolean withinIngestionWindow = cutoffTimeService.isWithinIngestionWindow();

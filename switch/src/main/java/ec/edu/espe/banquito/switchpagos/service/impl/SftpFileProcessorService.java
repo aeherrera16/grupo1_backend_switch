@@ -14,7 +14,6 @@ import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
 import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.enums.ChannelEnum;
 import ec.edu.espe.banquito.switchpagos.model.FileValidation;
-import ec.edu.espe.banquito.switchpagos.service.IFileValidationService;
 import ec.edu.espe.banquito.switchpagos.service.ISftpFileProcessorService;
 
 @Service
@@ -22,10 +21,10 @@ public class SftpFileProcessorService implements ISftpFileProcessorService {
 
     private static final Logger logger = LoggerFactory.getLogger(SftpFileProcessorService.class);
 
-    private final IFileValidationService fileValidationService;
+    private final FileValidationService fileValidationService;
 
     @Autowired
-    public SftpFileProcessorService(IFileValidationService fileValidationService) {
+    public SftpFileProcessorService(FileValidationService fileValidationService) {
         this.fileValidationService = fileValidationService;
     }
 

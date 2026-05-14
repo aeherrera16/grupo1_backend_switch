@@ -12,33 +12,36 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 
 import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
+import ec.edu.espe.banquito.switchpagos.config.ValidationRulesProperties;
+import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.model.FileValidation;
 import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.model.PaymentDetail;
 import ec.edu.espe.banquito.switchpagos.repository.FileValidationRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
-import ec.edu.espe.banquito.switchpagos.service.IFileValidationService;
 
 @Service
-public class FileValidationService implements IFileValidationService {
+public class FileValidationService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileValidationService.class);
 
+    private final ValidationRulesProperties validationRules;
     private final FileValidationRepository fileValidationRepository;
     private final PaymentBatchRepository paymentBatchRepository;
     private final CoreFacadeService coreFacadeService;
 
     @Autowired
     public FileValidationService(
+            ValidationRulesProperties validationRules,
             FileValidationRepository fileValidationRepository,
             PaymentBatchRepository paymentBatchRepository,
             CoreFacadeService coreFacadeService) {
+        this.validationRules = validationRules;
         this.fileValidationRepository = fileValidationRepository;
         this.paymentBatchRepository = paymentBatchRepository;
         this.coreFacadeService = coreFacadeService;
     }
 
-    @Override
     @Transactional
     public FileValidation validateBatch(PaymentBatch batch, List<PaymentDetail> details) {
         logger.info("Validating batch {} with {} details", batch.getId(), details.size());
@@ -55,7 +58,6 @@ public class FileValidationService implements IFileValidationService {
         return fileValidationRepository.save(validation);
     }
 
-    @Override
     public void validateEarlyRejection(CsvParseResult parseResult) {
         PaymentBatch batch = parseResult.getBatch();
         List<PaymentDetail> details = parseResult.getDetails();
@@ -117,13 +119,20 @@ public class FileValidationService implements IFileValidationService {
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {
+        LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : LocalDateTime.now())
+            .minusDays(validationRules.getDuplicateWindowDays());
+
         paymentBatchRepository
-                .findFirstByFileHash(batch.getFileHash())
-                .ifPresent(existing -> {
-                    throw new IllegalArgumentException(String.format(
-                            "Duplicidad: el archivo '%s' tiene el mismo contenido que el lote %d registrado el %s con estado %s",
-                            batch.getFileName(), existing.getId(), existing.getReceivedAt(), existing.getStatus()));
-                });
+            .findFirstByFileNameAndFileHashAndStatusAndReceivedAtAfter(
+                batch.getFileName(),
+                batch.getFileHash(),
+                BatchStatusEnum.PROCESSED,
+                cutoff)
+            .ifPresent(existing -> {
+                throw new IllegalArgumentException(String.format(
+                    "Duplicidad: el archivo '%s' con el mismo hash ya fue procesado con éxito en los últimos %d días (lote %d, recibido el %s)",
+                    batch.getFileName(), validationRules.getDuplicateWindowDays(), existing.getId(), existing.getReceivedAt()));
+            });
     }
 
     private void validateRucClientePagosMasivos(String ruc) {

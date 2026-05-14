@@ -101,4 +101,27 @@ public class CoreFacadeService {
             return Map.of();
         }
     }
+
+    public String obtenerCuentaFavoritaPagos() {
+        logger.info("Consultando cuenta favorita de pagos en Core");
+        try {
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    coreBaseUrl + "/core/v1/accounts/default/favorite",
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
+
+            Map<String, Object> body = response.getBody();
+            Object accountNumber = body != null ? body.get("accountNumber") : null;
+            if (accountNumber == null || accountNumber.toString().isBlank()) {
+                throw new RestClientException("El Core no devolvio una cuenta favorita valida");
+            }
+
+            return accountNumber.toString();
+        } catch (RestClientException e) {
+            logger.error("Error consultando cuenta favorita en el Core: {}", e.getMessage());
+            throw e;
+        }
+    }
 }
