@@ -10,8 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 
-import ec.edu.espe.banquito.switchpagos.config.ValidationRulesProperties;
+import ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO;
 import ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO;
 import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.enums.PaymentDetailStatusEnum;
@@ -36,7 +37,6 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
     private final BatchStatusLogRepository batchStatusLogRepository;
     private final DetailStatusLogRepository detailStatusLogRepository;
     private final ICoreBankingClient coreBankingClient;
-    private final ValidationRulesProperties validationRules;
     private final BillingService billingService;
     
     @Autowired
@@ -45,14 +45,12 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                                         BatchStatusLogRepository batchStatusLogRepository,
                                         DetailStatusLogRepository detailStatusLogRepository,
                                         ICoreBankingClient coreBankingClient,
-                                        ValidationRulesProperties validationRules,
                                         BillingService billingService) {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.batchStatusLogRepository = batchStatusLogRepository;
         this.detailStatusLogRepository = detailStatusLogRepository;
         this.coreBankingClient = coreBankingClient;
-        this.validationRules = validationRules;
         this.billingService = billingService;
     }
     
@@ -134,9 +132,11 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
         if (detail.getAmount() == null || detail.getAmount().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Invalid amount");
         }
-        if (detail.getAmount().compareTo(validationRules.getMaxDetailAmount()) > 0) {
+
+        BigDecimal maxAmount = resolveMaxAmountForTransfer(detail.getPaymentBatch());
+        if (detail.getAmount().compareTo(maxAmount) > 0) {
             throw new IllegalArgumentException("El monto de la línea supera el límite máximo permitido: "
-                    + validationRules.getMaxDetailAmount().toPlainString());
+                    + maxAmount.toPlainString());
         }
         
         if (detail.getDestinationAccountNumber() == null || detail.getDestinationAccountNumber().trim().isEmpty()) {
@@ -163,5 +163,34 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
             throw new IllegalStateException(reason);
         }
         logger.info("Transfer completed successfully for detail {}", detail.getId());
+    }
+
+    private BigDecimal resolveMaxAmountForTransfer(PaymentBatch batch) {
+        if (batch == null || batch.getServiceType() == null) {
+            throw new IllegalStateException("El lote no tiene tipo de servicio configurado");
+        }
+
+        String serviceSpecificCode = "MAX_TRANSFER_" + batch.getServiceType().name();
+        String[] candidateCodes = {serviceSpecificCode, "MAX_TRANSFER_AMOUNT"};
+
+        for (String candidateCode : candidateCodes) {
+            try {
+                CoreParameterResponseDTO parameter = coreBankingClient.getParameter(candidateCode);
+                if (parameter == null || parameter.getValueString() == null || parameter.getValueString().isBlank()) {
+                    continue;
+                }
+                return new BigDecimal(parameter.getValueString().trim());
+            } catch (RestClientException e) {
+                logger.warn("No se pudo obtener el parámetro {} desde el Core: {}", candidateCode, e.getMessage());
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException(
+                        "El limite maximo devuelto por el Core no tiene formato numerico valido para " + candidateCode,
+                        e);
+            }
+        }
+
+        throw new IllegalStateException(
+                "El Core no devolvio un limite maximo valido para el tipo de servicio "
+                        + batch.getServiceType().name());
     }
 }

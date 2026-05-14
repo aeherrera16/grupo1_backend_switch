@@ -12,14 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 
 import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
-import ec.edu.espe.banquito.switchpagos.config.ValidationRulesProperties;
-import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.model.FileValidation;
 import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.model.PaymentDetail;
 import ec.edu.espe.banquito.switchpagos.repository.FileValidationRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
-
 import ec.edu.espe.banquito.switchpagos.service.IFileValidationService;
 
 @Service
@@ -27,18 +24,15 @@ public class FileValidationService implements IFileValidationService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileValidationService.class);
 
-    private final ValidationRulesProperties validationRules;
     private final FileValidationRepository fileValidationRepository;
     private final PaymentBatchRepository paymentBatchRepository;
     private final CoreFacadeService coreFacadeService;
 
     @Autowired
     public FileValidationService(
-            ValidationRulesProperties validationRules,
             FileValidationRepository fileValidationRepository,
             PaymentBatchRepository paymentBatchRepository,
             CoreFacadeService coreFacadeService) {
-        this.validationRules = validationRules;
         this.fileValidationRepository = fileValidationRepository;
         this.paymentBatchRepository = paymentBatchRepository;
         this.coreFacadeService = coreFacadeService;
