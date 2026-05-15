@@ -92,6 +92,36 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
                 .orElse(false);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public String getFavoriteAccountNumberByRuc(String ruc) {
+        if (ruc == null || ruc.isBlank()) {
+            throw new IllegalArgumentException("RUC is required");
+        }
+        String normalizedRuc = ruc.trim();
+
+        Customer customer = customerRepository
+                .findByIdentificationTypeAndIdentification("RUC", normalizedRuc)
+                .or(() -> customerRepository.findAll().stream()
+                        .filter(c -> c.getIdentificationType() != null
+                                && "RUC".equalsIgnoreCase(c.getIdentificationType().trim()))
+                        .filter(c -> c.getIdentification() != null
+                                && normalizedRuc.equals(c.getIdentification().trim()))
+                        .findFirst())
+                .orElseThrow(() -> new IllegalArgumentException("Customer not found for RUC: " + normalizedRuc));
+
+        Account favoriteAccount = accountRepository
+                .findByCustomer_IdAndIsFavoriteTrue(customer.getId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No favorite account configured for customer RUC: " + normalizedRuc));
+
+        if (favoriteAccount.getStatus() != AccountStatusEnum.ACTIVO) {
+            throw new IllegalArgumentException("Favorite account is not active for RUC: " + ruc);
+        }
+
+        return favoriteAccount.getAccountNumber();
+    }
+
     private boolean isMassPaymentsEligible(Customer customer) {
         if (customer.getStatus() != CustomerStatusEnum.ACTIVO) {
             return false;

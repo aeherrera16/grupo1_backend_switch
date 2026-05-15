@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 import com.banquito.core.dto.BalanceDTO;
 import com.banquito.core.dto.TransactionRequestDTO;
@@ -39,6 +40,12 @@ public class CoreIntegrationController {
     @GetMapping("/customer/mass-payments/{ruc}/active")
     public ResponseEntity<Boolean> isMassPaymentsActive(@PathVariable String ruc) {
         return ResponseEntity.ok(coreSwitchService.isMassPaymentsActiveForRuc(ruc));
+    }
+
+    @GetMapping("/customer/{ruc}/favorite-account")
+    public ResponseEntity<Map<String, String>> getFavoriteAccountByRuc(@PathVariable String ruc) {
+        String accountNumber = coreSwitchService.getFavoriteAccountNumberByRuc(ruc);
+        return ResponseEntity.ok(Map.of("accountNumber", accountNumber));
     }
 
     @GetMapping("/parameter/{code}")

@@ -115,7 +115,7 @@ public class PaymentBatchController {
             batch.setReceivedAt(dateTimeProvider.now());
 
             if (ChannelEnum.SFTP.equals(channel)) {
-                batch.setSourceAccountNumber(coreFacadeService.getDefaultPaymentAccount());
+                batch.setSourceAccountNumber(coreFacadeService.getFavoritePaymentAccountByRuc(batch.getRuc()));
             }
 
             boolean isBusinessDay = businessDayService.isBusinessDay(dateTimeProvider.today());

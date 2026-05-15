@@ -11,6 +11,7 @@ public interface CoreSwitchService {
 
     boolean validateAccount(String accountNumber);
     boolean isMassPaymentsActiveForRuc(String ruc);
+    String getFavoriteAccountNumberByRuc(String ruc);
 
     TransferResultDTO transfer(
             String originAccount,

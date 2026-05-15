@@ -97,22 +97,23 @@ public class CoreFacadeService {
         }
     }
 
-    public String getDefaultPaymentAccount() {
-        logger.info("Fetching default payment account from Core");
+    public String getFavoritePaymentAccountByRuc(String ruc) {
+        logger.info("Fetching favorite payment account from Core for RUC {}", ruc);
         try {
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                    coreBaseUrl + "/core/v1/accounts/default/favorite",
+                    coreBaseUrl + "/core/v1/integration/customer/{ruc}/favorite-account",
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<Map<String, Object>>() {});
+                    new ParameterizedTypeReference<Map<String, Object>>() {},
+                    ruc);
             Map<String, Object> body = response.getBody();
             Object accountNumber = body != null ? body.get("accountNumber") : null;
             if (accountNumber == null || accountNumber.toString().isBlank()) {
-                throw new RestClientException("Core did not return a valid default payment account");
+                throw new RestClientException("Core did not return a valid favorite payment account for RUC " + ruc);
             }
             return accountNumber.toString();
         } catch (RestClientException e) {
-            logger.error("Error fetching default payment account from Core: {}", e.getMessage());
+            logger.error("Error fetching favorite payment account from Core for RUC {}: {}", ruc, e.getMessage());
             throw e;
         }
     }
