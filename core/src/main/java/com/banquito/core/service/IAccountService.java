@@ -24,6 +24,8 @@ public interface IAccountService {
 
     AccountResponseDTO suspend(String accountNumber, Integer coreUserId);
 
+    AccountResponseDTO activate(String accountNumber, Integer coreUserId);
+
     BalanceDTO getBalance(String accountNumber);
 
     TransactionResponseDTO debit(String accountNumber, BigDecimal amount);
@@ -32,5 +34,8 @@ public interface IAccountService {
 
     TransactionResponseDTO transfer(String origin, String destination, BigDecimal amount, String uuid);
 
-    AccountResponseDTO getFavoriteAccount();
+    AccountResponseDTO getFavoriteAccount(Integer customerId);
+
+
+    AccountResponseDTO updateFavoriteAccount(String accountNumber, Integer customerId);
 }

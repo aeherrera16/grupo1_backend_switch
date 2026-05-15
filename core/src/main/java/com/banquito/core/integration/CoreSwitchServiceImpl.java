@@ -173,7 +173,11 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
             Account companyAccount = accountRepository.findWithLockByAccountNumber(companyAccountNumber)
                     .orElseThrow(() -> new IllegalArgumentException("Cuenta matriz no encontrada: " + companyAccountNumber));
             validateActiveCompanyAccount(companyAccount, companyAccountNumber);
+            validateCommissionIdempotency(companyAccount.getId(), uuid);
 
+            if (companyAccount.getAvailableBalance().compareTo(totalAmount) < 0) {
+                throw new IllegalArgumentException("Saldo insuficiente para cobrar la comision");
+            }
             TransactionSubtype subtype = getActiveSubtype("COMISION");
 
             companyAccount.setAvailableBalance(companyAccount.getAvailableBalance().subtract(totalAmount));
@@ -215,6 +219,20 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
         }
     }
 
+    private void validateCommissionIdempotency(Integer accountId, String uuid) {
+        if (uuid == null || uuid.isBlank()) {
+            throw new IllegalArgumentException("El UUID de comision es obligatorio");
+        }
+
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        if (transactionRepository.existsByAccount_IdAndTransactionUuidAndTransactionDateBetween(
+                accountId, uuid, startOfDay, endOfDay)) {
+            throw new IllegalArgumentException("La comision ya fue procesada para esta cuenta en el dia");
+        }
+    }
+
     private TransactionSubtype getActiveSubtype(String subtypeCode) {
         TransactionSubtype subtype = subtypeRepository.findByCode(subtypeCode)
                 .orElseThrow(() -> new IllegalStateException("Subtipo de transaccion no configurado: " + subtypeCode));
@@ -246,6 +264,8 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
             throw new IllegalStateException("Cuenta contable inactiva: " + accountNumber);
         }
         account.setAccountingBalance(account.getAccountingBalance().add(amount));
+        account.setBalance(account.getBalance().add(amount));
+
         institutionalAccountRepository.save(account);
         log.info("Crédito contable aplicado: Cuenta {} [{}], Monto {}, Saldo resultante: {}",
                 accountNumber, account.getName(), amount, account.getAccountingBalance());

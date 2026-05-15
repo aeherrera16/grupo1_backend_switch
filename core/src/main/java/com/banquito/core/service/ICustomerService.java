@@ -14,4 +14,6 @@ public interface ICustomerService {
     CustomerResponseDTO findByIdentification(String identificationType, String identification);
 
     CustomerResponseDTO create(CustomerRequestDTO request);
+
+    CustomerResponseDTO update(Integer id, CustomerRequestDTO request);
 }

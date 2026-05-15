@@ -25,6 +25,7 @@ import com.banquito.core.repository.CustomerRepository;
 import com.banquito.core.repository.TransactionSubtypeRepository;
 import com.banquito.core.service.IAccountService;
 import com.banquito.core.service.IAuthenticationService;
+import com.banquito.core.service.IEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,7 @@ public class AccountService implements IAccountService {
     private final AccountTransactionRepository transactionRepository;
     private final TransactionSubtypeRepository transactionSubtypeRepository;
     private final IAuthenticationService authenticationService;
+    private final IEmailService emailService;
 
     @Transactional(readOnly = true)
     @Override
@@ -81,10 +83,9 @@ public class AccountService implements IAccountService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    @Override
-    public AccountResponseDTO create(AccountRequestDTO request, Integer coreUserId) {
+     public AccountResponseDTO create(AccountRequestDTO request, Integer coreUserId) {
         authenticationService.validateActiveCoreUser(coreUserId);
+        validateAccountRequest(request);
 
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado: " + request.getCustomerId()));
@@ -98,9 +99,18 @@ public class AccountService implements IAccountService {
             throw new IllegalArgumentException("El saldo inicial no puede ser negativo");
         }
 
+        if (Boolean.TRUE.equals(request.getIsFavorite())) {
+            accountRepository.findByCustomer_IdAndIsFavoriteTrue(customer.getId())
+                    .ifPresent(acc -> {
+                        acc.setIsFavorite(false);
+                        accountRepository.save(acc);
+                    });
+        }
+
+
         LocalDateTime now = LocalDateTime.now();
         Account account = new Account();
-        account.setAccountNumber(request.getAccountNumber());
+        account.setAccountNumber(resolveAccountNumber(request.getAccountNumber(), branch));
         account.setCustomer(customer);
         account.setBranch(branch);
         account.setAccountSubtype(subtype);
@@ -133,14 +143,33 @@ public class AccountService implements IAccountService {
         return changeStatus(accountNumber, AccountStatusEnum.SUSPENDIDO, coreUserId);
     }
 
+    @Transactional
+    @Override
+    public AccountResponseDTO activate(String accountNumber, Integer coreUserId) {
+        return changeStatus(accountNumber, AccountStatusEnum.ACTIVO, coreUserId);
+    }
+
     private AccountResponseDTO changeStatus(String accountNumber, AccountStatusEnum status, Integer coreUserId) {
         authenticationService.validateActiveCoreUser(coreUserId);
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+
         account.setStatus(status);
         account.setLastUpdate(LocalDateTime.now());
+
+        Account savedAccount = accountRepository.save(account);
         log.info("CoreUser {} cambia cuenta {} a {}", coreUserId, accountNumber, status);
-        return toResponse(accountRepository.save(account));
+
+        if (status == AccountStatusEnum.BLOQUEADO || status == AccountStatusEnum.SUSPENDIDO) {
+            String email = savedAccount.getCustomer().getEmail();
+            if (email != null && !email.isBlank()) {
+                emailService.sendStatusChangeEmail(email, savedAccount.getAccountNumber(), status.name());
+            } else {
+                log.warn("El cliente de la cuenta {} no tiene un email registrado para notificar.", accountNumber);
+            }
+        }
+
+        return toResponse(savedAccount);
     }
 
     @Transactional(readOnly = true)
@@ -176,7 +205,7 @@ public class AccountService implements IAccountService {
         accountRepository.save(account);
 
         String uuid = generateTransactionUuid();
-        AccountTransaction transaction = registerTransaction(account, amount, MovementTypeEnum.DEBITO, account.getAvailableBalance(), uuid, "RETIRO_ATM");
+        AccountTransaction transaction = registerTransaction(account, amount, MovementTypeEnum.DEBITO, account.getAvailableBalance(), uuid, "ATM_WITHDRAW");
         return toTransactionResponse(transaction, accountNumber, "Debito realizado exitosamente");
     }
 
@@ -197,7 +226,7 @@ public class AccountService implements IAccountService {
         accountRepository.save(account);
 
         String uuid = generateTransactionUuid();
-        AccountTransaction transaction = registerTransaction(account, amount, MovementTypeEnum.CREDITO, account.getAvailableBalance(), uuid, "DEPOSITO");
+        AccountTransaction transaction = registerTransaction(account, amount, MovementTypeEnum.CREDITO, account.getAvailableBalance(), uuid, "DEPOSIT");
         return toTransactionResponse(transaction, accountNumber, "Credito realizado exitosamente");
     }
 
@@ -325,13 +354,14 @@ public class AccountService implements IAccountService {
     }
 
     private String resolveAccountNumber(String requestedAccountNumber, Branch branch) {
-        if (requestedAccountNumber != null && !requestedAccountNumber.isBlank()) {
-            if (!requestedAccountNumber.startsWith(branch.getBranchCode() + "-")) {
-                throw new IllegalArgumentException("El numero de cuenta debe iniciar con el codigo de la sucursal");
-            }
-            return requestedAccountNumber;
-        }
-        return branch.getBranchCode() + "-" + UUID.randomUUID().toString().replace("-", "").substring(0, 9).toUpperCase();
+        String accountNumber;
+
+        do {
+            accountNumber = branch.getBranchCode() + "-"
+                    + UUID.randomUUID().toString().replace("-", "").substring(0, 9).toUpperCase();
+        } while (accountRepository.findByAccountNumber(accountNumber).isPresent());
+
+        return accountNumber;
     }
 
     private void validateUuid(String uuid) {
@@ -345,10 +375,35 @@ public class AccountService implements IAccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public AccountResponseDTO getFavoriteAccount() {
-        Account account = accountRepository.findByIsFavoriteTrue()
-                .orElseThrow(() -> new AccountNotFoundException("No existe cuenta favorita configurada"));
+    public AccountResponseDTO getFavoriteAccount(Integer customerId) {
+        Account account = accountRepository.findByCustomer_IdAndIsFavoriteTrue(customerId)
+                .orElseThrow(() -> new AccountNotFoundException("No se encontró cuenta favorita para el cliente ID: " + customerId));
         return toResponse(account);
+    }
+
+    @Transactional
+    @Override
+    public AccountResponseDTO updateFavoriteAccount(String accountNumber, Integer customerId) {
+        Account newFavorite = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+
+        if (!newFavorite.getCustomer().getId().equals(customerId)) {
+            throw new IllegalArgumentException("La cuenta no pertenece al cliente especificado.");
+        }
+
+        if (newFavorite.getStatus() != com.banquito.core.enums.AccountStatusEnum.ACTIVO) {
+            throw new IllegalStateException("Solo se puede marcar como favorita una cuenta en estado ACTIVO.");
+        }
+
+        accountRepository.findByCustomer_IdAndIsFavoriteTrue(customerId)
+                .ifPresent(acc -> {
+                    acc.setIsFavorite(false);
+                    accountRepository.save(acc);
+                });
+
+        newFavorite.setIsFavorite(true);
+        log.info("Cliente {} cambió su cuenta favorita a {}", customerId, accountNumber);
+        return toResponse(accountRepository.save(newFavorite));
     }
 
     private String generateTransactionUuid() {

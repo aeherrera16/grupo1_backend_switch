@@ -112,14 +112,8 @@ public class AuthenticationService implements IAuthenticationService {
         return new CustomerAuthResponseDTO(
                 credential.getId(),
                 customer.getId(),
-                customer.getCustomerType(),
                 credential.getUsername(),
                 resolveCustomerName(customer),
-                customer.getIdentificationType(),
-                customer.getIdentification(),
-                customer.getEmail(),
-                customer.getMobilePhone(),
-                customer.getAddress(),
                 credential.getStatus(),
                 credential.getLastLogin()
         );

@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface CustomerSubtypeRepository extends JpaRepository<CustomerSubtype, Integer> {
     Optional<CustomerSubtype> findByName(String name);
     Optional<CustomerSubtype> findByStatus(CustomerSubtypeStatusEnum status);
+    java.util.List<CustomerSubtype> findByCustomerType(String customerType);
 }
