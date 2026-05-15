@@ -32,7 +32,7 @@ public class PaymentNotificationClient implements IPaymentNotificationClient {
     @Override
     public boolean sendPaymentSuccessNotification(PaymentSuccessNotificationRequestDTO request) {
         if (!enabled) {
-            logger.warn("Notificaciones RF-05 deshabilitadas; no se enviara paymentDetailId {}",
+            logger.warn("RF-05 notifications are disabled; paymentDetailId {} will not be sent",
                     request.getPaymentDetailId());
             return false;
         }
@@ -41,31 +41,32 @@ public class PaymentNotificationClient implements IPaymentNotificationClient {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(request.getBeneficiaryEmail());
-            message.setSubject("Notificación de Pago Exitoso - " + request.getCompanyName());
-            
+            message.setSubject("Successful Payment Notification - " + request.getCompanyName());
+
             String emailBody = buildEmailBody(request);
             message.setText(emailBody);
-            
+
             mailSender.send(message);
-            logger.info("Notificación RF-05 enviada exitosamente a paymentDetailId {}", request.getPaymentDetailId());
+            logger.info("RF-05 notification sent successfully for paymentDetailId {}", request.getPaymentDetailId());
             return true;
         } catch (Exception e) {
-            logger.error("Error enviando notificacion RF-05 para paymentDetailId {}: {}",
+            logger.error("Error sending RF-05 notification for paymentDetailId {}: {}",
                     request.getPaymentDetailId(), e.getMessage());
             return false;
         }
     }
 
+    // RF-05: builds the immediate beneficiary email payload.
     private String buildEmailBody(PaymentSuccessNotificationRequestDTO request) {
         StringBuilder body = new StringBuilder();
-        body.append("Estimado/a ").append(request.getBeneficiaryName()).append(",\n\n");
-        body.append("Le informamos que su pago ha sido procesado exitosamente.\n\n");
-        body.append("Detalle del pago:\n");
-        body.append("- Empresa emisora: ").append(request.getCompanyName()).append("\n");
-        body.append("- Monto acreditado: $").append(request.getAmount()).append("\n");
-        body.append("- Concepto: ").append(request.getConcept()).append("\n\n");
-        body.append("Si tiene alguna pregunta, por favor contacte a la empresa emisora.\n\n");
-        body.append("Atentamente,\n");
+        body.append("Dear ").append(request.getBeneficiaryName()).append(",\n\n");
+        body.append("Your payment has been processed successfully.\n\n");
+        body.append("Payment details:\n");
+        body.append("- Sending company: ").append(request.getCompanyName()).append("\n");
+        body.append("- Credited amount: $").append(request.getAmount()).append("\n");
+        body.append("- Concept: ").append(request.getConcept()).append("\n\n");
+        body.append("If you have any questions, please contact the sending company.\n\n");
+        body.append("Best regards,\n");
         body.append(request.getCompanyName());
         return body.toString();
     }

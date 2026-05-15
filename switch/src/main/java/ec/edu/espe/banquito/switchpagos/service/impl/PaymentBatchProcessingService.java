@@ -167,6 +167,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
         logger.info("Transfer completed successfully for detail {}", detail.getId());
     }
 
+    // RF-05: send beneficiary notification immediately after a successful line.
     private void notifySuccessfulPayment(PaymentBatch batch, PaymentDetail detail) {
         detail.setNotificationStatus("PENDING");
 
@@ -178,7 +179,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
 
         String companyName = resolveCompanyName(batch);
         if (!StringUtils.hasText(companyName)) {
-            logger.warn("RF-05 notification not sent for detail {} because Core did not return company name", detail.getId());
+            logger.warn("Notification not sent for detail {} because Core did not return company name", detail.getId());
             detail.setNotificationStatus("FAILED");
             return;
         }
