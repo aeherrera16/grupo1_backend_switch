@@ -469,7 +469,7 @@ async function uploadCsv(event) {
 
   const form = new FormData();
   form.append("file", file);
-  form.append("channel", "WEB");
+  form.append("channel", "PORTAL");
 
   setMessage(uploadMessage, "Enviando archivo al Switch...");
   try {
