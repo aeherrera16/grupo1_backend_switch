@@ -16,7 +16,7 @@ import com.banquito.core.repository.HolidayRepository;
  * Endpoints de calendario laboral basados en la tabla HOLIDAY del core.
  */
 @RestController
-@RequestMapping("/api/holidays")
+@RequestMapping("/core/v1/holidays")
 public class HolidayController {
 
     private final HolidayRepository holidayRepository;

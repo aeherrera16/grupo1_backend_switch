@@ -63,8 +63,7 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
     @Transactional(readOnly = true)
     public BalanceDTO getBalance(String accountNumber) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada: " + accountNumber));
-
+                .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountNumber));
         return new BalanceDTO(
                 account.getAccountNumber(),
                 account.getAccountingBalance(),
@@ -123,33 +122,24 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
                     amount,
                     uuid,
                     "TRANSFER",
-                    "Transferencia entre cuentas"
+                    "Transfer between accounts"
             );
-
-            return TransferResultDTO.ok(
-                    "Transferencia procesada correctamente",
-                    uuid
-            );
+            return TransferResultDTO.ok("Transfer processed successfully", uuid);
         } catch (Exception e) {
-            return TransferResultDTO.rejected(
-                    "TRANSFER_ERROR",
-                    e.getMessage(),
-                    uuid
-            );
+            return TransferResultDTO.rejected("TRANSFER_ERROR", e.getMessage(), uuid);
         }
     }
 
     private void validateDestinationOwnership(String destinationAccount, String beneficiaryIdentification) {
         if (beneficiaryIdentification == null || beneficiaryIdentification.isBlank()) {
-            throw new IllegalArgumentException("Identificacion del beneficiario es obligatoria");
+            throw new IllegalArgumentException("Beneficiary identification is required");
         }
         Account account = accountRepository.findByAccountNumber(destinationAccount)
-                .orElseThrow(() -> new IllegalArgumentException("Cuenta destino no encontrada: " + destinationAccount));
+                .orElseThrow(() -> new IllegalArgumentException("Destination account not found: " + destinationAccount));
         Customer customer = account.getCustomer();
         if (customer == null || customer.getIdentification() == null
                 || !customer.getIdentification().equals(beneficiaryIdentification.trim())) {
-            throw new IllegalArgumentException(
-                    "La cuenta destino no pertenece a la identificacion indicada en el archivo");
+            throw new IllegalArgumentException("Destination account does not belong to the indicated beneficiary");
         }
     }
 
@@ -163,21 +153,18 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
             String uuid
     ) {
         try {
-            validatePositive(commissionSubtotal, "Subtotal de comision");
-            validatePositive(vatAmount, "Monto IVA");
-            validatePositive(totalAmount, "Total de comision");
+            validatePositive(commissionSubtotal, "Commission subtotal");
+            validatePositive(vatAmount, "VAT amount");
+            validatePositive(totalAmount, "Total commission");
             if (commissionSubtotal.add(vatAmount).compareTo(totalAmount) != 0) {
-                throw new IllegalArgumentException("Subtotal + IVA no coincide con total de comision");
+                throw new IllegalArgumentException("Commission subtotal + VAT does not match total");
             }
 
             Account companyAccount = accountRepository.findWithLockByAccountNumber(companyAccountNumber)
-                    .orElseThrow(() -> new IllegalArgumentException("Cuenta matriz no encontrada: " + companyAccountNumber));
+                    .orElseThrow(() -> new IllegalArgumentException("Company account not found: " + companyAccountNumber));
             validateActiveCompanyAccount(companyAccount, companyAccountNumber);
             validateCommissionIdempotency(companyAccount.getId(), uuid);
 
-            if (companyAccount.getAvailableBalance().compareTo(totalAmount) < 0) {
-                throw new IllegalArgumentException("Saldo insuficiente para cobrar la comision");
-            }
             TransactionSubtype subtype = getActiveSubtype("COMISION");
 
             companyAccount.setAvailableBalance(companyAccount.getAvailableBalance().subtract(totalAmount));
@@ -185,59 +172,51 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
             companyAccount.setLastUpdate(LocalDateTime.now());
             accountRepository.save(companyAccount);
             registerCompanyMovement(companyAccount, totalAmount, uuid, subtype,
-                    "Debito global por servicio de pagos masivos");
+                    "Global debit for mass payment service");
+
             if (companyAccount.getAccountingBalance().compareTo(BigDecimal.ZERO) < 0) {
-                log.warn("Cuenta matriz {} ingresó en sobregiro tras débito de comisión. Saldo resultante: {}",
+                log.warn("Company account {} entered overdraft after commission debit. Resulting balance: {}",
                         companyAccountNumber, companyAccount.getAccountingBalance());
             }
 
             creditInstitutionalAccount(MASS_SERVICE_INCOME_ACCOUNT, commissionSubtotal);
             creditInstitutionalAccount(VAT_PAYABLE_ACCOUNT, vatAmount);
 
-            return TransferResultDTO.ok(
-                    "Comision liquidada correctamente",
-                    uuid
-            );
+            return TransferResultDTO.ok("Commission settled successfully", uuid);
         } catch (Exception e) {
-            return TransferResultDTO.rejected(
-                    "COMMISSION_ERROR",
-                    e.getMessage(),
-                    uuid
-            );
+            return TransferResultDTO.rejected("COMMISSION_ERROR", e.getMessage(), uuid);
         }
     }
 
     private void validatePositive(BigDecimal amount, String fieldName) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException(fieldName + " debe ser mayor a cero");
+            throw new IllegalArgumentException(fieldName + " must be greater than zero");
         }
     }
 
     private void validateActiveCompanyAccount(Account account, String accountNumber) {
         if (account.getStatus() != AccountStatusEnum.ACTIVO) {
-            throw new IllegalArgumentException("Cuenta matriz no permite debitos: " + accountNumber);
+            throw new IllegalArgumentException("Company account does not allow debits: " + accountNumber);
         }
     }
 
     private void validateCommissionIdempotency(Integer accountId, String uuid) {
         if (uuid == null || uuid.isBlank()) {
-            throw new IllegalArgumentException("El UUID de comision es obligatorio");
+            throw new IllegalArgumentException("Commission UUID is required");
         }
-
         LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
-
         if (transactionRepository.existsByAccount_IdAndTransactionUuidAndTransactionDateBetween(
                 accountId, uuid, startOfDay, endOfDay)) {
-            throw new IllegalArgumentException("La comision ya fue procesada para esta cuenta en el dia");
+            throw new IllegalArgumentException("Commission already processed for this account today");
         }
     }
 
     private TransactionSubtype getActiveSubtype(String subtypeCode) {
         TransactionSubtype subtype = subtypeRepository.findByCode(subtypeCode)
-                .orElseThrow(() -> new IllegalStateException("Subtipo de transaccion no configurado: " + subtypeCode));
+                .orElseThrow(() -> new IllegalStateException("Transaction subtype not configured: " + subtypeCode));
         if (subtype.getStatus() != CommonStatusEnum.ACTIVO) {
-            throw new IllegalStateException("Subtipo de transaccion inactivo: " + subtypeCode);
+            throw new IllegalStateException("Transaction subtype is inactive: " + subtypeCode);
         }
         return subtype;
     }
@@ -259,15 +238,14 @@ public class CoreSwitchServiceImpl implements CoreSwitchService {
 
     private void creditInstitutionalAccount(String accountNumber, BigDecimal amount) {
         InstitutionalAccount account = institutionalAccountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new IllegalStateException("Cuenta contable no configurada: " + accountNumber));
+                .orElseThrow(() -> new IllegalStateException("Institutional account not configured: " + accountNumber));
         if (account.getStatus() != CommonStatusEnum.ACTIVO) {
-            throw new IllegalStateException("Cuenta contable inactiva: " + accountNumber);
+            throw new IllegalStateException("Institutional account is inactive: " + accountNumber);
         }
         account.setAccountingBalance(account.getAccountingBalance().add(amount));
         account.setBalance(account.getBalance().add(amount));
-
         institutionalAccountRepository.save(account);
-        log.info("Crédito contable aplicado: Cuenta {} [{}], Monto {}, Saldo resultante: {}",
+        log.info("Accounting credit applied: Account {} [{}], Amount {}, Resulting balance: {}",
                 accountNumber, account.getName(), amount, account.getAccountingBalance());
     }
 }

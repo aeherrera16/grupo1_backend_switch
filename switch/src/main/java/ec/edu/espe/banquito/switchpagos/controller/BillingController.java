@@ -35,7 +35,7 @@ import ec.edu.espe.banquito.switchpagos.service.impl.BillingService;
  */
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"})
-@RequestMapping("/api/billing")
+@RequestMapping("/switch/v1/billing")
 public class BillingController {
 
     private static final Logger logger = LoggerFactory.getLogger(BillingController.class);
@@ -51,7 +51,7 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/batches/{batchId}/summary
+     * GET /switch/v1/billing/batches/{batchId}/summary
      * Obtiene el resumen completo de un lote (batch + comisión).
      *
      * @param batchId ID del lote
@@ -59,10 +59,10 @@ public class BillingController {
      */
     @GetMapping("/batches/{batchId}/summary")
     public ResponseEntity<?> obtenerResumenBatch(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/summary", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/summary", batchId);
 
         try {
-            BatchSummaryDTO resumen = billingService.obtenerResumenBatch(batchId);
+            BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
             logger.info("Resumen obtenido exitosamente para lote {}", batchId);
             return ResponseEntity.ok(resumen);
 
@@ -79,7 +79,7 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/batches/{batchId}/detail
+     * GET /switch/v1/billing/batches/{batchId}/detail
      * Obtiene los detalles de pago (PaymentDetail) de un lote.
      *
      * @param batchId ID del lote
@@ -87,10 +87,10 @@ public class BillingController {
      */
     @GetMapping("/batches/{batchId}/detail")
     public ResponseEntity<?> obtenerDetallesBatch(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/detail", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/detail", batchId);
 
         try {
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
             logger.info("Se obtuvieron {} detalles para el lote {}", detalles.size(), batchId);
 
             return ResponseEntity.ok(Map.of(
@@ -112,7 +112,7 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/batches/{batchId}/charge
+     * GET /switch/v1/billing/batches/{batchId}/charge
      * Obtiene el cargo de servicio (ServiceCharge) para un lote.
      *
      * @param batchId ID del lote
@@ -120,10 +120,10 @@ public class BillingController {
      */
     @GetMapping("/batches/{batchId}/charge")
     public ResponseEntity<?> obtenerCargoServicio(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/charge", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/charge", batchId);
 
         try {
-            ServiceCharge cargo = billingService.obtenerCargoServicio(batchId)
+            ServiceCharge cargo = billingService.getServiceCharge(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("No hay cargo de servicio para el lote: " + batchId));
             logger.info("Cargo obtenido exitosamente para lote {}", batchId);
             return ResponseEntity.ok(cargo);
@@ -142,10 +142,10 @@ public class BillingController {
 
     @GetMapping("/batches/{batchId}/receipt")
     public ResponseEntity<?> obtenerComprobanteLiquidacion(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/receipt", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/receipt", batchId);
 
         try {
-            return ResponseEntity.ok(billingService.generarComprobanteLiquidacion(batchId));
+            return ResponseEntity.ok(billingService.generateSettlementReceipt(batchId));
         } catch (ResourceNotFoundException e) {
             logger.warn("Recurso no encontrado: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -159,10 +159,10 @@ public class BillingController {
 
     @GetMapping("/batches/{batchId}/history")
     public ResponseEntity<?> obtenerHistorialBatch(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/history", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/history", batchId);
 
         try {
-            List<BatchStatusLog> historial = billingService.obtenerHistorialEstadosBatch(batchId);
+            List<BatchStatusLog> historial = billingService.getBatchStatusHistory(batchId);
             return ResponseEntity.ok(Map.of(
                     "batchId", batchId,
                     "totalEventos", historial.size(),
@@ -181,10 +181,10 @@ public class BillingController {
 
     @GetMapping("/details/{detailId}/history")
     public ResponseEntity<?> obtenerHistorialDetalle(@PathVariable Integer detailId) {
-        logger.info("GET /api/billing/details/{}/history", detailId);
+        logger.info("GET /switch/v1/billing/details/{}/history", detailId);
 
         try {
-            List<DetailStatusLog> historial = billingService.obtenerHistorialEstadosDetalle(detailId);
+            List<DetailStatusLog> historial = billingService.getDetailStatusHistory(detailId);
             return ResponseEntity.ok(Map.of(
                     "detailId", detailId,
                     "totalEventos", historial.size(),
@@ -203,10 +203,10 @@ public class BillingController {
 
     @GetMapping(value = "/batches/{batchId}/novelties", produces = "text/csv")
     public ResponseEntity<?> descargarReporteNovedades(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/novelties", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/novelties", batchId);
 
         try {
-            String csv = billingService.generarReporteNovedadesCsv(batchId);
+            String csv = billingService.generateNoveltyReportCsv(batchId);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"novedades_lote_" + batchId + ".csv\"")
@@ -226,7 +226,7 @@ public class BillingController {
     }
 
     /**
-     * POST /api/billing/test/{batchId}
+     * POST /switch/v1/billing/test/{batchId}
      * SOLO PARA PRUEBAS: Fuerza la ejecución de generarCobro en un lote.
      * Útil para testing y debugging sin esperar al procesador de pagos.
      *
@@ -235,7 +235,7 @@ public class BillingController {
      */
     @PostMapping("/test/{batchId}")
     public ResponseEntity<?> forzarGenerarCobro(@PathVariable Integer batchId) {
-        logger.warn("🔧 POST /api/billing/test/{} - OPERACIÓN DE TESTING", batchId);
+        logger.warn("🔧 POST /switch/v1/billing/test/{} - OPERACIÓN DE TESTING", batchId);
 
         try {
             // Obtener el lote
@@ -245,12 +245,12 @@ public class BillingController {
             logger.info("Lote encontrado: {}", batch.getFileName());
 
             // Obtener los detalles del lote
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
             logger.info("Se obtuvieron {} detalles para procesamiento", detalles.size());
 
             // Ejecutar generarCobro
             logger.info("Ejecutando generarCobro para lote {}", batchId);
-            billingService.generarCobro(batch, detalles);
+            billingService.generateCharge(batch, detalles);
 
             logger.info("GenerarCobro ejecutado exitosamente");
 
@@ -278,17 +278,17 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/charges
+     * GET /switch/v1/billing/charges
      * Obtiene todos los cargos de servicio registrados.
      *
      * @return Lista de todos los ServiceCharge
      */
     @GetMapping("/charges")
     public ResponseEntity<?> obtenerTodosCargos() {
-        logger.info("GET /api/billing/charges");
+        logger.info("GET /switch/v1/billing/charges");
 
         try {
-            List<ServiceCharge> cargos = billingService.obtenerTodosCargos();
+            List<ServiceCharge> cargos = billingService.getAllCharges();
             logger.info("Se obtuvieron {} cargos totales", cargos.size());
 
             return ResponseEntity.ok(Map.of(
@@ -304,7 +304,7 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/empresa-account/{paramCode}
+     * GET /switch/v1/billing/empresa-account/{paramCode}
      * Obtiene la cuenta empresa desde SwitchParameter.
      *
      * @param paramCode Código del parámetro
@@ -312,10 +312,10 @@ public class BillingController {
      */
     @GetMapping("/empresa-account/{paramCode}")
     public ResponseEntity<?> obtenerCuentaEmpresa(@PathVariable String paramCode) {
-        logger.info("GET /api/billing/empresa-account/{}", paramCode);
+        logger.info("GET /switch/v1/billing/empresa-account/{}", paramCode);
 
         try {
-            String cuentaEmpresa = billingService.obtenerCuentaEmpresa(paramCode);
+            String cuentaEmpresa = billingService.getCompanyAccount(paramCode);
             logger.info("Cuenta empresa obtenida: {}", cuentaEmpresa);
 
             return ResponseEntity.ok(Map.of(
@@ -336,17 +336,17 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/empresa-account
+     * GET /switch/v1/billing/empresa-account
      * Obtiene la cuenta empresa con parámetro por defecto "EMPRESA_ACCOUNT".
      *
      * @return Número de cuenta de la empresa
      */
     @GetMapping("/empresa-account")
     public ResponseEntity<?> obtenerCuentaEmpresaDefault() {
-        logger.info("GET /api/billing/empresa-account (default)");
+        logger.info("GET /switch/v1/billing/empresa-account (default)");
 
         try {
-            String cuentaEmpresa = billingService.obtenerCuentaEmpresaDefault();
+            String cuentaEmpresa = billingService.getDefaultCompanyAccount();
             logger.info("Cuenta empresa por defecto obtenida: {}", cuentaEmpresa);
 
             return ResponseEntity.ok(Map.of(
@@ -367,7 +367,7 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/batches/{batchId}/download/comprobante
+     * GET /switch/v1/billing/batches/{batchId}/download/comprobante
      * Descarga el comprobante de liquidación del lote en formato PDF/TXT.
      *
      * @param batchId ID del lote
@@ -375,14 +375,14 @@ public class BillingController {
      */
     @GetMapping("/batches/{batchId}/download/comprobante")
     public ResponseEntity<?> descargarComprobanteLiquidacion(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/download/comprobante", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/download/comprobante", batchId);
 
         try {
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
-            BatchSummaryDTO resumen = billingService.obtenerResumenBatch(batchId);
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
+            BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
 
             StringBuilder comprobante = new StringBuilder();
             comprobante.append("=".repeat(80)).append("\n");
@@ -450,7 +450,7 @@ public class BillingController {
     }
 
     /**
-     * GET /api/billing/batches/{batchId}/download/novedades
+     * GET /switch/v1/billing/batches/{batchId}/download/novedades
      * Descarga el reporte de novedades (rechazos) del lote.
      *
      * @param batchId ID del lote
@@ -458,14 +458,14 @@ public class BillingController {
      */
     @GetMapping("/batches/{batchId}/download/novedades")
     public ResponseEntity<?> descargarReporteNovedadesDetallado(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/download/novedades", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/download/novedades", batchId);
 
         try {
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
-            BatchSummaryDTO resumen = billingService.obtenerResumenBatch(batchId);
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
+            BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
 
             StringBuilder reporte = new StringBuilder();
             reporte.append("REPORTE DE NOVEDADES - PAGOS MASIVOS\n");

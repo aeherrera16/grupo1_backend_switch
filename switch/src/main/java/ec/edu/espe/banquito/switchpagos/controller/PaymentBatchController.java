@@ -30,7 +30,7 @@ import ec.edu.espe.banquito.switchpagos.service.impl.PaymentBatchProcessingServi
 import ec.edu.espe.banquito.switchpagos.util.DateTimeProvider;
 
 @RestController
-@RequestMapping("/api/payment-batch")
+@RequestMapping("/switch/v1/payment-batch")
 public class PaymentBatchController {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentBatchController.class);
@@ -116,7 +116,7 @@ public class PaymentBatchController {
             batch.setReceivedAt(dateTimeProvider.now());
 
             if (ChannelEnum.SFTP.equals(channel)) {
-                batch.setSourceAccountNumber(coreFacadeService.obtenerCuentaFavoritaPagos());
+                batch.setSourceAccountNumber(coreFacadeService.getDefaultPaymentAccount());
             }
 
             boolean isBusinessDay = businessDayService.isBusinessDay(dateTimeProvider.today());

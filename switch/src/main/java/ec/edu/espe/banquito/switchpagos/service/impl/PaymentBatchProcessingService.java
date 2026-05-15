@@ -92,7 +92,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                 paymentDetailRepository.save(detail);
             }
             
-            billingService.generarCobro(batch, details);
+            billingService.generateCharge(batch, details);
 
             // Update batch final status after financial processing and service liquidation
             recordBatchStatusChange(batch, batch.getStatus(), BatchStatusEnum.PROCESSED);

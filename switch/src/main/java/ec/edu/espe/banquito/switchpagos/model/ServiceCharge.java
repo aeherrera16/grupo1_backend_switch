@@ -30,12 +30,10 @@ public class ServiceCharge {
     @Column(name = "version")
     private Integer version;
 
-    // Relación hacia el Lote (Cabecera)
     @ManyToOne
     @JoinColumn(name = "payment_batch_id", referencedColumnName = "id", nullable = false)
     private PaymentBatch paymentBatch;
 
-    // Relación hacia la Regla Tarifaria aplicada
     @ManyToOne
     @JoinColumn(name = "service_fee_rule_id", referencedColumnName = "id", nullable = false)
     private ServiceFeeRule serviceFeeRule;
@@ -43,7 +41,6 @@ public class ServiceCharge {
     @Column(name = "successful_transactions", nullable = false)
     private Integer successfulTransactions;
 
-    // Regla 3: Valores financieros
     @Column(name = "unit_fee", nullable = false, precision = 18, scale = 2)
     private BigDecimal unitFee;
 
@@ -82,8 +79,6 @@ public class ServiceCharge {
     public ServiceCharge(Integer id) {
         this.id = id;
     }
-
-    // --- GETTERS Y SETTERS MANUALES ---
 
     public Integer getId() {
         return id;

@@ -12,20 +12,12 @@ import java.util.Optional;
 @Repository
 public interface ServiceFeeRuleRepository extends JpaRepository<ServiceFeeRule, Integer> {
 
-    // Consulta JPQL personalizada:
-    // El motor del Switch usará esto para encontrar la tarifa exacta pasándole
-    // la cantidad de transacciones exitosas del lote (RF-06).
     @Query("SELECT r FROM ServiceFeeRule r WHERE r.serviceType = 'PAGOS_MASIVOS' " +
             "AND r.feeType = 'UNIT_FEE' " +
             "AND :txCount >= r.minAmount " +
             "AND (:txCount <= r.maxAmount OR r.maxAmount IS NULL)")
     Optional<ServiceFeeRule> findRuleByTransactionCount(@Param("txCount") BigDecimal txCount);
 
-    /**
-     * RF-08:
-     * Obtiene la regla tarifaria según
-     * la cantidad de transacciones exitosas.
-     */
     @Query("""
         SELECT r
         FROM ServiceFeeRule r
