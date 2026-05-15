@@ -195,6 +195,18 @@ public class PaymentBatchController {
                 .body(pdf);
     }
 
+    @PostMapping("/{id}/process")
+    public ResponseEntity<?> processBatch(@PathVariable Integer id) {
+        var batch = paymentBatchRepository.findById(id);
+        if (batch.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Lote no encontrado: " + id));
+        }
+
+        var details = paymentDetailRepository.findByPaymentBatchIdOrderByLineNumberAsc(id);
+        return ResponseEntity.ok(paymentBatchProcessingService.process(batch.get(), details));
+    }
+
     @GetMapping("/{id}/novelties")
     public ResponseEntity<byte[]> downloadNovelties(@PathVariable Integer id) {
         byte[] csv = noveltyReportServiceImpl.generateReport(id);

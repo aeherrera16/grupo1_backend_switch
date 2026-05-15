@@ -25,11 +25,14 @@ function loadEnvFile(filePath) {
 
 loadEnvFile(path.join(__dirname, ".env"));
 
-const PORT = Number(process.env.PORT || 5173);
+const PORT = Number(process.env.PORT || 4173);
 const CORE_BASE_URL = process.env.CORE_BASE_URL || "http://localhost:8080";
 const SWITCH_BASE_URL = process.env.SWITCH_BASE_URL || "http://localhost:8081";
 
+const DIST_DIR = path.join(__dirname, "dist");
 const PUBLIC_DIR = path.join(__dirname, "public");
+const SRC_DIR = path.join(__dirname, "src");
+const STATIC_DIRS = [DIST_DIR, PUBLIC_DIR, SRC_DIR];
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -51,29 +54,32 @@ function sendJson(res, statusCode, payload) {
 function serveStatic(req, res) {
   const requestedPath = decodeURIComponent(new URL(req.url, `http://${req.headers.host}`).pathname);
   const safePath = requestedPath === "/" ? "/index.html" : requestedPath;
-  const filePath = path.normalize(path.join(PUBLIC_DIR, safePath));
 
-  if (!filePath.startsWith(PUBLIC_DIR)) {
-    sendJson(res, 403, { error: "Ruta no permitida" });
-    return;
-  }
+  for (const rootDir of STATIC_DIRS) {
+    const filePath = path.normalize(path.join(rootDir, safePath));
 
-  fs.readFile(filePath, (error, data) => {
-    if (error) {
-      fs.readFile(path.join(PUBLIC_DIR, "index.html"), (fallbackError, fallbackData) => {
-        if (fallbackError) {
-          sendJson(res, 404, { error: "Archivo no encontrado" });
-          return;
-        }
-        res.writeHead(200, { "Content-Type": mimeTypes[".html"] });
-        res.end(fallbackData);
-      });
-      return;
+    if (!filePath.startsWith(rootDir)) {
+      continue;
+    }
+
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      continue;
     }
 
     const extension = path.extname(filePath).toLowerCase();
+    const data = fs.readFileSync(filePath);
     res.writeHead(200, { "Content-Type": mimeTypes[extension] || "application/octet-stream" });
     res.end(data);
+    return;
+  }
+
+  fs.readFile(path.join(PUBLIC_DIR, "index.html"), (fallbackError, fallbackData) => {
+    if (fallbackError) {
+      sendJson(res, 404, { error: "Archivo no encontrado" });
+      return;
+    }
+    res.writeHead(200, { "Content-Type": mimeTypes[".html"] });
+    res.end(fallbackData);
   });
 }
 
@@ -85,10 +91,10 @@ function mapProxyTarget(req) {
     };
   }
 
-  if (req.url.startsWith("/api/switch/v1")) {
+  if (req.url.startsWith("/api/switch/")) {
     return {
       baseUrl: SWITCH_BASE_URL,
-      path: req.url.replace("/api/switch/v1", "")
+      path: req.url.replace("/api/switch", "")
     };
   }
 
