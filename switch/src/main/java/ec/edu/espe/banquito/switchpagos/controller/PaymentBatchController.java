@@ -43,7 +43,6 @@ public class PaymentBatchController {
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
     //Se inyecan servicio para repores
-    private final CorporateClosingServiceImpl corporateClosingServiceImpl;
     private final ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl;
     private final NoveltyReportServiceImpl noveltyReportServiceImpl;
     private final DateTimeProvider dateTimeProvider;
@@ -56,7 +55,6 @@ public class PaymentBatchController {
                                   PaymentBatchRepository paymentBatchRepository,
                                   PaymentDetailRepository paymentDetailRepository,
                                   PaymentBatchProcessingService paymentBatchProcessingService,
-                                  CorporateClosingServiceImpl corporateClosingServiceImpl,
                                   ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl,
                                   NoveltyReportServiceImpl noveltyReportServiceImpl,
                                   DateTimeProvider dateTimeProvider) {
@@ -67,7 +65,7 @@ public class PaymentBatchController {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.paymentBatchProcessingService = paymentBatchProcessingService;
-        this.corporateClosingServiceImpl = corporateClosingServiceImpl;
+
         this.receiptGeneratorServiceImpl = receiptGeneratorServiceImpl;
         this.noveltyReportServiceImpl = noveltyReportServiceImpl;
         this.dateTimeProvider = dateTimeProvider;
@@ -187,15 +185,7 @@ public class PaymentBatchController {
     }
 
     //REPORTES
-    @PostMapping("/{id}/close")
-    public ResponseEntity<Void> closeBatch(
-            @PathVariable Integer id
-    ) {
 
-        corporateClosingServiceImpl.closeBatch(id);
-
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/{id}/receipt")
     public ResponseEntity<byte[]> downloadReceipt(
