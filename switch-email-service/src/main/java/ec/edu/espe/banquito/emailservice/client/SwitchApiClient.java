@@ -19,7 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Cliente para comunicarse con el API del Switch principal.
+ * Client for communicating with the main Switch API.
  */
 @Component
 public class SwitchApiClient {
@@ -44,18 +44,16 @@ public class SwitchApiClient {
     }
 
     /**
-     * Envía un archivo CSV al switch principal via API REST
+     * Sends a CSV file to the main switch through the REST API
      */
     public boolean sendFileToSwitch(File file) {
         try {
             String url = baseUrl + endpoint;
-            LOG.info("Conectando con el Switch principal");
-            LOG.info("Enviando archivo {} al switch: {}", file.getName(), url);
+            LOG.info("Connecting to the main Switch");
+            LOG.info("Sending file {} to switch: {}", file.getName(), url);
 
-            // Preparar multipart request
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             
-            // Convertir archivo a Resource
             byte[] fileBytes = Files.readAllBytes(file.toPath());
             Resource fileResource = new ByteArrayResource(fileBytes) {
                 @Override
@@ -71,41 +69,40 @@ public class SwitchApiClient {
             
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
             
-            // Enviar request
             ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
             
             if (response.getStatusCode().is2xxSuccessful()) {
-                LOG.info("Conexion exitosa con el Switch principal");
-                LOG.info("Archivo {} enviado exitosamente. Response: {}", file.getName(), response.getBody());
+                LOG.info("Connected to the main Switch successfully");
+                LOG.info("File {} sent successfully. Response: {}", file.getName(), response.getBody());
                 return true;
             } else {
-                LOG.error("Error enviando archivo al Switch. Status: {}", response.getStatusCode());
+                LOG.error("Error sending file to the Switch. Status: {}", response.getStatusCode());
                 return false;
             }
             
         } catch (IOException e) {
-            LOG.error("Error leyendo archivo {}: {}", file.getName(), e.getMessage());
+            LOG.error("Error reading file {}: {}", file.getName(), e.getMessage());
             return false;
         } catch (Exception e) {
-            LOG.error("Error de conexion con el Switch principal: {}", e.getMessage());
+            LOG.error("Error connecting to the main Switch: {}", e.getMessage());
             return false;
         }
     }
 
     /**
-     * Verifica si el switch está disponible
+     * Checks whether the switch is available
      */
     public boolean isSwitchAvailable() {
         try {
-            String url = baseUrl + "/api/payment-batch";
-            LOG.debug("Verificando disponibilidad del Switch principal: {}", url);
+            String url = baseUrl + "/switch/v1/payment-batch";
+            LOG.debug("Checking main Switch availability: {}", url);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
-                LOG.debug("Switch principal disponible");
+                LOG.debug("Main Switch available");
             }
             return response.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
-            LOG.warn("Switch principal no disponible: {}", e.getMessage());
+            LOG.warn("Main Switch unavailable: {}", e.getMessage());
             return false;
         }
     }

@@ -34,8 +34,17 @@ public class InstitutionalAccount {
     @Column(name = "NAME", nullable = false, length = 100)
     private String name;
 
+    @Column(name = "CODE", nullable = false, length = 50)
+    private String code;
+
+    @Column(name = "DESCRIPTION", nullable = false, length = 150)
+    private String description;
+
     @Column(name = "ACCOUNTING_BALANCE", nullable = false, precision = 15, scale = 2)
     private BigDecimal accountingBalance;
+
+    @Column(name = "BALANCE", nullable = false, precision = 15, scale = 2)
+    private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false, length = 15)

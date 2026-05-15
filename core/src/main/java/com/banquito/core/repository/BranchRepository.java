@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface BranchRepository extends JpaRepository<Branch, Integer> {
 
-    // Método derivado usando convenciones de Spring Data (CamelCase)
     Optional<Branch> findByBranchCode(String branchCode);
 }

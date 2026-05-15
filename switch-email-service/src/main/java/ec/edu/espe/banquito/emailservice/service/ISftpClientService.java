@@ -3,42 +3,42 @@ package ec.edu.espe.banquito.emailservice.service;
 import java.util.List;
 
 /**
- * Interfaz para el servicio de cliente SFTP
+ * SFTP client service contract
  */
 public interface ISftpClientService {
     
     /**
-     * Conecta al servidor SFTP
+     * Connects to the SFTP server.
      */
     boolean connect();
     
     /**
-     * Desconecta del servidor SFTP
+     * Disconnects from the SFTP server.
      */
     void disconnect();
     
     /**
-     * Lista los archivos CSV en el directorio remoto
+     * Lists CSV files in the remote directory
      */
     List<String> listCsvFiles(String remoteDirectory);
     
     /**
-     * Descarga un archivo del servidor SFTP
+     * Downloads a file from the SFTP server.
      */
     boolean downloadFile(String remoteFilePath, String localFilePath);
     
     /**
-     * Elimina un archivo del servidor SFTP después de descargarlo
+     * Deletes a file from the SFTP server after download.
      */
     boolean deleteRemoteFile(String remoteFilePath);
     
     /**
-     * Verifica si la conexión está activa
+     * Checks whether the SFTP connection is active
      */
     boolean isConnected();
     
     /**
-     * Obtiene información del servidor SFTP
+     * Returns SFTP server information.
      */
     String getServerInfo();
 }

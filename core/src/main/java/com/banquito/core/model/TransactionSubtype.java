@@ -33,6 +33,9 @@ public class TransactionSubtype {
     @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
+    @Column(name = "DESCRIPTION", nullable = false, length = 100)
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false, length = 15)
     private CommonStatusEnum status;

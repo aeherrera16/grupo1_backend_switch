@@ -40,4 +40,11 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseDTO> create(@RequestBody CustomerRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.create(request));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CustomerResponseDTO> update(
+            @PathVariable Integer id,
+            @RequestBody CustomerRequestDTO request) {
+        return ResponseEntity.ok(customerService.update(id, request));
+    }
 }

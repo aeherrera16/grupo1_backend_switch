@@ -1,6 +1,7 @@
 package com.banquito.core.service.impl;
 
 import com.banquito.core.dto.TransactionResponseDTO;
+import com.banquito.core.dto.TransactionHistoryDTO;
 import com.banquito.core.enums.AccountStatusEnum;
 import com.banquito.core.enums.CommonStatusEnum;
 import com.banquito.core.enums.MovementTypeEnum;
@@ -20,9 +21,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,18 +42,20 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO debit(String accountNumber, BigDecimal amount, String uuid,
-                                          String subtypeCode, String description) {
-        validateIdempotency(uuid);
+                                        String subtypeCode, String description) {
+        validateUuid(uuid);
         validatePositiveAmount(amount);
 
         Account account = getActiveAccountWithLock(accountNumber);
+        validateIdempotency(account.getId(), uuid);
         if (account.getAvailableBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException(accountNumber);
         }
 
         subtract(account, amount);
         AccountTransaction transaction = registerMovement(
-                account, amount, MovementTypeEnum.DEBITO, uuid, subtypeCode, description);
+                account, amount, MovementTypeEnum.DEBITO, uuid, subtypeCode, description
+        );
         log.info("Debito exitoso: Cuenta {}, Monto {}, UUID {}", accountNumber, amount, uuid);
         return toResponse(transaction, "Debito procesado correctamente");
     }
@@ -57,35 +63,44 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO credit(String accountNumber, BigDecimal amount, String uuid,
-                                            String subtypeCode, String description) {
-        validateIdempotency(uuid);
+                                         String subtypeCode, String description) {
+        validateUuid(uuid);
         validatePositiveAmount(amount);
 
-        Account account = getActiveAccountWithLock(accountNumber);
+        Account account = getAccountForCreditWithLock(accountNumber);
+        validateIdempotency(account.getId(), uuid);
+
         add(account, amount);
         AccountTransaction transaction = registerMovement(
-                account, amount, MovementTypeEnum.CREDITO, uuid, subtypeCode, description);
-        log.info("Credito exitoso: Cuenta {}, Monto {}, UUID {}", accountNumber, amount, uuid);
-        return toResponse(transaction, "Credito procesado correctamente");
+                account, amount, MovementTypeEnum.CREDITO, uuid, subtypeCode, description
+        );
+        log.info("Crédito exitoso: Cuenta {}, Monto {}, UUID {}", accountNumber, amount, uuid);
+        return toResponse(transaction, "Crédito procesado correctamente");
     }
 
     @Override
     @Transactional
     public TransactionResponseDTO transfer(String originAccountNumber, String destinationAccountNumber,
-                                             BigDecimal amount, String uuid, String subtypeCode, String description) {
-        validateIdempotency(uuid);
+                                           BigDecimal amount, String uuid, String subtypeCode, String description) {
+        validateUuid(uuid);
         validatePositiveAmount(amount);
+
         if (originAccountNumber.equals(destinationAccountNumber)) {
             throw new IllegalArgumentException("La cuenta origen y destino no pueden ser la misma");
         }
 
         Account firstLock = lockFirst(originAccountNumber, destinationAccountNumber);
         Account secondLock = lockSecond(originAccountNumber, destinationAccountNumber);
+
         Account origin = originAccountNumber.equals(firstLock.getAccountNumber()) ? firstLock : secondLock;
         Account destination = destinationAccountNumber.equals(firstLock.getAccountNumber()) ? firstLock : secondLock;
 
+        validateIdempotency(origin.getId(), uuid);
+        validateIdempotency(destination.getId(), uuid);
+
         validateActive(origin, originAccountNumber);
         validateActive(destination, destinationAccountNumber);
+
         if (origin.getAvailableBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException(originAccountNumber);
         }
@@ -100,14 +115,25 @@ public class TransactionService implements ITransactionService {
 
         log.info("Transferencia exitosa: Origen {}, Destino {}, Monto {}, UUID {}",
                 originAccountNumber, destinationAccountNumber, amount, uuid);
+
         return toResponse(debit, "Transferencia procesada correctamente");
     }
 
-    private void validateIdempotency(String uuid) {
+
+    private void validateUuid(String uuid) {
         if (uuid == null || uuid.isBlank()) {
             throw new IllegalArgumentException("TRANSACTION_UUID es obligatorio");
         }
-        if (transactionRepository.existsByTransactionUuid(uuid)) {
+    }
+
+    private void validateIdempotency(Integer accountId, String uuid) {
+        validateUuid(uuid);
+
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        if (transactionRepository.existsByAccount_IdAndTransactionUuidAndTransactionDateBetween(
+                accountId, uuid, startOfDay, endOfDay)) {
             throw new DuplicateTransactionException(uuid);
         }
     }
@@ -125,6 +151,19 @@ public class TransactionService implements ITransactionService {
         return account;
     }
 
+    private Account getAccountForCreditWithLock(String accountNumber) {
+        Account account = accountRepository.findWithLockByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        validateCreditAllowed(account, accountNumber);
+        return account;
+    }
+
+    private void validateCreditAllowed(Account account, String accountNumber) {
+        if (account.getStatus() == AccountStatusEnum.SUSPENDIDO) {
+            throw new InactiveAccountException(accountNumber);
+        }
+    }
+
     private void validateActive(Account account, String accountNumber) {
         if (account.getStatus() != AccountStatusEnum.ACTIVO) {
             throw new InactiveAccountException(accountNumber);
@@ -135,6 +174,7 @@ public class TransactionService implements ITransactionService {
         String first = originAccountNumber.compareTo(destinationAccountNumber) < 0
                 ? originAccountNumber
                 : destinationAccountNumber;
+
         return accountRepository.findWithLockByAccountNumber(first)
                 .orElseThrow(() -> new AccountNotFoundException(first));
     }
@@ -143,6 +183,7 @@ public class TransactionService implements ITransactionService {
         String second = originAccountNumber.compareTo(destinationAccountNumber) < 0
                 ? destinationAccountNumber
                 : originAccountNumber;
+
         return accountRepository.findWithLockByAccountNumber(second)
                 .orElseThrow(() -> new AccountNotFoundException(second));
     }
@@ -165,6 +206,7 @@ public class TransactionService implements ITransactionService {
                                                 String uuid, String subtypeCode, String description) {
         TransactionSubtype subtype = subtypeRepository.findByCode(subtypeCode)
                 .orElseThrow(() -> new RuntimeException("Subtipo de transaccion no configurado: " + subtypeCode));
+
         if (subtype.getStatus() != CommonStatusEnum.ACTIVO) {
             throw new IllegalStateException("Subtipo de transaccion inactivo: " + subtypeCode);
         }
@@ -179,6 +221,7 @@ public class TransactionService implements ITransactionService {
         transaction.setStatus(TransactionStatusEnum.COMPLETADA);
         transaction.setDescription(description);
         transaction.setTransactionDate(LocalDateTime.now());
+
         return transactionRepository.save(transaction);
     }
 
@@ -194,5 +237,25 @@ public class TransactionService implements ITransactionService {
                 transaction.getStatus(),
                 message
         );
+    }
+
+    @Override
+    public List<TransactionHistoryDTO> getTransactionHistory(String accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+
+        return transactionRepository.findTop10ByAccount_IdOrderByTransactionDateDesc(account.getId())
+                .stream()
+                .map(transaction -> new TransactionHistoryDTO(
+                        transaction.getId(),
+                        transaction.getTransactionDate(),
+                        transaction.getMovementType(),
+                        transaction.getTransactionSubtype().getCode(),
+                        transaction.getTransactionSubtype().getName(),
+                        transaction.getDescription(),
+                        transaction.getAmount(),
+                        transaction.getResultingBalance()
+                ))
+                .collect(Collectors.toList());
     }
 }
