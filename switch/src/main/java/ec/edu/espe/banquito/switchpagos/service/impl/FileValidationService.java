@@ -62,24 +62,25 @@ public class FileValidationService {
         return fileValidationRepository.save(validation);
     }
 
+    // RF-02 early rejection: totals, duplicate hash/name, and active RUC service.
     public void validateEarlyRejection(CsvParseResult parseResult) {
         PaymentBatch batch = parseResult.getBatch();
         List<PaymentDetail> details = parseResult.getDetails();
 
         if (batch.getFileName() == null || batch.getFileName().isBlank()) {
-            throw new IllegalArgumentException("El nombre del archivo es obligatorio para auditoría y control de duplicidad");
+            throw new IllegalArgumentException("File name is required for audit and duplicate control");
         }
         if (batch.getFileHash() == null || batch.getFileHash().isBlank()) {
-            throw new IllegalArgumentException("No se pudo calcular el hash de integridad del archivo");
+            throw new IllegalArgumentException("Could not calculate the file integrity hash");
         }
         if (batch.getRuc() == null || batch.getRuc().trim().isEmpty()) {
-            throw new IllegalArgumentException("El RUC en cabecera es obligatorio");
+            throw new IllegalArgumentException("Header RUC is required");
         }
         if (details.isEmpty()) {
-            throw new IllegalArgumentException("El archivo no tiene líneas de detalle");
+            throw new IllegalArgumentException("The file has no detail rows");
         }
         if (parseResult.getFooterSecurityCode() == null || parseResult.getFooterSecurityCode().isBlank()) {
-            throw new IllegalArgumentException("El código de seguridad del pie es obligatorio");
+            throw new IllegalArgumentException("Footer security code is required");
         }
 
         int counted = details.size();
@@ -89,54 +90,53 @@ public class FileValidationService {
 
         if (!batch.getHeaderTotalRecords().equals(counted)) {
             throw new IllegalArgumentException(String.format(
-                    "Cantidad de registros en cabecera (%d) no coincide con detalle procesado (%d)",
+                    "Header record count (%d) does not match parsed details (%d)",
                     batch.getHeaderTotalRecords(), counted));
         }
         if (parseResult.getFooterDeclaredRecords() != counted) {
             throw new IllegalArgumentException(String.format(
-                    "Registros declarados en pie (%d) no coinciden con detalle procesado (%d)",
+                    "Footer declared records (%d) do not match parsed details (%d)",
                     parseResult.getFooterDeclaredRecords(), counted));
         }
 
         if (parseResult.getFooterDeclaredAmount().compareTo(batch.getHeaderTotalAmount()) != 0) {
             throw new IllegalArgumentException(String.format(
-                    "Monto en pie (%s) no coincide con monto declarado en cabecera (%s)",
+                    "Footer amount (%s) does not match header amount (%s)",
                     parseResult.getFooterDeclaredAmount().toPlainString(),
                     batch.getHeaderTotalAmount().toPlainString()));
         }
         if (batch.getHeaderTotalAmount().compareTo(summed) != 0) {
             throw new IllegalArgumentException(String.format(
-                    "Monto total en cabecera (%s) no coincide con suma del detalle (%s)",
+                    "Header total amount (%s) does not match details sum (%s)",
                     batch.getHeaderTotalAmount().toPlainString(), summed.toPlainString()));
         }
         if (parseResult.getFooterDeclaredAmount().compareTo(summed) != 0) {
             throw new IllegalArgumentException(String.format(
-                    "Monto declarado en pie (%s) no coincide con suma del detalle (%s)",
+                    "Footer declared amount (%s) does not match details sum (%s)",
                     parseResult.getFooterDeclaredAmount().toPlainString(), summed.toPlainString()));
         }
 
         validateNoDuplicateNominaProcessed(batch);
-
         validateRucClientePagosMasivos(batch.getRuc().trim());
 
-        logger.info("Validación RF-02 temprana aprobada para archivo {}", batch.getFileName());
+        logger.info("RF-02 early validation passed for file {}", batch.getFileName());
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {
         LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : dateTimeProvider.now())
-            .minusDays(validationRules.getDuplicateWindowDays());
+                .minusDays(validationRules.getDuplicateWindowDays());
 
         paymentBatchRepository
-            .findFirstByFileNameAndFileHashAndStatusAndReceivedAtAfter(
-                batch.getFileName(),
-                batch.getFileHash(),
-                BatchStatusEnum.PROCESSED,
-                cutoff)
-            .ifPresent(existing -> {
-                throw new IllegalArgumentException(String.format(
-                    "Duplicidad: el archivo '%s' con el mismo hash ya fue procesado con éxito en los últimos %d días (lote %d, recibido el %s)",
-                    batch.getFileName(), validationRules.getDuplicateWindowDays(), existing.getId(), existing.getReceivedAt()));
-            });
+                .findFirstByFileNameAndFileHashAndStatusAndReceivedAtAfter(
+                        batch.getFileName(),
+                        batch.getFileHash(),
+                        BatchStatusEnum.PROCESSED,
+                        cutoff)
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException(String.format(
+                            "Duplicate file: '%s' with the same hash was already processed successfully in the last %d days (batch %d, received at %s)",
+                            batch.getFileName(), validationRules.getDuplicateWindowDays(), existing.getId(), existing.getReceivedAt()));
+                });
     }
 
     private void validateRucClientePagosMasivos(String ruc) {
@@ -144,12 +144,12 @@ public class FileValidationService {
             Boolean active = coreFacadeService.isMassPaymentsActiveForRuc(ruc);
             if (!Boolean.TRUE.equals(active)) {
                 throw new IllegalArgumentException(
-                        "El RUC no pertenece a un cliente jurídico con el servicio de pagos masivos activo");
+                        "RUC does not belong to a legal customer with active mass-payments service");
             }
         } catch (RestClientException e) {
-            logger.error("Error consultando pagos masivos en Core para RUC {}: {}", ruc, e.getMessage());
+            logger.error("Error validating mass-payments service in Core for RUC {}: {}", ruc, e.getMessage());
             throw new IllegalArgumentException(
-                    "No se pudo validar contra el Core bancario el servicio de pagos masivos del RUC. Intente más tarde.", e);
+                    "Could not validate the RUC mass-payments service against Core. Please try again later.", e);
         }
     }
 }

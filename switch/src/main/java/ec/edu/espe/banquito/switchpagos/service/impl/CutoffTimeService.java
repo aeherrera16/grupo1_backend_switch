@@ -1,4 +1,3 @@
-
 package ec.edu.espe.banquito.switchpagos.service.impl;
 
 import java.time.DayOfWeek;
@@ -13,9 +12,6 @@ import org.springframework.stereotype.Service;
 import ec.edu.espe.banquito.switchpagos.service.ICutoffTimeService;
 import ec.edu.espe.banquito.switchpagos.util.DateTimeProvider;
 
-/**
- * Servicio para manejar la lógica de horarios de corte.
- */
 @Service
 public class CutoffTimeService implements ICutoffTimeService {
 
@@ -32,10 +28,6 @@ public class CutoffTimeService implements ICutoffTimeService {
         this.dateTimeProvider = dateTimeProvider;
     }
 
-    /**
-     * Verifica si el tiempo actual está dentro de la ventana de ingesta.
-     * @return true si está antes de la hora de corte, false otherwise
-     */
     @Override
     public boolean isWithinIngestionWindow() {
         LocalTime now = dateTimeProvider.currentTime();
@@ -48,28 +40,20 @@ public class CutoffTimeService implements ICutoffTimeService {
         return LocalTime.of(cutoffHour, 0);
     }
 
-    /**
-     * Verifica si un tiempo específico está dentro de la ventana de ingesta.
-     * @param time tiempo a verificar
-     * @return true si está antes de la hora de corte, false otherwise
-     */
     @Override
     public boolean isWithinIngestionWindow(LocalTime time) {
         return time.isBefore(LocalTime.of(cutoffHour, 0));
     }
 
-    /**
-     * Retorna true si el lote debe ser encolado en lugar de procesado inmediatamente.
-     * Se encola cuando: la hora actual es >= hora de corte, O el dia es fin de semana, O es feriado.
-     */
+    // RF-01 queue rule: after cutoff, weekend, or holiday.
     public boolean shouldQueue() {
         LocalDate today = dateTimeProvider.today();
         if (!isWithinIngestionWindow()) {
-            logger.info("Hora actual fuera de ventana de ingesta (corte: {}). Lote sera encolado.", getCutoffTime());
+            logger.info("Current time is outside ingestion window (cutoff: {}). Batch will be queued.", getCutoffTime());
             return true;
         }
         if (isWeekendOrHoliday(today)) {
-            logger.info("Dia {} es fin de semana o feriado. Lote sera encolado.", today);
+            logger.info("Date {} is weekend or holiday. Batch will be queued.", today);
             return true;
         }
         return false;
@@ -78,12 +62,12 @@ public class CutoffTimeService implements ICutoffTimeService {
     public boolean isWeekendOrHoliday(LocalDate date) {
         DayOfWeek dow = date.getDayOfWeek();
         if (dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY) {
-            logger.info("Dia {} es fin de semana ({})", date, dow);
+            logger.info("Date {} is weekend ({})", date, dow);
             return true;
         }
         boolean holiday = !businessDayService.isBusinessDay(date);
         if (holiday) {
-            logger.info("Dia {} es feriado segun el core", date);
+            logger.info("Date {} is a holiday according to Core", date);
         }
         return holiday;
     }

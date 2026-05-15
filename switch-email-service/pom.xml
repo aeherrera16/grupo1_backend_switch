@@ -16,7 +16,7 @@
     <artifactId>switch-email-service</artifactId>
     <version>1.0.0</version>
     <name>Switch Email Service</name>
-    <description>Servicio independiente para procesar archivos CSV desde buzón SFTP y enviar al switch</description>
+    <description>Standalone service for processing CSV files from an SFTP mailbox and sending them to the switch</description>
 
     <properties>
         <java.version>21</java.version>

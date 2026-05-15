@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import ec.edu.espe.banquito.emailservice.client.SwitchApiClient;
 
 /**
- * Servicio para gestionar el servidor SFTP embebido
- * NOTA: Este servicio requiere las dependencias de Apache SSHD para funcionar como servidor.
- * Para habilitar el servidor SFTP, instala Maven y ejecuta: mvn clean install
+ * Service for handling files uploaded through the embedded SFTP server.
  */
 @Service
 public class SftpServerService {
@@ -38,13 +36,13 @@ public class SftpServerService {
     }
     
     /**
-     * Procesa los archivos subidos al directorio SFTP
+     * Processes files uploaded to the SFTP directory
      */
     public void processUploadedFiles() {
         try {
             Path uploadPath = Paths.get(uploadDirectory);
             if (!Files.exists(uploadPath)) {
-                LOG.warn("Directorio de uploads no existe: {}", uploadDirectory);
+                LOG.warn("Upload directory does not exist: {}", uploadDirectory);
                 return;
             }
             
@@ -53,34 +51,32 @@ public class SftpServerService {
                 .forEach(this::processFile);
                 
         } catch (IOException e) {
-            LOG.error("Error procesando archivos subidos: {}", e.getMessage(), e);
+            LOG.error("Error processing uploaded files: {}", e.getMessage(), e);
         }
     }
     
     private void processFile(Path filePath) {
         try {
-            LOG.info("Procesando archivo subido: {}", filePath.getFileName());
+            LOG.info("Processing uploaded file: {}", filePath.getFileName());
             
             boolean sentToSwitch = switchApiClient.sendFileToSwitch(filePath.toFile());
             
             if (sentToSwitch) {
-                // Mover a procesados
                 Path processedDir = Paths.get(uploadDirectory, "processed");
                 Files.createDirectories(processedDir);
                 Path target = processedDir.resolve(filePath.getFileName());
                 Files.move(filePath, target, StandardCopyOption.REPLACE_EXISTING);
-                LOG.info("Archivo enviado al Switch y movido a procesados: {}", filePath.getFileName());
+                LOG.info("File sent to the Switch and moved to processed directory: {}", filePath.getFileName());
             } else {
-                // Mover a errores
                 Path errorDir = Paths.get(uploadDirectory, "errors");
                 Files.createDirectories(errorDir);
                 Path target = errorDir.resolve(filePath.getFileName());
                 Files.move(filePath, target, StandardCopyOption.REPLACE_EXISTING);
-                LOG.warn("Archivo movido a errores: {}", filePath.getFileName());
+                LOG.warn("File moved to error directory: {}", filePath.getFileName());
             }
             
         } catch (IOException e) {
-            LOG.error("Error procesando archivo {}: {}", filePath, e.getMessage(), e);
+            LOG.error("Error processing file {}: {}", filePath, e.getMessage(), e);
         }
     }
     

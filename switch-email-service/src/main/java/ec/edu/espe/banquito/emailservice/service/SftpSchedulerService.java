@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import ec.edu.espe.banquito.emailservice.client.SwitchApiClient;
 
 /**
- * Servicio scheduler para la integración SFTP
+ * Scheduler service for SFTP processing
  */
 @Service
 public class SftpSchedulerService {
@@ -42,75 +42,74 @@ public class SftpSchedulerService {
     }
     
     /**
-     * Tarea programada para procesar archivos SFTP
+     * Processes SFTP files on a schedule
      */
     @Scheduled(fixedRateString = "${sftp.scheduler.interval:60000}")
     public void processSftpFiles() {
         if (!schedulerEnabled) {
-            LOG.debug("Scheduler SFTP deshabilitado");
+            LOG.debug("SFTP scheduler disabled");
             return;
         }
         
-        LOG.info("Iniciando ciclo de procesamiento de archivos SFTP (intervalo: {})", schedulerInterval);
+        LOG.info("Starting SFTP file processing cycle (interval: {})", schedulerInterval);
         
         try {
             Path uploadPath = Paths.get(localDirectory);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
-                LOG.info("Directorio SFTP creado: {}", localDirectory);
+                LOG.info("SFTP directory created: {}", localDirectory);
             }
             
             File[] files = uploadPath.toFile().listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
             List<String> processedFiles = new ArrayList<>();
             
             if (files == null || files.length == 0) {
-                LOG.info("No hay archivos CSV en el directorio SFTP para procesar");
+                LOG.info("No CSV files found in the SFTP directory");
             } else {
-                LOG.info("Encontrados {} archivos CSV para procesar", files.length);
+                LOG.info("Found {} CSV files to process", files.length);
                 
                 for (File file : files) {
                     try {
-                        LOG.info("Procesando archivo: {}", file.getName());
+                        LOG.info("Processing file: {}", file.getName());
                         boolean sentToSwitch = switchApiClient.sendFileToSwitch(file);
                         
                         if (sentToSwitch) {
                             processedFiles.add(file.getName());
-                            LOG.info("Archivo {} enviado al Switch exitosamente", file.getName());
+                            LOG.info("File {} sent to the Switch successfully", file.getName());
                             
-                            // Mover archivo a procesados
-                            Path processedDir = uploadPath.resolve("procesados");
+                            Path processedDir = uploadPath.resolve("processed");
                             if (!Files.exists(processedDir)) {
                                 Files.createDirectories(processedDir);
                             }
                             Files.move(file.toPath(), processedDir.resolve(file.getName()), 
                                      StandardCopyOption.REPLACE_EXISTING);
-                            LOG.info("Archivo movido a procesados: {}", file.getName());
+                            LOG.info("File moved to processed directory: {}", file.getName());
                         } else {
-                            LOG.error("Error enviando archivo {} al Switch", file.getName());
+                            LOG.error("Error sending file {} to the Switch", file.getName());
                         }
                     } catch (java.io.IOException e) {
-                        LOG.error("Error procesando archivo {}: {}", file.getName(), e.getMessage());
+                        LOG.error("Error processing file {}: {}", file.getName(), e.getMessage());
                     }
                 }
                 
                 if (!processedFiles.isEmpty()) {
-                    LOG.info("Archivos procesados exitosamente: {}", processedFiles);
+                    LOG.info("Files processed successfully: {}", processedFiles);
                 }
             }
         } catch (java.io.IOException e) {
-            LOG.error("Error en procesamiento de archivos SFTP: {}", e.getMessage(), e);
+            LOG.error("Error processing SFTP files: {}", e.getMessage(), e);
         }
     }
     
     /**
-     * Verifica la salud de la integración SFTP
+     * Checks SFTP integration health
      */
     public boolean isHealthy() {
         return schedulerEnabled && switchApiClient.isSwitchAvailable();
     }
     
     /**
-     * Obtiene información del scheduler
+     * Returns scheduler information
      */
     public String getSchedulerInfo() {
         return String.format("SftpScheduler[enabled=%s, interval=%s, directory=%s]",

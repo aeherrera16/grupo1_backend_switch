@@ -19,7 +19,7 @@ import ec.edu.espe.banquito.emailservice.service.ISftpClientService;
 import ec.edu.espe.banquito.emailservice.service.ISftpIntegrationService;
 
 /**
- * Implementación del servicio de integración SFTP
+ * SFTP integration service implementation
  */
 @Service
 public class SftpIntegrationService implements ISftpIntegrationService {
@@ -46,35 +46,31 @@ public class SftpIntegrationService implements ISftpIntegrationService {
         List<String> processedFiles = new ArrayList<>();
         
         if (!integrationEnabled) {
-            LOG.info("Integracion SFTP deshabilitada");
+            LOG.info("SFTP integration disabled");
             return processedFiles;
         }
         
-        LOG.info("Iniciando procesamiento de archivos SFTP");
+        LOG.info("Starting SFTP file processing");
         
         try {
-            // 1. Conectar al servidor SFTP
             if (!sftpClientService.connect()) {
-                LOG.error("No se pudo conectar al servidor SFTP");
+                LOG.error("Could not connect to SFTP server");
                 return processedFiles;
             }
             
-            // 2. Descargar archivos CSV
             List<String> downloadedFiles = downloadSftpFiles();
             
-            // 3. Procesar cada archivo descargado
             for (String filePath : downloadedFiles) {
                 if (processDownloadedFile(filePath)) {
                     processedFiles.add(filePath);
                 }
             }
             
-            LOG.info("Procesamiento SFTP completado: {} archivos procesados", processedFiles.size());
+            LOG.info("SFTP processing completed: {} files processed", processedFiles.size());
             
         } catch (RuntimeException e) {
-            LOG.error("Error en procesamiento SFTP: {}", e.getMessage(), e);
+            LOG.error("Error during SFTP processing: {}", e.getMessage(), e);
         } finally {
-            // 4. Desconectar del servidor SFTP
             sftpClientService.disconnect();
         }
         
@@ -85,10 +81,8 @@ public class SftpIntegrationService implements ISftpIntegrationService {
         List<String> downloadedFiles = new ArrayList<>();
         
         try {
-            // Crear directorio local si no existe
             Files.createDirectories(Paths.get(sftpLocalDirectory));
             
-            // Listar archivos CSV en el servidor remoto
             List<String> csvFiles = sftpClientService.listCsvFiles("/upload");
             
             for (String csvFile : csvFiles) {
@@ -98,14 +92,13 @@ public class SftpIntegrationService implements ISftpIntegrationService {
                 if (sftpClientService.downloadFile(remotePath, localPath)) {
                     downloadedFiles.add(localPath);
                     
-                    // Eliminar archivo remoto después de descargar exitosamente
                     sftpClientService.deleteRemoteFile(remotePath);
-                    LOG.info("Archivo {} descargado y eliminado del servidor", csvFile);
+                    LOG.info("File {} downloaded and deleted from server", csvFile);
                 }
             }
             
         } catch (java.io.IOException e) {
-            LOG.error("Error descargando archivos SFTP: {}", e.getMessage());
+            LOG.error("Error downloading SFTP files: {}", e.getMessage());
         }
         
         return downloadedFiles;
@@ -116,35 +109,31 @@ public class SftpIntegrationService implements ISftpIntegrationService {
             File file = new File(filePath);
             
             if (!file.exists() || !file.canRead()) {
-                LOG.warn("Archivo no valido o no legible: {}", filePath);
+                LOG.warn("Invalid or unreadable file: {}", filePath);
                 return false;
             }
             
-            LOG.info("Procesando archivo descargado: {}", file.getName());
+            LOG.info("Processing downloaded file: {}", file.getName());
             
-            // Enviar archivo al switch principal
             boolean success = switchApiClient.sendFileToSwitch(file);
             
             if (success) {
-                // Mover archivo a procesados
                 moveToProcessed(file);
-                LOG.info("Archivo enviado exitosamente al switch: {}", file.getName());
+                LOG.info("File sent to switch successfully: {}", file.getName());
                 return true;
             } else {
-                // Mover archivo a errores
                 moveToError(file);
-                LOG.warn("Error al enviar archivo al switch: {}", file.getName());
+                LOG.warn("Error sending file to switch: {}", file.getName());
                 return false;
             }
             
         } catch (java.io.IOException | RuntimeException e) {
-            LOG.error("Error procesando archivo descargado {}: {}", filePath, e.getMessage());
+            LOG.error("Error processing downloaded file {}: {}", filePath, e.getMessage());
             
-            // Intentar mover a errores
             try {
                 moveToError(new File(filePath));
             } catch (java.io.IOException moveError) {
-                LOG.error("Error moviendo archivo a errores: {}", moveError.getMessage());
+                LOG.error("Error moving file to error directory: {}", moveError.getMessage());
             }
             
             return false;
@@ -158,7 +147,7 @@ public class SftpIntegrationService implements ISftpIntegrationService {
         Path target = processedDir.resolve(file.getName());
         Files.move(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
         
-        LOG.debug("Archivo movido a procesados: {}", target);
+        LOG.debug("File moved to processed directory: {}", target);
     }
     
     private void moveToError(File file) throws java.io.IOException {
@@ -168,7 +157,7 @@ public class SftpIntegrationService implements ISftpIntegrationService {
         Path target = errorDir.resolve(file.getName());
         Files.move(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
         
-        LOG.debug("Archivo movido a errores: {}", target);
+        LOG.debug("File moved to error directory: {}", target);
     }
     
     @Override
@@ -178,14 +167,13 @@ public class SftpIntegrationService implements ISftpIntegrationService {
         }
         
         try {
-            // Intentar conectar para verificar salud
             boolean connected = sftpClientService.connect();
             if (connected) {
                 sftpClientService.disconnect();
             }
             return connected;
         } catch (RuntimeException e) {
-            LOG.warn("Verificacion de salud SFTP fallo: {}", e.getMessage());
+            LOG.warn("SFTP health check failed: {}", e.getMessage());
             return false;
         }
     }
