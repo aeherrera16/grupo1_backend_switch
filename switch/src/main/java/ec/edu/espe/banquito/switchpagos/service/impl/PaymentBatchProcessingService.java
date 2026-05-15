@@ -62,7 +62,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
 
     @Override
     @Transactional
-    // RF-03/RF-04: processes all lines sequentially and never aborts the full batch on single-line failures.
+    // RF-03/RF-04: process lines sequentially and continue on line errors.
     public PaymentBatch process(PaymentBatch batch, List<PaymentDetail> details) {
         logger.info("Processing batch {} with {} details", batch.getId(), details.size());
 
@@ -80,7 +80,6 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                     recordDetailStatusChange(detail, previousStatus, PaymentDetailStatusEnum.SUCCESS, null, null);
                     notifySuccessfulPayment(batch, detail);
                 } catch (Exception e) {
-                    // RF-04: reject only the failing line and continue with the next one.
                     logger.error("Error processing payment detail {}: {}", detail.getId(), e.getMessage());
                     PaymentDetailStatusEnum previousStatus = detail.getStatus();
                     detail.setStatus(PaymentDetailStatusEnum.REJECTED);
@@ -89,13 +88,8 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                 }
                 paymentDetailRepository.save(detail);
             }
-<<<<<<< Updated upstream
             
             billingService.generateCharge(batch, details);
-=======
-
-            billingService.generarCobro(batch, details);
->>>>>>> Stashed changes
 
             recordBatchStatusChange(batch, batch.getStatus(), BatchStatusEnum.PROCESSED);
             batch.setStatus(BatchStatusEnum.PROCESSED);
@@ -136,7 +130,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
         detailStatusLogRepository.save(log);
     }
 
-    // RF-03 per-line execution: limit check, then Core transfer validation/liquidation.
+    // RF-03: validate line limit and execute transfer in Core.
     private void processPaymentDetail(PaymentDetail detail) {
         if (detail.getAmount() == null || detail.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Invalid amount");

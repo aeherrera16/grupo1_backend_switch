@@ -97,6 +97,7 @@ public class BillingService {
     }
 
     @Transactional
+    // RF-06/RF-07: calculate service charge and send settlement to Core.
     public void generateCharge(PaymentBatch batch, List<PaymentDetail> details) {
         logger.info("=== START CHARGE GENERATION RF-06 === Batch ID: {}, File: {}", batch.getId(), batch.getFileName());
 

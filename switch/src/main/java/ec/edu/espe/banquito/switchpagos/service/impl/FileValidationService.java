@@ -62,7 +62,7 @@ public class FileValidationService {
         return fileValidationRepository.save(validation);
     }
 
-    // RF-02 early rejection: totals, duplicate hash/name, and active RUC service.
+    // RF-02: early file rejection before Core processing.
     public void validateEarlyRejection(CsvParseResult parseResult) {
         PaymentBatch batch = parseResult.getBatch();
         List<PaymentDetail> details = parseResult.getDetails();
