@@ -5,9 +5,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import ec.edu.espe.banquito.switchpagos.model.PaymentDetail;
-import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentDetailRepository;
-import ec.edu.espe.banquito.switchpagos.repository.ServiceChargeRepository;
 import ec.edu.espe.banquito.switchpagos.service.IReceiptGeneratorService;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
@@ -24,10 +22,7 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
     private final BillingService billingService;
 
     public ReceiptGeneratorServiceImpl(
-            PaymentBatchRepository paymentBatchRepository,
-            SettlementServiceImpl settlementService,
             PaymentDetailRepository detailRepository,
-            ServiceChargeRepository chargeRepository,
             BillingService billingService
     ) {
         this.detailRepository = detailRepository;
@@ -40,7 +35,7 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
         try {
 
             Map<String, Object> receipt =
-                    billingService.generarComprobanteLiquidacion(batchId);
+                    billingService.generateSettlementReceipt(batchId);
 
             List<PaymentDetail> details =
                     detailRepository.findByPaymentBatchId(batchId);

@@ -20,7 +20,7 @@ public class NoveltyReportServiceImpl implements INoveltyReportService {
 
         String csv =
                 billingService
-                        .generarReporteNovedadesCsv(batchId);
+                        .generateNoveltyReportCsv(batchId);
 
         return csv.getBytes(StandardCharsets.UTF_8);
     }

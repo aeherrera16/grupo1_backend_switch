@@ -85,10 +85,10 @@ function mapProxyTarget(req) {
     };
   }
 
-  if (req.url.startsWith("/api/switch/")) {
+  if (req.url.startsWith("/api/switch/v1")) {
     return {
       baseUrl: SWITCH_BASE_URL,
-      path: req.url.replace("/api/switch", "")
+      path: req.url.replace("/api/switch/v1", "")
     };
   }
 

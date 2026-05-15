@@ -49,3 +49,8 @@ sftp-uploads/
 .env
 *.env
 !.env.example
+
+
+#Excluir carpetas front y backend
+banca-web-switch/
+core/

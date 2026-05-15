@@ -27,7 +27,6 @@ import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentDetailRepository;
 import ec.edu.espe.banquito.switchpagos.service.impl.BusinessDayService;
-import ec.edu.espe.banquito.switchpagos.service.impl.CorporateClosingServiceImpl;
 import ec.edu.espe.banquito.switchpagos.service.impl.CoreFacadeService;
 import ec.edu.espe.banquito.switchpagos.service.impl.CutoffTimeService;
 import ec.edu.espe.banquito.switchpagos.service.impl.FileValidationService;
@@ -49,7 +48,6 @@ public class PaymentBatchController {
     private final PaymentBatchRepository paymentBatchRepository;
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
-    private final CorporateClosingServiceImpl corporateClosingServiceImpl;
     //Se inyecan servicio para repores
     private final ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl;
     private final NoveltyReportServiceImpl noveltyReportServiceImpl;
