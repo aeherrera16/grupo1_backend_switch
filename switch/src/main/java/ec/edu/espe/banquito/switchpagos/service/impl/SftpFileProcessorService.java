@@ -39,7 +39,7 @@ public class SftpFileProcessorService implements ISftpFileProcessorService {
             batch.setReceivedAt(LocalDateTime.now());
             batch.setStatus(BatchStatusEnum.RECEIVED);
             
-            logger.info("Lote creado - RUC: {}, Hash: {}, Total: {}", 
+            logger.info("Batch created - RUC: {}, Hash: {}, Total: {}", 
                        batch.getRuc(), batch.getFileHash(), batch.getHeaderTotalAmount());
 
             fileValidationService.validateEarlyRejection(parseResult);

@@ -45,7 +45,7 @@ public class SwitchDataInitializer implements CommandLineRunner {
         upsertFeeRule(10001, null, "0.05");
         upsertSwitchParameter("EMPRESA_ACCOUNT", "0050000202", "Cuenta matriz empresarial para cargos de pagos masivos");
 
-        logger.info("Reglas tarifarias SERVICE_FEE_RULE verificadas correctamente");
+        logger.info("SERVICE_FEE_RULE tariff rules verified successfully");
     }
 
     private void ensureServiceFeeRuleSchema() {

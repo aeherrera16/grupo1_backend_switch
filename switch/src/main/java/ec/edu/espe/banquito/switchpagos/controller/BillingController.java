@@ -56,16 +56,16 @@ public class BillingController {
 
         try {
             BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
-            logger.info("Resumen obtenido exitosamente para lote {}", batchId);
+            logger.info("Summary retrieved for batch {}", batchId);
             return ResponseEntity.ok(resumen);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener resumen del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching summary for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el resumen"));
         }
@@ -80,7 +80,7 @@ public class BillingController {
 
         try {
             List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
-            logger.info("Se obtuvieron {} detalles para el lote {}", detalles.size(), batchId);
+            logger.info("Retrieved {} details for batch {}", detalles.size(), batchId);
 
             return ResponseEntity.ok(Map.of(
                     "batchId", batchId,
@@ -89,12 +89,12 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener detalles del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching details for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener los detalles"));
         }
@@ -110,16 +110,16 @@ public class BillingController {
         try {
             ServiceCharge cargo = billingService.getServiceCharge(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("No hay cargo de servicio para el lote: " + batchId));
-            logger.info("Cargo obtenido exitosamente para lote {}", batchId);
+            logger.info("Charge retrieved for batch {}", batchId);
             return ResponseEntity.ok(cargo);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener cargo del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching charge for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el cargo"));
         }
@@ -132,11 +132,11 @@ public class BillingController {
         try {
             return ResponseEntity.ok(billingService.generateSettlementReceipt(batchId));
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al obtener comprobante del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching receipt for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el comprobante"));
         }
@@ -154,11 +154,11 @@ public class BillingController {
                     "historial", historial
             ));
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al obtener historial del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching history for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el historial del lote"));
         }
@@ -176,11 +176,11 @@ public class BillingController {
                     "historial", historial
             ));
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al obtener historial del detalle {}: {}", detailId, e.getMessage(), e);
+            logger.error("Error fetching history for detail {}: {}", detailId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el historial del detalle"));
         }
@@ -198,12 +198,12 @@ public class BillingController {
                     .contentType(MediaType.parseMediaType("text/csv"))
                     .body(csv);
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al generar novedades del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error generating novelties for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("error", "Error interno al generar novedades"));
@@ -215,24 +215,24 @@ public class BillingController {
      */
     @PostMapping("/test/{batchId}")
     public ResponseEntity<?> forzarGenerarCobro(@PathVariable Integer batchId) {
-        logger.warn("🔧 POST /switch/v1/billing/test/{} - OPERACIÓN DE TESTING", batchId);
+        logger.warn("POST /switch/v1/billing/test/{} - TEST OPERATION", batchId);
 
         try {
             // Load batch.
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
-            logger.info("Lote encontrado: {}", batch.getFileName());
+            logger.info("Batch found: {}", batch.getFileName());
 
             // Load details.
             List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
-            logger.info("Se obtuvieron {} detalles para procesamiento", detalles.size());
+            logger.info("Retrieved {} details for processing", detalles.size());
 
             // Generate charge.
-            logger.info("Ejecutando generarCobro para lote {}", batchId);
+            logger.info("Running charge generation for batch {}", batchId);
             billingService.generateCharge(batch, detalles);
 
-            logger.info("GenerarCobro ejecutado exitosamente");
+            logger.info("Charge generation completed successfully");
 
             return ResponseEntity.ok(Map.of(
                     "mensaje", "GenerarCobro ejecutado exitosamente (TEST)",
@@ -241,17 +241,17 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (IllegalStateException e) {
-            logger.error("Error de estado: {}", e.getMessage());
+            logger.error("State error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al ejecutar generarCobro: {}", e.getMessage(), e);
+            logger.error("Error running charge generation: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
@@ -266,7 +266,7 @@ public class BillingController {
 
         try {
             List<ServiceCharge> cargos = billingService.getAllCharges();
-            logger.info("Se obtuvieron {} cargos totales", cargos.size());
+            logger.info("Retrieved {} total charges", cargos.size());
 
             return ResponseEntity.ok(Map.of(
                     "totalCargos", cargos.size(),
@@ -274,7 +274,7 @@ public class BillingController {
             ));
 
         } catch (Exception e) {
-            logger.error("Error al obtener todos los cargos: {}", e.getMessage(), e);
+            logger.error("Error fetching all charges: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener los cargos"));
         }
@@ -289,7 +289,7 @@ public class BillingController {
 
         try {
             String cuentaEmpresa = billingService.getCompanyAccount(paramCode);
-            logger.info("Cuenta empresa obtenida: {}", cuentaEmpresa);
+            logger.info("Company account retrieved: {}", cuentaEmpresa);
 
             return ResponseEntity.ok(Map.of(
                     "paramCode", paramCode,
@@ -297,12 +297,12 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Parámetro no encontrado: {}", e.getMessage());
+            logger.warn("Parameter not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener cuenta empresa: {}", e.getMessage(), e);
+            logger.error("Error fetching company account: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener la cuenta empresa"));
         }
@@ -317,7 +317,7 @@ public class BillingController {
 
         try {
             String cuentaEmpresa = billingService.getDefaultCompanyAccount();
-            logger.info("Cuenta empresa por defecto obtenida: {}", cuentaEmpresa);
+            logger.info("Default company account retrieved: {}", cuentaEmpresa);
 
             return ResponseEntity.ok(Map.of(
                     "cuentaEmpresa", cuentaEmpresa,
@@ -325,12 +325,12 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Parámetro por defecto no encontrado: {}", e.getMessage());
+            logger.warn("Default parameter not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener cuenta empresa por defecto: {}", e.getMessage(), e);
+            logger.error("Error fetching default company account: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener la cuenta empresa"));
         }
@@ -404,12 +404,12 @@ public class BillingController {
                     .body(content);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al descargar comprobante del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error downloading receipt for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al descargar el comprobante"));
         }
@@ -470,14 +470,15 @@ public class BillingController {
                     .body(content);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al descargar reporte de novedades del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error downloading novelty report for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al descargar el reporte de novedades"));
         }
     }
 }
+
