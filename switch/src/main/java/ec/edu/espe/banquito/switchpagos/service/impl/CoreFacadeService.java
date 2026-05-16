@@ -55,14 +55,36 @@ public class CoreFacadeService {
                     HttpMethod.POST,
                     new HttpEntity<>(body),
                     new ParameterizedTypeReference<Map<String, Object>>() {});
-            Object successBody = response.getBody() != null ? response.getBody().get("success") : null;
-            boolean success = response.getStatusCode().is2xxSuccessful() && Boolean.TRUE.equals(successBody);
+            boolean success = response.getStatusCode().is2xxSuccessful() && isSuccessfulCoreResponse(response.getBody());
             logger.info("Commission charge {}: {}", success ? "successful" : "failed", uuid);
             return success;
         } catch (RestClientException e) {
             logger.error("Error charging commission in Core: {}", e.getMessage());
             return Boolean.FALSE;
         }
+    }
+
+    private boolean isSuccessfulCoreResponse(Map<String, Object> body) {
+        if (body == null || body.isEmpty()) {
+            return true;
+        }
+        Object success = body.get("success");
+        if (success instanceof Boolean booleanSuccess) {
+            return booleanSuccess;
+        }
+        if (success != null) {
+            return Boolean.parseBoolean(success.toString());
+        }
+        Object status = body.get("status");
+        if (status != null) {
+            String normalizedStatus = status.toString().trim().toUpperCase();
+            return "OK".equals(normalizedStatus)
+                    || "SUCCESS".equals(normalizedStatus)
+                    || "SUCCESSFUL".equals(normalizedStatus)
+                    || "CHARGED".equals(normalizedStatus)
+                    || "COMPLETED".equals(normalizedStatus);
+        }
+        return true;
     }
 
     public Boolean validateCompanyAccount(String accountNumber) {
