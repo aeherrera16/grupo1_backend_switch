@@ -32,7 +32,7 @@ public class PaymentNotificationClient implements IPaymentNotificationClient {
     @Override
     public boolean sendPaymentSuccessNotification(PaymentSuccessNotificationRequestDTO request) {
         if (!enabled) {
-            logger.warn("RF-05 notifications are disabled; paymentDetailId {} will not be sent",
+            logger.warn("Notifications are disabled; paymentDetailId {} will not be sent",
                     request.getPaymentDetailId());
             return false;
         }
@@ -47,10 +47,10 @@ public class PaymentNotificationClient implements IPaymentNotificationClient {
             message.setText(emailBody);
 
             mailSender.send(message);
-            logger.info("RF-05 notification sent successfully for paymentDetailId {}", request.getPaymentDetailId());
+            logger.info("Notification sent successfully for paymentDetailId {}", request.getPaymentDetailId());
             return true;
         } catch (Exception e) {
-            logger.error("Error sending RF-05 notification for paymentDetailId {}: {}",
+            logger.error("Error sending notification for paymentDetailId {}: {}",
                     request.getPaymentDetailId(), e.getMessage());
             return false;
         }

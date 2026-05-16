@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Proporciona acceso a la fecha y hora actual.
- * Permite inyección de dependencias y testing sin afectar tiempo real.
- * 
- * En producción: retorna tiempo real
- * En testing/demo: puede ser mockeado para simular diferentes horas
+ * Provides real or fixed Switch time.
  */
 @Component
 public class DateTimeProvider {
@@ -29,7 +25,7 @@ public class DateTimeProvider {
     private String timeZone;
 
     /**
-     * Retorna la fecha y hora actual
+     * Returns the current date and time.
      */
     public LocalDateTime now() {
         if (isFixedTimeEnabled()) {
@@ -40,14 +36,14 @@ public class DateTimeProvider {
     }
 
     /**
-     * Retorna la fecha actual
+     * Returns the current date.
      */
     public LocalDate today() {
         return now().toLocalDate();
     }
 
     /**
-     * Retorna la hora actual
+     * Returns the current time.
      */
     public LocalTime currentTime() {
         return now().toLocalTime();

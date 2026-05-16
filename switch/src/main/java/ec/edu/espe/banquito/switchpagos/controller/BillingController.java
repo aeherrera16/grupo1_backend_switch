@@ -28,10 +28,7 @@ import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.service.impl.BillingService;
 
 /**
- * RF-06: Controller REST para reportes y gestión de comisiones.
- * Expone los servicios de facturación y comisiones del Switch de Pagos Masivos.
- *
- * Kevin - Comisiones y Reportes
+ * RF-06: Billing and commission endpoints.
  */
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"})
@@ -51,11 +48,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/batches/{batchId}/summary
-     * Obtiene el resumen completo de un lote (batch + comisión).
-     *
-     * @param batchId ID del lote
-     * @return BatchSummaryDTO con información consolidada
+     * Returns the batch billing summary.
      */
     @GetMapping("/batches/{batchId}/summary")
     public ResponseEntity<?> obtenerResumenBatch(@PathVariable Integer batchId) {
@@ -79,11 +72,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/batches/{batchId}/detail
-     * Obtiene los detalles de pago (PaymentDetail) de un lote.
-     *
-     * @param batchId ID del lote
-     * @return Lista de PaymentDetail del lote
+     * Returns batch payment details.
      */
     @GetMapping("/batches/{batchId}/detail")
     public ResponseEntity<?> obtenerDetallesBatch(@PathVariable Integer batchId) {
@@ -112,11 +101,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/batches/{batchId}/charge
-     * Obtiene el cargo de servicio (ServiceCharge) para un lote.
-     *
-     * @param batchId ID del lote
-     * @return ServiceCharge con información de la comisión
+     * Returns the batch service charge.
      */
     @GetMapping("/batches/{batchId}/charge")
     public ResponseEntity<?> obtenerCargoServicio(@PathVariable Integer batchId) {
@@ -226,29 +211,24 @@ public class BillingController {
     }
 
     /**
-     * POST /switch/v1/billing/test/{batchId}
-     * SOLO PARA PRUEBAS: Fuerza la ejecución de generarCobro en un lote.
-     * Útil para testing y debugging sin esperar al procesador de pagos.
-     *
-     * @param batchId ID del lote
-     * @return Mensaje de resultado de la operación
+     * Test endpoint for charge generation.
      */
     @PostMapping("/test/{batchId}")
     public ResponseEntity<?> forzarGenerarCobro(@PathVariable Integer batchId) {
         logger.warn("🔧 POST /switch/v1/billing/test/{} - OPERACIÓN DE TESTING", batchId);
 
         try {
-            // Obtener el lote
+            // Load batch.
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
             logger.info("Lote encontrado: {}", batch.getFileName());
 
-            // Obtener los detalles del lote
+            // Load details.
             List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
             logger.info("Se obtuvieron {} detalles para procesamiento", detalles.size());
 
-            // Ejecutar generarCobro
+            // Generate charge.
             logger.info("Ejecutando generarCobro para lote {}", batchId);
             billingService.generateCharge(batch, detalles);
 
@@ -273,15 +253,12 @@ public class BillingController {
         } catch (Exception e) {
             logger.error("Error al ejecutar generarCobro: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Error interno al ejecutar generarCobro: " + e.getMessage()));
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
     /**
-     * GET /switch/v1/billing/charges
-     * Obtiene todos los cargos de servicio registrados.
-     *
-     * @return Lista de todos los ServiceCharge
+     * Returns all service charges.
      */
     @GetMapping("/charges")
     public ResponseEntity<?> obtenerTodosCargos() {
@@ -304,11 +281,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/empresa-account/{paramCode}
-     * Obtiene la cuenta empresa desde SwitchParameter.
-     *
-     * @param paramCode Código del parámetro
-     * @return Número de cuenta de la empresa
+     * Returns the company account by parameter code.
      */
     @GetMapping("/empresa-account/{paramCode}")
     public ResponseEntity<?> obtenerCuentaEmpresa(@PathVariable String paramCode) {
@@ -336,10 +309,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/empresa-account
-     * Obtiene la cuenta empresa con parámetro por defecto "EMPRESA_ACCOUNT".
-     *
-     * @return Número de cuenta de la empresa
+     * Returns the default company account.
      */
     @GetMapping("/empresa-account")
     public ResponseEntity<?> obtenerCuentaEmpresaDefault() {
@@ -367,11 +337,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/batches/{batchId}/download/comprobante
-     * Descarga el comprobante de liquidación del lote en formato PDF/TXT.
-     *
-     * @param batchId ID del lote
-     * @return Archivo con el comprobante de liquidación
+     * Downloads the settlement receipt.
      */
     @GetMapping("/batches/{batchId}/download/comprobante")
     public ResponseEntity<?> descargarComprobanteLiquidacion(@PathVariable Integer batchId) {
@@ -450,11 +416,7 @@ public class BillingController {
     }
 
     /**
-     * GET /switch/v1/billing/batches/{batchId}/download/novedades
-     * Descarga el reporte de novedades (rechazos) del lote.
-     *
-     * @param batchId ID del lote
-     * @return Archivo con el reporte de novedades en formato CSV
+     * Downloads the rejection report.
      */
     @GetMapping("/batches/{batchId}/download/novedades")
     public ResponseEntity<?> descargarReporteNovedadesDetallado(@PathVariable Integer batchId) {

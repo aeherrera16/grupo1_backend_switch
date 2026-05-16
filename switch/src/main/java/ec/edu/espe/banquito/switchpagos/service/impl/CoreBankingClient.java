@@ -23,7 +23,7 @@ public class CoreBankingClient implements ICoreBankingClient {
     }
 
     @Override
-    // Executes Core transfer (origin/destination checks plus debit/credit liquidation).
+    // RF-03: Executes Core transfer.
     public TransferResponseDTO transfer(String origin, String destination, String beneficiaryIdentification,
                                         BigDecimal amount, String uuid) {
         return restClient.post()

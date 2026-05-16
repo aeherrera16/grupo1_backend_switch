@@ -61,7 +61,7 @@ public class PaymentBatch {
     @Column(name = "header_total_records")
     private Integer headerTotalRecords;
 
-    // Regla 3: Manejo estricto de dinero
+    // Use BigDecimal for money.
     @Column(name = "header_total_amount", precision = 18, scale = 2)
     private BigDecimal headerTotalAmount;
 
@@ -71,16 +71,16 @@ public class PaymentBatch {
     @Column(name = "rejected_records")
     private Integer rejectedRecords;
 
-    // Regla 6: Constructor vacío
+    // JPA constructor.
     public PaymentBatch() {
     }
 
-    // Regla 6: Constructor solo con la PK
+    // PK constructor.
     public PaymentBatch(Integer id) {
         this.id = id;
     }
 
-    // --- GETTERS Y SETTERS MANUALES ---
+    // Accessors.
 
     public Integer getId() {
         return id;
@@ -202,7 +202,7 @@ public class PaymentBatch {
         this.rejectedRecords = rejectedRecords;
     }
 
-    // Regla 5: equals() y hashCode() SOLO de la PK
+    // Equality by PK.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -216,7 +216,7 @@ public class PaymentBatch {
         return Objects.hashCode(id);
     }
 
-    // Regla 7: Sobreescritura del toString()
+    // Debug output.
     @Override
     public String toString() {
         return "PaymentBatch{" +

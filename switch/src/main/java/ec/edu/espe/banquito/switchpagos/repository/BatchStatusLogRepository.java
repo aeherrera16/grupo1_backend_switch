@@ -9,7 +9,6 @@ import java.util.List;
 @Repository
 public interface BatchStatusLogRepository extends JpaRepository<BatchStatusLog, Integer> {
 
-    // Método para obtener todo el historial de cambios de un archivo en particular,
-    // ordenado cronológicamente.
+    // Returns batch status history.
     List<BatchStatusLog> findByPaymentBatchIdOrderByChangedAtAsc(Integer paymentBatchId);
 }

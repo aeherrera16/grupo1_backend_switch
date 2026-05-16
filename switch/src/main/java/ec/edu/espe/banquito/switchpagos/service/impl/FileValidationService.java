@@ -119,7 +119,7 @@ public class FileValidationService {
         validateNoDuplicateNominaProcessed(batch);
         validateRucClientePagosMasivos(batch.getRuc().trim());
 
-        logger.info("RF-02 early validation passed for file {}", batch.getFileName());
+        logger.info("Early validation passed for file {}", batch.getFileName());
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {

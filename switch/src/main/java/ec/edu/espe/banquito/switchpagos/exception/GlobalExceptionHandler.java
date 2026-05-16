@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * Manejador global de excepciones para la aplicación.
- * Captura excepciones y las convierte en respuestas HTTP apropriadas.
+ * Maps exceptions to HTTP responses.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,8 +18,7 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
-     * Maneja excepciones ResourceNotFoundException.
-     * Retorna 404 NOT FOUND.
+     * Handles not found errors.
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException e) {
@@ -33,8 +31,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja IllegalStateException.
-     * Retorna 400 BAD REQUEST.
+     * Handles invalid state errors.
      */
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<?> handleIllegalState(IllegalStateException e) {
@@ -47,8 +44,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja IllegalArgumentException.
-     * Retorna 400 BAD REQUEST.
+     * Handles invalid request errors.
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
@@ -61,15 +57,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja cualquier otra excepción no controlada.
-     * Retorna 500 INTERNAL SERVER ERROR.
+     * Handles unexpected errors.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception e) {
-        logger.error("Excepción no controlada: {}", e.getMessage(), e);
+        logger.error("Unexpected exception: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of(
-                        "error", "Error interno del servidor",
+                        "error", "Internal server error",
                         "details", e.getMessage(),
                         "status", HttpStatus.INTERNAL_SERVER_ERROR.value()
                 ));

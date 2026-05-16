@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface DetailStatusLogRepository extends JpaRepository<DetailStatusLog, Integer> {
 
-    // Método para auditar el historial de una línea de pago específica
+    // Returns detail status history.
     List<DetailStatusLog> findByPaymentDetailIdOrderByChangedAtAsc(Integer paymentDetailId);
 }

@@ -30,7 +30,7 @@ public class PaymentDetail {
     @Column(name = "version")
     private Integer version;
 
-    // Regla 8: Relación de hijo a padre
+    // Child-to-parent relation.
     @ManyToOne
     @JoinColumn(name = "payment_batch_id", referencedColumnName = "id", nullable = false)
     private PaymentBatch paymentBatch;
@@ -47,7 +47,7 @@ public class PaymentDetail {
     @Column(name = "destination_account_number", nullable = false, length = 30)
     private String destinationAccountNumber;
 
-    // Regla 3: Dinero SIEMPRE en BigDecimal
+    // Use BigDecimal for money.
     @Column(name = "amount", nullable = false, precision = 18, scale = 2)
     private BigDecimal amount;
 
@@ -70,16 +70,16 @@ public class PaymentDetail {
     @Column(name = "executed_at")
     private LocalDateTime executedAt;
 
-    // Regla 6: Constructor vacío
+    // JPA constructor.
     public PaymentDetail() {
     }
 
-    // Regla 6: Constructor con clave primaria
+    // PK constructor.
     public PaymentDetail(Integer id) {
         this.id = id;
     }
 
-    // --- GETTERS Y SETTERS MANUALES ---
+    // Accessors.
 
     public Integer getId() {
         return id;
@@ -193,7 +193,7 @@ public class PaymentDetail {
         this.executedAt = executedAt;
     }
 
-    // Regla 5: equals() y hashCode() SOLO de la PK
+    // Equality by PK.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -207,7 +207,7 @@ public class PaymentDetail {
         return Objects.hashCode(id);
     }
 
-    // Regla 7: Sobreescritura del toString()
+    // Debug output.
     @Override
     public String toString() {
         return "PaymentDetail{" +

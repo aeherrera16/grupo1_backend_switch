@@ -48,7 +48,7 @@ public class PaymentBatchController {
     private final PaymentBatchRepository paymentBatchRepository;
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
-    //Se inyecan servicio para repores
+    // Report services.
     private final ReceiptGeneratorServiceImpl receiptGeneratorServiceImpl;
     private final NoveltyReportServiceImpl noveltyReportServiceImpl;
     private final DateTimeProvider dateTimeProvider;
@@ -82,7 +82,7 @@ public class PaymentBatchController {
         return ResponseEntity.ok(paymentBatchRepository.findAll());
     }
 
-    // RF-01 and RF-02 entrypoint for manual and SFTP uploads.
+    // RF-01/RF-02: Manual and SFTP upload entrypoint.
     @PostMapping("/upload-csv")
     public ResponseEntity<?> uploadCsv(@RequestParam("file") MultipartFile file,
                                        @RequestParam("channel") ChannelEnum channel) {
@@ -130,14 +130,14 @@ public class PaymentBatchController {
                 logger.info("Within ingestion window and business day. Processing immediately.");
             }
 
-            logger.info("Starting RF-02 early validation");
+            logger.info("Starting early validation");
             try {
                 fileValidationService.validateEarlyRejection(parseResult);
                 logger.info("Early validation passed");
             } catch (IllegalArgumentException e) {
-                logger.error("RF-02 early rejection: {}", e.getMessage());
+                logger.error("Early validation rejected: {}", e.getMessage());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                        "error", "RF-02 validation rejected: " + e.getMessage(),
+                        "error", e.getMessage(),
                         "rejectedEarly", true
                 ));
             }
@@ -182,7 +182,7 @@ public class PaymentBatchController {
         return uploadCsv(file, ChannelEnum.SFTP);
     }
 
-    //REPORTES
+    // Reports.
 
 
     @GetMapping("/{id}/receipt")

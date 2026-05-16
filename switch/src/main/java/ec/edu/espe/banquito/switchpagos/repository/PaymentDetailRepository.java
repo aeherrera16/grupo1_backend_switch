@@ -11,7 +11,7 @@ import ec.edu.espe.banquito.switchpagos.model.PaymentDetail;
 @Repository
 public interface PaymentDetailRepository extends JpaRepository<PaymentDetail, Integer> {
 
-    // Para procesar el lote iterando "línea por línea" ordenado por el número de línea
+    // Returns details in processing order.
     List<PaymentDetail> findByPaymentBatchIdOrderByLineNumberAsc(Integer paymentBatchId);
 
     List<PaymentDetail> findByPaymentBatchId(Integer paymentBatchId);

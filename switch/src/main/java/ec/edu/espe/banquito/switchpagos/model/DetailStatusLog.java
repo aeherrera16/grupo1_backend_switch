@@ -21,7 +21,7 @@ public class DetailStatusLog {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    // Relación hacia el Detalle de Pago (Padre directo)
+    // Detail relation.
     @ManyToOne
     @JoinColumn(name = "payment_detail_id", referencedColumnName = "id", nullable = false)
     private PaymentDetail paymentDetail;
@@ -48,7 +48,7 @@ public class DetailStatusLog {
         this.id = id;
     }
 
-    // --- GETTERS Y SETTERS MANUALES ---
+    // Accessors.
 
     public Integer getId() {
         return id;

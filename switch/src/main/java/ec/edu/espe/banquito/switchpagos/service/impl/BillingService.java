@@ -99,11 +99,19 @@ public class BillingService {
     @Transactional
     // RF-06/RF-07: calculate service charge and send settlement to Core.
     public void generateCharge(PaymentBatch batch, List<PaymentDetail> details) {
-        logger.info("=== START CHARGE GENERATION RF-06 === Batch ID: {}, File: {}", batch.getId(), batch.getFileName());
+        logger.info("Starting charge generation. Batch ID: {}, File: {}", batch.getId(), batch.getFileName());
 
         int successful = countSuccess(details);
         int rejected = details != null ? details.size() - successful : 0;
         logger.info("Batch result - Successful: {}, Rejected: {}", successful, rejected);
+
+        if (successful == 0) {
+            logger.info("Skipping charge generation because the batch has no successful transactions");
+            batch.setSuccessfulRecords(successful);
+            batch.setRejectedRecords(rejected);
+            paymentBatchRepository.save(batch);
+            return;
+        }
 
         Optional<ServiceFeeRule> ruleOpt = serviceFeeRuleRepository.findRuleByTransactionCount(BigDecimal.valueOf(successful));
         if (ruleOpt.isEmpty()) {
@@ -164,7 +172,7 @@ public class BillingService {
         batch.setRejectedRecords(rejected);
         paymentBatchRepository.save(batch);
 
-        logger.info("=== END CHARGE GENERATION RF-06 === successful_records: {}, rejected_records: {}", successful, rejected);
+        logger.info("Charge generation finished. successful_records: {}, rejected_records: {}", successful, rejected);
     }
 
     public BatchSummaryDTO getBatchSummary(Integer batchId) {

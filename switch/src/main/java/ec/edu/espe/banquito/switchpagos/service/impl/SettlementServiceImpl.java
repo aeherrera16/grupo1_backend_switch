@@ -88,7 +88,7 @@ public class SettlementServiceImpl implements ISettlementService {
 
         dto.setTotalCharge(totalCharge);
 
-        // ===== CAMPOS FALTANTES =====
+        // RF-06: Extra settlement fields.
 
         dto.setUnitFee(rule.getUnitFee());
 

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Cliente para consultar al core (tabla HOLIDAY) si un día es hábil.
+ * RF-01: Checks business days in Core.
  */
 @Component
 public class CoreCalendarClient {
@@ -27,27 +28,51 @@ public class CoreCalendarClient {
     private String isBusinessDayEndpoint;
 
     /**
-     * @return true si el core responde que es día hábil; null si no se pudo consultar.
+     * Returns true when Core marks the date as business day.
      */
     public Boolean isBusinessDay(LocalDate date) {
+        String url = UriComponentsBuilder.fromUriString(coreBaseUrl)
+                .path(isBusinessDayEndpoint)
+                .queryParam("date", date)
+                .toUriString();
+
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> response = restTemplate.getForObject(coreBaseUrl + isBusinessDayEndpoint + "?date=" + date, Map.class);
+            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
             if (response == null) {
+                LOG.warn("Core calendar returned an empty response: {}", url);
                 return null;
             }
-            Object val = response.get("businessDay");
-            if (val instanceof Boolean b) {
-                return b;
+
+            Boolean businessDay = readBoolean(response, "businessDay");
+            if (businessDay != null) {
+                return businessDay;
             }
-            if (val instanceof String s) {
-                return Boolean.valueOf(s);
+            businessDay = readBoolean(response, "isBusinessDay");
+            if (businessDay != null) {
+                return businessDay;
             }
+            businessDay = readBoolean(response, "workingDay");
+            if (businessDay != null) {
+                return businessDay;
+            }
+
+            LOG.warn("Core calendar response did not include a valid business-day flag. URL: {}, response: {}", url, response);
             return null;
         } catch (RestClientException | IllegalArgumentException e) {
-            LOG.warn("No se pudo consultar el core para día hábil", e);
+            LOG.warn("No se pudo consultar el Core para dia habil. URL: {}", url, e);
             return null;
         }
     }
-}
 
+    private Boolean readBoolean(Map<String, Object> response, String key) {
+        Object val = response.get(key);
+        if (val instanceof Boolean b) {
+            return b;
+        }
+        if (val instanceof String s && !s.isBlank()) {
+            return Boolean.valueOf(s);
+        }
+        return null;
+    }
+}

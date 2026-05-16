@@ -21,7 +21,7 @@ public class BatchStatusLog {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    // Regla 8: Relación hacia el Lote (Padre)
+    // Batch relation.
     @ManyToOne
     @JoinColumn(name = "payment_batch_id", referencedColumnName = "id", nullable = false)
     private PaymentBatch paymentBatch;
@@ -35,16 +35,16 @@ public class BatchStatusLog {
     @Column(name = "changed_at")
     private LocalDateTime changedAt;
 
-    // Regla 6: Constructor vacío
+    // JPA constructor.
     public BatchStatusLog() {
     }
 
-    // Regla 6: Constructor con clave primaria
+    // PK constructor.
     public BatchStatusLog(Integer id) {
         this.id = id;
     }
 
-    // --- GETTERS Y SETTERS MANUALES ---
+    // Accessors.
 
     public Integer getId() {
         return id;
@@ -86,7 +86,7 @@ public class BatchStatusLog {
         this.changedAt = changedAt;
     }
 
-    // Regla 5: equals() y hashCode() SOLO de la PK
+    // Equality by PK.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,7 +100,7 @@ public class BatchStatusLog {
         return Objects.hashCode(id);
     }
 
-    // Regla 7: Sobreescritura del toString()
+    // Debug output.
     @Override
     public String toString() {
         return "BatchStatusLog{" +

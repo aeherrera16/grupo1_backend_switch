@@ -33,7 +33,7 @@ public class SftpFileProcessorService implements ISftpFileProcessorService {
         ChannelEnum channel = ChannelEnum.SFTP;
         try {
             CsvParseResult parseResult = CsvBatchParser.parseCsvFile(inputStream, fileName, fileSize);
-            // CsvParseResult doesn't have success/errorMessage fields
+            // RF-02: Parse SFTP CSV payload.
             var batch = parseResult.getBatch();
             batch.setChannel(channel);
             batch.setReceivedAt(LocalDateTime.now());

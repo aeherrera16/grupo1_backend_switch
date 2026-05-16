@@ -60,7 +60,7 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             Color white =
                     Color.WHITE;
 
-            // ===== FUENTES =====
+            // RF-07: PDF fonts.
 
             Font titleFont =
                     FontFactory.getFont(
