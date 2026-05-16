@@ -54,8 +54,17 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             Color primary =
                     new Color(0, 51, 102);
 
+            Color accent =
+                    new Color(202, 163, 74);
+
             Color light =
-                    new Color(230, 230, 230);
+                    new Color(241, 244, 248);
+
+            Color border =
+                    new Color(210, 218, 229);
+
+            Color dark =
+                    new Color(33, 37, 41);
 
             Color white =
                     Color.WHITE;
@@ -65,7 +74,14 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             Font titleFont =
                     FontFactory.getFont(
                             FontFactory.HELVETICA_BOLD,
-                            18,
+                            17,
+                            white
+                    );
+
+            Font subtitleFont =
+                    FontFactory.getFont(
+                            FontFactory.HELVETICA,
+                            9,
                             white
                     );
 
@@ -80,20 +96,35 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
                     FontFactory.getFont(
                             FontFactory.HELVETICA,
                             10,
-                            Color.BLACK
+                            dark
                     );
 
             Font boldFont =
                     FontFactory.getFont(
                             FontFactory.HELVETICA_BOLD,
                             10,
-                            Color.BLACK
+                            dark
+                    );
+
+            Font totalFont =
+                    FontFactory.getFont(
+                            FontFactory.HELVETICA_BOLD,
+                            12,
+                            primary
+                    );
+
+            Font mutedFont =
+                    FontFactory.getFont(
+                            FontFactory.HELVETICA,
+                            8,
+                            new Color(90, 98, 110)
                     );
 
             PdfPTable header =
-                    new PdfPTable(1);
+                    new PdfPTable(2);
 
             header.setWidthPercentage(100);
+            header.setWidths(new int[]{4, 2});
 
             PdfPCell headerCell =
                     new PdfPCell();
@@ -106,23 +137,58 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             Paragraph title =
                     new Paragraph(
-                            "CORPORATE CLOSING RECEIPT",
+                            "COMPROBANTE DE LIQUIDACION",
                             titleFont
                     );
 
-            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(4);
 
             headerCell.addElement(title);
 
+            Paragraph subtitle =
+                    new Paragraph(
+                            "Pagos Masivos - Switch Bancario",
+                            subtitleFont
+                    );
+
+            headerCell.addElement(subtitle);
+
             header.addCell(headerCell);
 
+            PdfPCell statusCell =
+                    new PdfPCell();
+            statusCell.setBackgroundColor(primary);
+            statusCell.setBorder(Rectangle.NO_BORDER);
+            statusCell.setPadding(15);
+            statusCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+            Paragraph status =
+                    new Paragraph(
+                            "LOTE " + receipt.get("batchId") + "\n" + receipt.get("batchStatus"),
+                            titleFont
+                    );
+            status.setAlignment(Element.ALIGN_RIGHT);
+            statusCell.addElement(status);
+            header.addCell(statusCell);
+
             document.add(header);
+
+            PdfPTable accentLine =
+                    new PdfPTable(1);
+            accentLine.setWidthPercentage(100);
+            PdfPCell accentCell =
+                    new PdfPCell(new Phrase(" "));
+            accentCell.setFixedHeight(5);
+            accentCell.setBorder(Rectangle.NO_BORDER);
+            accentCell.setBackgroundColor(accent);
+            accentLine.addCell(accentCell);
+            document.add(accentLine);
 
             document.add(new Paragraph(" "));
 
             Paragraph section1 =
                     new Paragraph(
-                            "General Information",
+                            "Informacion general",
                             sectionFont
                     );
 
@@ -139,39 +205,49 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             addInfoRow(
                     infoTable,
-                    "Batch ID",
+                    "ID del lote",
                     String.valueOf(receipt.get("batchId")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    light,
+                    border
             );
             addInfoRow(
                     infoTable,
-                    "Archive",
+                    "Archivo",
                     String.valueOf(receipt.get("fileName")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    Color.WHITE,
+                    border
             );
             addInfoRow(
                     infoTable,
                     "RUC",
                     String.valueOf(receipt.get("ruc")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    light,
+                    border
             );
             addInfoRow(
                     infoTable,
-                    "Source Account",
+                    "Cuenta origen",
                     String.valueOf(receipt.get("sourceAccountNumber")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    Color.WHITE,
+                    border
             );
 
             addInfoRow(
                     infoTable,
-                    "State",
+                    "Estado",
                     String.valueOf(receipt.get("batchStatus")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    light,
+                    border
             );
 
             Object receivedAt =
@@ -179,13 +255,15 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             addInfoRow(
                     infoTable,
-                    "Date Received",
+                    "Fecha de recepcion",
                     receivedAt != null
                             ? ((LocalDateTime) receivedAt)
                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                             : "",
                     boldFont,
-                    normalFont
+                    normalFont,
+                    Color.WHITE,
+                    border
             );
 
             document.add(infoTable);
@@ -194,7 +272,7 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             Paragraph section2 =
                     new Paragraph(
-                            "Financial summary",
+                            "Resumen financiero",
                             sectionFont
                     );
 
@@ -211,79 +289,95 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             addMoneyRow(
                     financialTable,
-                    "Successful transactions",
+                    "Transacciones exitosas",
                     String.valueOf(receipt.get("successfulTransactions")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    Color.WHITE,
+                    border
             );
 
             addMoneyRow(
                     financialTable,
-                    "Rejected transactions",
+                    "Transacciones rechazadas",
                     String.valueOf(receipt.get("rejectedTransactions")),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    light,
+                    border
             );
 
 
             addMoneyRow(
                     financialTable,
-                    "Amount disbursed",
+                    "Monto dispersado",
                     "$ " + receipt.get("successfulDispersedAmount"),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    Color.WHITE,
+                    border
             );
 
             addMoneyRow(
                     financialTable,
-                    "Unit rate",
+                    "Tarifa unitaria",
                     "$ " + receipt.get("unitFee"),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    light,
+                    border
             );
 
             addMoneyRow(
                     financialTable,
-                    "Subtotal commission",
+                    "Subtotal de comision",
                     "$ " + receipt.get("commissionSubtotal"),
                     boldFont,
-                    normalFont
+                    normalFont,
+                    Color.WHITE,
+                    border
             );
 
             addMoneyRow(
                     financialTable,
                     "IVA",
-                    "$ " + receipt.get("vatAmount"),
+                    "15%",
                     boldFont,
-                    normalFont
+                    normalFont,
+                    light,
+                    border
             );
 
 
             PdfPCell totalLabel =
                     new PdfPCell(
                             new Phrase(
-                                    "TOTAL CHARGED",
-                                    boldFont
+                                    "TOTAL A DEBITAR",
+                                    totalFont
                             )
                     );
 
-            totalLabel.setBackgroundColor(light);
+            totalLabel.setBackgroundColor(new Color(232, 238, 247));
 
-            totalLabel.setPadding(10);
+            totalLabel.setBorderColor(accent);
+
+            totalLabel.setPadding(12);
 
             PdfPCell totalValue =
                     new PdfPCell(
                             new Phrase(
                                     "$ " + receipt.get("totalDebitedForServices"),
-                                    boldFont
+                                    totalFont
                             )
                     );
 
-            totalValue.setBackgroundColor(light);
+            totalValue.setBackgroundColor(new Color(232, 238, 247));
+
+            totalValue.setBorderColor(accent);
 
             totalValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-            totalValue.setPadding(10);
+            totalValue.setPadding(12);
 
             financialTable.addCell(totalLabel);
 
@@ -296,7 +390,7 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             Paragraph section3 =
                     new Paragraph(
-                            "Transaction details",
+                            "Detalle de transacciones",
                             sectionFont
                     );
 
@@ -311,48 +405,18 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             detailTable.setWidths(new int[]{1, 3, 3, 2, 2});
 
-            addHeader(detailTable, "Line", primary);
-            addHeader(detailTable, "Beneficiary", primary);
-            addHeader(detailTable, "Account", primary);
-            addHeader(detailTable, "Amount", primary);
-            addHeader(detailTable, "State", primary);
+            addHeader(detailTable, "Linea", primary);
+            addHeader(detailTable, "Beneficiario", primary);
+            addHeader(detailTable, "Cuenta", primary);
+            addHeader(detailTable, "Monto", primary);
+            addHeader(detailTable, "Estado", primary);
 
             for (PaymentDetail detail : details) {
-
-                detailTable.addCell(
-                        new Phrase(
-                                String.valueOf(detail.getLineNumber()),
-                                normalFont
-                        )
-                );
-
-                detailTable.addCell(
-                        new Phrase(
-                                detail.getBeneficiaryName(),
-                                normalFont
-                        )
-                );
-
-                detailTable.addCell(
-                        new Phrase(
-                                detail.getDestinationAccountNumber(),
-                                normalFont
-                        )
-                );
-
-                detailTable.addCell(
-                        new Phrase(
-                                "$ " + detail.getAmount(),
-                                normalFont
-                        )
-                );
-
-                detailTable.addCell(
-                        new Phrase(
-                                detail.getStatus().toString(),
-                                normalFont
-                        )
-                );
+                addDetailCell(detailTable, String.valueOf(detail.getLineNumber()), normalFont, border);
+                addDetailCell(detailTable, detail.getBeneficiaryName(), normalFont, border);
+                addDetailCell(detailTable, detail.getDestinationAccountNumber(), normalFont, border);
+                addDetailCell(detailTable, "$ " + detail.getAmount(), normalFont, border);
+                addDetailCell(detailTable, detail.getStatus().toString(), normalFont, border);
             }
 
             document.add(detailTable);
@@ -361,8 +425,8 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             Paragraph footer =
                     new Paragraph(
-                            "Document automatically generated by SWITCH PAYMENTS",
-                            normalFont
+                            "Documento generado automaticamente por SWITCH PAGOS",
+                            mutedFont
                     );
 
             footer.setAlignment(Element.ALIGN_CENTER);
@@ -385,7 +449,9 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             String label,
             String value,
             Font labelFont,
-            Font valueFont
+            Font valueFont,
+            Color background,
+            Color border
     ) {
 
         PdfPCell c1 =
@@ -393,6 +459,8 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
                         new Phrase(label, labelFont)
                 );
 
+        c1.setBackgroundColor(background);
+        c1.setBorderColor(border);
         c1.setPadding(8);
 
         PdfPCell c2 =
@@ -400,6 +468,8 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
                         new Phrase(value, valueFont)
                 );
 
+        c2.setBackgroundColor(background);
+        c2.setBorderColor(border);
         c2.setPadding(8);
 
         table.addCell(c1);
@@ -412,7 +482,9 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             String label,
             String value,
             Font labelFont,
-            Font valueFont
+            Font valueFont,
+            Color background,
+            Color border
     ) {
 
         PdfPCell c1 =
@@ -420,6 +492,8 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
                         new Phrase(label, labelFont)
                 );
 
+        c1.setBackgroundColor(background);
+        c1.setBorderColor(border);
         c1.setPadding(8);
 
         PdfPCell c2 =
@@ -427,6 +501,8 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
                         new Phrase(value, valueFont)
                 );
 
+        c2.setBackgroundColor(background);
+        c2.setBorderColor(border);
         c2.setPadding(8);
 
         c2.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -461,5 +537,21 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
         header.setPadding(8);
 
         table.addCell(header);
+    }
+
+    private void addDetailCell(
+            PdfPTable table,
+            String text,
+            Font font,
+            Color border
+    ) {
+        PdfPCell cell =
+                new PdfPCell(
+                        new Phrase(text != null ? text : "", font)
+                );
+
+        cell.setBorderColor(border);
+        cell.setPadding(7);
+        table.addCell(cell);
     }
 }

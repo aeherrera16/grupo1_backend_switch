@@ -66,15 +66,10 @@ public class SettlementServiceImpl implements ISettlementService {
                                 BigDecimal.valueOf(successfulTransactions)
                         );
 
-        BigDecimal vatAmount =
-                commissionSubtotal.multiply(
-                        new BigDecimal("0.15")
-                );
+        // RF-06: VAT remains reported at 15%, but it is not charged yet.
+        BigDecimal vatAmount = BigDecimal.ZERO;
 
-        BigDecimal totalCharge =
-                dispersedAmount
-                        .add(commissionSubtotal)
-                        .add(vatAmount);
+        BigDecimal totalCharge = dispersedAmount.add(commissionSubtotal);
 
         SettlementSummaryDTO dto = new SettlementSummaryDTO();
 

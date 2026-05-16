@@ -39,8 +39,6 @@ public class BillingService {
 
     private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
 
-    private static final BigDecimal IVA_RATE = new BigDecimal("0.15");
-
     private final ServiceFeeRuleRepository serviceFeeRuleRepository;
     private final ServiceChargeRepository serviceChargeRepository;
     private final PaymentBatchRepository paymentBatchRepository;
@@ -124,10 +122,18 @@ public class BillingService {
         logger.info("Applied unit fee: {} per transaction (Rule ID: {})", unitFee, rule.getId());
 
         BigDecimal subtotal = unitFee.multiply(BigDecimal.valueOf(successful)).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal vatAmount = subtotal.multiply(IVA_RATE).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal total = subtotal.add(vatAmount).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal dispersedAmount = details.stream()
+                .filter(detail -> detail.getStatus() == PaymentDetailStatusEnum.SUCCESS)
+                .map(PaymentDetail::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
+        // RF-06: VAT remains reported at 15%, but it is not charged yet.
+        // Future implementation: subtotal.multiply(IVA_RATE).
+        BigDecimal vatAmount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = dispersedAmount.add(subtotal).setScale(2, RoundingMode.HALF_UP);
 
-        logger.info("Commission breakdown - Subtotal: {}, VAT (15%): {}, Total: {}", subtotal, vatAmount, total);
+        logger.info("Commission breakdown - Disbursed: {}, Subtotal: {}, VAT: {}, Total: {}",
+                dispersedAmount, subtotal, vatAmount, total);
 
         ServiceCharge charge = new ServiceCharge();
         charge.setPaymentBatch(batch);
@@ -259,7 +265,7 @@ public class BillingService {
         List<PaymentDetail> details = paymentDetailRepository.findByPaymentBatchId(batchId);
 
         StringBuilder csv = new StringBuilder();
-        csv.append("batch_id,file_name,line_number,beneficiary_identification,beneficiary_name,destination_account,amount,status,rejection_reason,executed_at\n");
+        csv.append("lote_id,archivo,linea,identificacion_beneficiario,nombre_beneficiario,cuenta_destino,monto,estado,motivo_rechazo,fecha_ejecucion\n");
         for (PaymentDetail detail : details) {
             csv.append(batch.getId()).append(',')
                     .append(escapeCsv(batch.getFileName())).append(',')

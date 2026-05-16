@@ -352,10 +352,10 @@ public class BillingController {
 
             StringBuilder comprobante = new StringBuilder();
             comprobante.append("=".repeat(80)).append("\n");
-            comprobante.append("COMPROBANTE DE LIQUIDACIÓN - PAGOS MASIVOS\n");
+            comprobante.append("COMPROBANTE DE LIQUIDACION - PAGOS MASIVOS\n");
             comprobante.append("=".repeat(80)).append("\n\n");
 
-            comprobante.append("INFORMACIÓN DEL LOTE\n");
+            comprobante.append("INFORMACION DEL LOTE\n");
             comprobante.append("-".repeat(80)).append("\n");
             comprobante.append(String.format("ID Lote: %d%n", batchId));
             comprobante.append(String.format("Archivo: %s%n", resumen.getFileName()));
@@ -370,9 +370,9 @@ public class BillingController {
             comprobante.append(String.format("Registros Exitosos: %d%n", resumen.getSuccessfulRecords()));
             comprobante.append(String.format("Registros Rechazados: %d%n", resumen.getRejectedRecords()));
             comprobante.append(String.format("Monto Total Dispersado: $%.2f%n", resumen.getTotalAmount()));
-            comprobante.append(String.format("Comisión (Subtotal): $%.2f%n", resumen.getCommissionSubtotal()));
-            comprobante.append(String.format("IVA Retenido (15%%): $%.2f%n", resumen.getVatAmount()));
-            comprobante.append(String.format("Total Comisión: $%.2f%n", resumen.getTotalCharge()));
+            comprobante.append(String.format("Subtotal de Comision: $%.2f%n", resumen.getCommissionSubtotal()));
+            comprobante.append("IVA: 15%\n");
+            comprobante.append(String.format("Total a Debitar: $%.2f%n", resumen.getTotalCharge()));
             comprobante.append("\n");
 
             comprobante.append("DETALLE DE PAGOS\n");
@@ -392,7 +392,7 @@ public class BillingController {
 
             comprobante.append("\n");
             comprobante.append("=".repeat(80)).append("\n");
-            comprobante.append("Documento generado automáticamente por el Sistema de Pagos Masivos\n");
+            comprobante.append("Documento generado automaticamente por el Sistema de Pagos Masivos\n");
             comprobante.append("=".repeat(80)).append("\n");
 
             byte[] content = comprobante.toString().getBytes();
@@ -434,7 +434,7 @@ public class BillingController {
             reporte.append(String.format("Lote ID: %d%n", batchId));
             reporte.append(String.format("Archivo: %s%n", resumen.getFileName()));
             reporte.append(String.format("RUC: %s%n", resumen.getRuc()));
-            reporte.append(String.format("Fecha Generación: %s%n", resumen.getReceivedAt()));
+            reporte.append(String.format("Fecha Generacion: %s%n", resumen.getReceivedAt()));
             reporte.append("\n");
 
             reporte.append("RESUMEN\n");
@@ -442,7 +442,7 @@ public class BillingController {
             reporte.append("\n");
 
             reporte.append("DETALLE DE RECHAZOS\n");
-            reporte.append("No.,Beneficiario,Cédula,Monto,Motivo Rechazo\n");
+            reporte.append("No.,Beneficiario,Cedula,Monto,Motivo Rechazo\n");
 
             int rechazoNum = 1;
             for (PaymentDetail det : detalles) {
