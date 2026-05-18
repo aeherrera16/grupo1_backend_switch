@@ -2,6 +2,7 @@ package ec.edu.espe.banquito.switchpagos.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -122,6 +123,7 @@ public class FileValidationService {
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {
+        // 1. Mismo archivo ya procesado exitosamente en los últimos 30 días
         LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : dateTimeProvider.now())
                 .minusDays(validationRules.getDuplicateWindowDays());
 
@@ -133,8 +135,20 @@ public class FileValidationService {
                         cutoff)
                 .ifPresent(existing -> {
                     throw new IllegalArgumentException(String.format(
-                            "Duplicate file: '%s' with the same hash was already processed successfully in the last %d days (batch %d, received at %s)",
-                            batch.getFileName(), validationRules.getDuplicateWindowDays(), existing.getId(), existing.getReceivedAt()));
+                            "Archivo duplicado: '%s' ya fue procesado exitosamente en los ultimos %d dias (lote %d, recibido: %s)",
+                            batch.getFileName(), validationRules.getDuplicateWindowDays(),
+                            existing.getId(), existing.getReceivedAt()));
+                });
+
+        // 2. Mismo contenido (hash) actualmente en proceso o recibido (evita doble envío simultáneo)
+        paymentBatchRepository
+                .findFirstByFileHashAndStatusIn(
+                        batch.getFileHash(),
+                        Arrays.asList(BatchStatusEnum.PROCESSING, BatchStatusEnum.RECEIVED, BatchStatusEnum.ENCOLADO))
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException(String.format(
+                            "Archivo duplicado: ya existe un lote con el mismo contenido actualmente en estado '%s' (lote %d). Espere a que finalice antes de volver a enviarlo.",
+                            existing.getStatus().getDisplayName(), existing.getId()));
                 });
     }
 

@@ -13,11 +13,17 @@ import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 @Repository
 public interface PaymentBatchRepository extends JpaRepository<PaymentBatch, Integer> {
 
+    // Duplicado ya procesado exitosamente en los últimos 30 días
     Optional<PaymentBatch> findFirstByFileNameAndFileHashAndStatusAndReceivedAtAfter(
             String fileName,
             String fileHash,
             BatchStatusEnum status,
             LocalDateTime receivedAt);
+
+    // Mismo hash activo (en proceso o recibido) sin importar cuándo
+    Optional<PaymentBatch> findFirstByFileHashAndStatusIn(
+            String fileHash,
+            List<BatchStatusEnum> statuses);
 
     Optional<PaymentBatch> findFirstByFileHashAndReceivedAtAfter(
             String fileHash,

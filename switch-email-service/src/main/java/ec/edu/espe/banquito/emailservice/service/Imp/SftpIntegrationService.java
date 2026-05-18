@@ -112,15 +112,15 @@ public class SftpIntegrationService implements ISftpIntegrationService {
 
             LOG.info("Processing downloaded file: {}", file.getName());
 
-            boolean success = switchApiClient.sendFileToSwitch(file, null);
+            String errorReason = switchApiClient.sendFileToSwitch(file, null);
 
-            if (success) {
+            if (errorReason == null) {
                 moveToProcessed(file);
                 LOG.info("File sent to switch successfully: {}", file.getName());
                 return true;
             } else {
-                moveToError(file);
-                LOG.warn("Error sending file to switch: {}", file.getName());
+                moveToError(file, errorReason);
+                LOG.warn("Error sending file to switch ({}): {}", file.getName(), errorReason);
                 return false;
             }
 
@@ -128,7 +128,7 @@ public class SftpIntegrationService implements ISftpIntegrationService {
             LOG.error("Error processing downloaded file {}: {}", filePath, e.getMessage());
 
             try {
-                moveToError(new File(filePath));
+                moveToError(new File(filePath), e.getMessage());
             } catch (java.io.IOException moveError) {
                 LOG.error("Error moving file to error directory: {}", moveError.getMessage());
             }
@@ -140,21 +140,18 @@ public class SftpIntegrationService implements ISftpIntegrationService {
     private void moveToProcessed(File file) throws java.io.IOException {
         Path processedDir = Paths.get(sftpLocalDirectory, "processed");
         Files.createDirectories(processedDir);
-
-        Path target = processedDir.resolve(file.getName());
-        Files.move(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-
-        LOG.debug("File moved to processed directory: {}", target);
+        Files.move(file.toPath(), processedDir.resolve(file.getName()), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private void moveToError(File file) throws java.io.IOException {
+    private void moveToError(File file, String reason) throws java.io.IOException {
         Path errorDir = Paths.get(sftpLocalDirectory, "errors");
         Files.createDirectories(errorDir);
-
-        Path target = errorDir.resolve(file.getName());
-        Files.move(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-
-        LOG.debug("File moved to error directory: {}", target);
+        Files.move(file.toPath(), errorDir.resolve(file.getName()), StandardCopyOption.REPLACE_EXISTING);
+        if (reason != null && !reason.isBlank()) {
+            String txtName = file.getName().replaceAll("(?i)\\.csv$", "") + ".motivo.txt";
+            String content = "Archivo: " + file.getName() + "\nMotivo de rechazo: " + reason + "\nFecha: " + java.time.LocalDateTime.now() + "\n";
+            Files.writeString(errorDir.resolve(txtName), content);
+        }
     }
 
     @Override

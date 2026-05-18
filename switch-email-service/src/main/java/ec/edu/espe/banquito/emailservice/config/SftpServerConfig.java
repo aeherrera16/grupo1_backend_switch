@@ -33,7 +33,7 @@ public class SftpServerConfig {
     @Value("${sftp.server.upload-directory:./sftp-uploads}")
     private String uploadDirectory;
 
-    @Value("${switch.api.base-url:http://localhost:8081}")
+    @Value("${core.api.base-url:http://localhost:8080}")
     private String coreApiBaseUrl;
 
     private static final java.util.concurrent.ConcurrentHashMap<String, String> USERNAME_TO_RUC = new java.util.concurrent.ConcurrentHashMap<>();
@@ -84,7 +84,7 @@ public class SftpServerConfig {
         return (providedUsername, providedPassword, session) -> {
             try {
                 org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
-                String url = coreApiBaseUrl.replace("8081", "8080") + "/core/v1/auth/sftp/validate";
+                String url = coreApiBaseUrl + "/core/v1/auth/sftp/validate";
                 java.util.Map<String, String> request = new java.util.HashMap<>();
                 request.put("username", providedUsername);
                 request.put("password", providedPassword);

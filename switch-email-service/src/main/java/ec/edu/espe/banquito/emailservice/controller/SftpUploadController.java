@@ -60,7 +60,8 @@ public class SftpUploadController {
 
             LOG.info("Sending file to the main Switch");
             File savedFile = filePath.toFile();
-            boolean sentToSwitch = switchApiClient.sendFileToSwitch(savedFile, null);
+            String errorReason = switchApiClient.sendFileToSwitch(savedFile, null);
+            boolean sentToSwitch = errorReason == null;
 
             Map<String, Object> response = new HashMap<>();
             response.put("fileName", fileName);
@@ -77,8 +78,9 @@ public class SftpUploadController {
                 return ResponseEntity.ok(response);
             } else {
                 Path errorPath = moveToSubdirectory(filePath, "errors");
-                LOG.error("Error sending file to the Switch");
+                LOG.error("Error sending file to the Switch: {}", errorReason);
                 response.put("errorPath", errorPath.toString());
+                response.put("errorReason", errorReason);
                 response.put("status", "ERROR_SENDING_TO_SWITCH");
                 return ResponseEntity.internalServerError().body(response);
             }

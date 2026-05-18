@@ -70,3 +70,4 @@
 /Users/anahy/Desktop/Arquitectura/grupo1_BancoBanQuito/grupo1_backend_switch-Switch_V2/switch/src/main/java/ec/edu/espe/banquito/switchpagos/service/impl/ReceiptGeneratorServiceImpl.java
 /Users/anahy/Desktop/Arquitectura/grupo1_BancoBanQuito/grupo1_backend_switch-Switch_V2/switch/src/main/java/ec/edu/espe/banquito/switchpagos/service/impl/SettlementServiceImpl.java
 /Users/anahy/Desktop/Arquitectura/grupo1_BancoBanQuito/grupo1_backend_switch-Switch_V2/switch/src/main/java/ec/edu/espe/banquito/switchpagos/service/impl/SftpFileProcessorService.java
+/Users/anahy/Desktop/Arquitectura/grupo1_BancoBanQuito/grupo1_backend_switch-Switch_V2/switch/src/main/java/ec/edu/espe/banquito/switchpagos/service/impl/SftpInboxPollerService.java

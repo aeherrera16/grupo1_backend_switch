@@ -72,20 +72,22 @@ public class SftpServerService {
         try {
             LOG.info("Processing uploaded file: {}", filePath.getFileName());
 
-            boolean sentToSwitch = switchApiClient.sendFileToSwitch(filePath.toFile(), ruc);
+            String errorReason = switchApiClient.sendFileToSwitch(filePath.toFile(), ruc);
 
-            if (sentToSwitch) {
+            if (errorReason == null) {
                 Path processedDir = Paths.get(uploadDirectory, "processed");
                 Files.createDirectories(processedDir);
-                Path target = processedDir.resolve(filePath.getFileName());
-                Files.move(filePath, target, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(filePath, processedDir.resolve(filePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
                 LOG.info("File sent to the Switch and moved to processed directory: {}", filePath.getFileName());
             } else {
                 Path errorDir = Paths.get(uploadDirectory, "errors");
                 Files.createDirectories(errorDir);
                 Path target = errorDir.resolve(filePath.getFileName());
                 Files.move(filePath, target, StandardCopyOption.REPLACE_EXISTING);
-                LOG.warn("File moved to error directory: {}", filePath.getFileName());
+                LOG.warn("File moved to error directory ({}): {}", errorReason, filePath.getFileName());
+                String txtName = filePath.getFileName().toString().replaceAll("(?i)\\.csv$", "") + ".motivo.txt";
+                Files.writeString(errorDir.resolve(txtName),
+                        "Archivo: " + filePath.getFileName() + "\nMotivo de rechazo: " + errorReason + "\nFecha: " + java.time.LocalDateTime.now() + "\n");
             }
 
         } catch (IOException e) {

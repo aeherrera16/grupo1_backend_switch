@@ -229,8 +229,7 @@ public class BillingService {
     public Map<String, Object> generateSettlementReceipt(Integer batchId) {
         PaymentBatch batch = paymentBatchRepository.findById(batchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Batch not found: " + batchId));
-        ServiceCharge charge = serviceChargeRepository.findByPaymentBatchId(batchId)
-                .orElseThrow(() -> new ResourceNotFoundException("No service charge found for batch: " + batchId));
+        Optional<ServiceCharge> chargeOpt = serviceChargeRepository.findByPaymentBatchId(batchId);
         List<PaymentDetail> details = paymentDetailRepository.findByPaymentBatchId(batchId);
 
         BigDecimal dispersedAmount = details.stream()
@@ -246,15 +245,27 @@ public class BillingService {
         receipt.put("sourceAccountNumber", batch.getSourceAccountNumber());
         receipt.put("batchStatus", batch.getStatus() != null ? batch.getStatus().name() : null);
         receipt.put("receivedAt", batch.getReceivedAt());
-        receipt.put("successfulTransactions", charge.getSuccessfulTransactions());
-        receipt.put("rejectedTransactions", batch.getRejectedRecords());
         receipt.put("successfulDispersedAmount", dispersedAmount);
-        receipt.put("unitFee", charge.getUnitFee());
-        receipt.put("commissionSubtotal", charge.getCommissionSubtotal());
-        receipt.put("vatAmount", charge.getVatAmount());
-        receipt.put("totalDebitedForServices", charge.getTotalCharge());
-        receipt.put("chargeStatus", charge.getChargeStatus() != null ? charge.getChargeStatus().name() : null);
-        receipt.put("chargedAt", charge.getChargedAt());
+        receipt.put("rejectedTransactions", batch.getRejectedRecords() != null ? batch.getRejectedRecords() : 0);
+
+        if (chargeOpt.isPresent()) {
+            ServiceCharge charge = chargeOpt.get();
+            receipt.put("successfulTransactions", charge.getSuccessfulTransactions());
+            receipt.put("unitFee", charge.getUnitFee());
+            receipt.put("commissionSubtotal", charge.getCommissionSubtotal());
+            receipt.put("vatAmount", charge.getVatAmount());
+            receipt.put("totalDebitedForServices", charge.getTotalCharge());
+            receipt.put("chargeStatus", charge.getChargeStatus() != null ? charge.getChargeStatus().name() : null);
+            receipt.put("chargedAt", charge.getChargedAt());
+        } else {
+            receipt.put("successfulTransactions", batch.getSuccessfulRecords() != null ? batch.getSuccessfulRecords() : 0);
+            receipt.put("unitFee", BigDecimal.ZERO.setScale(2));
+            receipt.put("commissionSubtotal", BigDecimal.ZERO.setScale(2));
+            receipt.put("vatAmount", BigDecimal.ZERO.setScale(2));
+            receipt.put("totalDebitedForServices", BigDecimal.ZERO.setScale(2));
+            receipt.put("chargeStatus", "SIN_CARGO");
+            receipt.put("chargedAt", null);
+        }
         return receipt;
     }
 

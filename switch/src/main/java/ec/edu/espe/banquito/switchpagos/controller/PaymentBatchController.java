@@ -116,7 +116,7 @@ public class PaymentBatchController {
             PaymentBatch batch = parseResult.getBatch();
             batch.setChannel(channel);
             batch.setReceivedAt(dateTimeProvider.now());
-            batch.setScheduledDate(scheduledDate != null ? scheduledDate : java.time.LocalDateTime.now());
+            batch.setScheduledDate(scheduledDate != null ? scheduledDate : dateTimeProvider.now());
             if (ruc != null && !ruc.isEmpty()) {
                 batch.setRuc(ruc);
             }
@@ -164,19 +164,24 @@ public class PaymentBatchController {
             logger.info("Starting full validation");
             FileValidation validation = fileValidationService.validateBatch(persistedBatch, parseResult.getDetails());
 
-            PaymentBatch finalBatch = persistedBatch;
-            if (!BatchStatusEnum.ENCOLADO.equals(batch.getStatus()) && !BatchStatusEnum.PROGRAMADO.equals(batch.getStatus()) && "SUCCESS".equals(validation.getValidationResult())) {
-                finalBatch = paymentBatchProcessingService.process(persistedBatch, parseResult.getDetails());
+            boolean willProcess = !BatchStatusEnum.ENCOLADO.equals(batch.getStatus())
+                    && !BatchStatusEnum.PROGRAMADO.equals(batch.getStatus())
+                    && "SUCCESS".equals(validation.getValidationResult());
+
+            if (willProcess) {
+                persistedBatch.setStatus(BatchStatusEnum.PROCESSING);
+                paymentBatchRepository.save(persistedBatch);
+                paymentBatchProcessingService.process(persistedBatch, parseResult.getDetails());
             }
 
-            logger.info("Process completed - Result: {}, Status: {}",
-                    validation.getValidationResult(), finalBatch.getStatus());
+            logger.info("Batch {} accepted - async processing started: {}", persistedBatch.getId(), willProcess);
 
             return ResponseEntity.ok(Map.of(
                     "validationResult", validation.getValidationResult(),
                     "isSuccess", "SUCCESS".equals(validation.getValidationResult()),
-                    "encolado", BatchStatusEnum.ENCOLADO.equals(finalBatch.getStatus()),
-                    "batchStatus", finalBatch.getStatus().getDisplayName(),
+                    "encolado", BatchStatusEnum.ENCOLADO.equals(persistedBatch.getStatus()),
+                    "batchStatus", persistedBatch.getStatus().getDisplayName(),
+                    "batchId", persistedBatch.getId(),
                     "fileValidation", validation
             ));
         } catch (Exception e) {
@@ -207,14 +212,24 @@ public class PaymentBatchController {
 
     @PostMapping("/{id}/process")
     public ResponseEntity<?> processBatch(@PathVariable Integer id) {
-        var batch = paymentBatchRepository.findById(id);
-        if (batch.isEmpty()) {
+        var batchOpt = paymentBatchRepository.findById(id);
+        if (batchOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "Lote no encontrado: " + id));
         }
 
+        PaymentBatch batch = batchOpt.get();
+        batch.setStatus(BatchStatusEnum.PROCESSING);
+        paymentBatchRepository.save(batch);
+
         var details = paymentDetailRepository.findByPaymentBatchIdOrderByLineNumberAsc(id);
-        return ResponseEntity.ok(paymentBatchProcessingService.process(batch.get(), details));
+        paymentBatchProcessingService.process(batch, details);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Procesamiento iniciado en background",
+                "batchId", id,
+                "status", "PROCESSING"
+        ));
     }
 
     @GetMapping("/{id}/novelties")

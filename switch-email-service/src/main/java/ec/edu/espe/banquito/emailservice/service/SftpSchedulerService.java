@@ -82,7 +82,8 @@ public class SftpSchedulerService {
 
         for (File file : files) {
             try {
-                boolean sent = switchApiClient.sendFileToSwitch(file, ruc);
+                String errorReason = switchApiClient.sendFileToSwitch(file, ruc);
+                boolean sent = errorReason == null;
 
                 Path destRoot = Paths.get(uploadDirectory);
                 Path destDir = destRoot.resolve(sent ? "processed" : "errors");
@@ -92,11 +93,25 @@ public class SftpSchedulerService {
                 if (sent) {
                     LOG.info("File {} sent to Switch and moved to processed/", file.getName());
                 } else {
-                    LOG.warn("File {} failed to send, moved to errors/", file.getName());
+                    LOG.warn("File {} failed to send ({}), moved to errors/", file.getName(), errorReason);
+                    writeErrorReason(destDir, file.getName(), errorReason);
                 }
             } catch (IOException e) {
                 LOG.error("Error processing file {}: {}", file.getName(), e.getMessage(), e);
             }
+        }
+    }
+
+    private void writeErrorReason(Path errorsDir, String csvFileName, String reason) {
+        try {
+            String txtName = csvFileName.replaceAll("(?i)\\.csv$", "") + ".motivo.txt";
+            Path txtFile = errorsDir.resolve(txtName);
+            String content = "Archivo: " + csvFileName + "\n"
+                    + "Motivo de rechazo: " + reason + "\n"
+                    + "Fecha: " + java.time.LocalDateTime.now() + "\n";
+            Files.writeString(txtFile, content);
+        } catch (IOException e) {
+            LOG.warn("Could not write error reason file for {}: {}", csvFileName, e.getMessage());
         }
     }
 

@@ -1,6 +1,7 @@
 package ec.edu.espe.banquito.switchpagos.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,11 +38,11 @@ public class QueuedBatchSchedulerService {
         this.dateTimeProvider = dateTimeProvider;
     }
 
-    @Scheduled(cron = "${app.queue.processing.cron:0 1 0 * * *}")
+    @Scheduled(cron = "${app.queue.processing.cron:0 * * * * *}")
     public void processQueuedBatches() {
-        LocalDate today = dateTimeProvider.today();
+        LocalDateTime now = dateTimeProvider.now();
+        LocalDate today = now.toLocalDate();
         if (!businessDayService.isBusinessDay(today)) {
-            LOG.info("Today is not a business day ({}). Queued batch processing is skipped.", today);
             return;
         }
 
@@ -51,7 +52,7 @@ public class QueuedBatchSchedulerService {
         List<PaymentBatch> toProcess = new java.util.ArrayList<>(queued);
 
         for (PaymentBatch s : scheduled) {
-            if (s.getScheduledDate() == null || !s.getScheduledDate().toLocalDate().isAfter(today)) {
+            if (s.getScheduledDate() == null || !s.getScheduledDate().isAfter(now)) {
                 toProcess.add(s);
             }
         }
