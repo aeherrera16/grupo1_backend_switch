@@ -80,7 +80,10 @@ public class PaymentBatchController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll(@RequestParam(value = "ruc", required = false) String ruc) {
+        if (ruc != null && !ruc.isBlank()) {
+            return ResponseEntity.ok(paymentBatchRepository.findByRucOrderByReceivedAtDesc(ruc));
+        }
         return ResponseEntity.ok(paymentBatchRepository.findAll());
     }
 

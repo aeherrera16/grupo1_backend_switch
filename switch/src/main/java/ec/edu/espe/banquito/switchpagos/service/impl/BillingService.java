@@ -113,8 +113,11 @@ public class BillingService {
 
         Optional<ServiceFeeRule> ruleOpt = serviceFeeRuleRepository.findRuleByTransactionCount(BigDecimal.valueOf(successful));
         if (ruleOpt.isEmpty()) {
-            logger.error("No fee rule found for {} transactions", successful);
-            throw new IllegalStateException("No applicable fee rule found for " + successful + " successful transactions");
+            logger.warn("No fee rule found for {} transactions — skipping commission charge", successful);
+            batch.setSuccessfulRecords(successful);
+            batch.setRejectedRecords(rejected);
+            paymentBatchRepository.save(batch);
+            return;
         }
 
         ServiceFeeRule rule = ruleOpt.get();

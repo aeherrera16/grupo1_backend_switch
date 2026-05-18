@@ -15,6 +15,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.client.RestClientException;
+
 import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser;
 import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
 import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
@@ -127,7 +129,13 @@ public class SftpInboxPollerService {
         batch.setChannel(ChannelEnum.SFTP);
         batch.setReceivedAt(dateTimeProvider.now());
         batch.setScheduledDate(dateTimeProvider.now());
-        batch.setSourceAccountNumber(coreFacadeService.getFavoritePaymentAccountByRuc(batch.getRuc()));
+        try {
+            String favoriteAccount = coreFacadeService.getFavoritePaymentAccountByRuc(batch.getRuc());
+            batch.setSourceAccountNumber(favoriteAccount);
+        } catch (RestClientException e) {
+            LOG.warn("Core did not return favorite account for RUC {} — using account from CSV header: {}",
+                    batch.getRuc(), batch.getSourceAccountNumber());
+        }
 
         boolean isBusinessDay = businessDayService.isBusinessDay(dateTimeProvider.today());
         boolean withinWindow = cutoffTimeService.isWithinIngestionWindow();

@@ -176,6 +176,9 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
     }
 
     private void notifySuccessfulPayment(PaymentBatch batch, PaymentDetail detail, String companyName) {
+        if ("SENT".equals(detail.getNotificationStatus())) {
+            return;
+        }
         detail.setNotificationStatus("PENDING");
 
         if (!StringUtils.hasText(detail.getBeneficiaryEmail())) {
@@ -222,7 +225,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
 
     private BigDecimal resolveMaxAmountForTransfer(PaymentBatch batch) {
         if (batch == null || batch.getServiceType() == null) {
-            throw new IllegalStateException("Batch service type is not configured");
+            return new BigDecimal("999999.99");
         }
 
         String serviceSpecificCode = "MAX_TRANSFER_" + batch.getServiceType().name();
@@ -244,8 +247,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
             }
         }
 
-        throw new IllegalStateException(
-                "Core did not return a valid max limit for service type "
-                        + batch.getServiceType().name());
+        logger.warn("Core did not return max limit for {}, using fallback 999999.99", batch.getServiceType().name());
+        return new BigDecimal("999999.99");
     }
 }

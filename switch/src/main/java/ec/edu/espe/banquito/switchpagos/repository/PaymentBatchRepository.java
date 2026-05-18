@@ -32,4 +32,8 @@ public interface PaymentBatchRepository extends JpaRepository<PaymentBatch, Inte
     Optional<PaymentBatch> findFirstByFileHash(String fileHash);
 
     List<PaymentBatch> findByStatusOrderByReceivedAtAsc(BatchStatusEnum status);
+
+    List<PaymentBatch> findByStatus(BatchStatusEnum status);
+
+    List<PaymentBatch> findByRucOrderByReceivedAtDesc(String ruc);
 }

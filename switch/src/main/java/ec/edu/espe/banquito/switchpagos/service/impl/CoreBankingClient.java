@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -17,8 +18,12 @@ public class CoreBankingClient implements ICoreBankingClient {
     private final RestClient restClient;
 
     public CoreBankingClient(@Value("${app.core.base-url}") String coreBaseUrl) {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(15000);
         this.restClient = RestClient.builder()
                 .baseUrl(coreBaseUrl)
+                .requestFactory(factory)
                 .build();
     }
 

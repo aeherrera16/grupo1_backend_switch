@@ -25,7 +25,7 @@ public class BusinessDayService {
             return fromCore;
         }
 
-        LOG.warn("Could not query Core business-day status. Assuming non-business day: {}", date);
-        return false;
+        LOG.warn("Could not query Core business-day status. Assuming business day: {}", date);
+        return true;
     }
 }
