@@ -1,31 +1,30 @@
 package ec.edu.espe.banquito.switchpagos.service.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser;
+import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
 import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.enums.ChannelEnum;
 import ec.edu.espe.banquito.switchpagos.model.FileValidation;
-import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser;
-import ec.edu.espe.banquito.switchpagos.config.CsvBatchParser.CsvParseResult;
-import ec.edu.espe.banquito.switchpagos.service.IFileValidationService;
 import ec.edu.espe.banquito.switchpagos.service.ISftpFileProcessorService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class SftpFileProcessorService implements ISftpFileProcessorService {
 
     private static final Logger logger = LoggerFactory.getLogger(SftpFileProcessorService.class);
 
-    private final IFileValidationService fileValidationService;
+    private final FileValidationService fileValidationService;
 
     @Autowired
-    public SftpFileProcessorService(IFileValidationService fileValidationService) {
+    public SftpFileProcessorService(FileValidationService fileValidationService) {
         this.fileValidationService = fileValidationService;
     }
 
@@ -34,19 +33,23 @@ public class SftpFileProcessorService implements ISftpFileProcessorService {
         ChannelEnum channel = ChannelEnum.SFTP;
         try {
             CsvParseResult parseResult = CsvBatchParser.parseCsvFile(inputStream, fileName, fileSize);
-            // CsvParseResult doesn't have success/errorMessage fields
+
             var batch = parseResult.getBatch();
             batch.setChannel(channel);
             batch.setReceivedAt(LocalDateTime.now());
             batch.setStatus(BatchStatusEnum.RECEIVED);
-            
-            logger.info("Lote creado - RUC: {}, Hash: {}, Total: {}", 
+
+            logger.info("Batch created - RUC: {}, Hash: {}, Total: {}",
                        batch.getRuc(), batch.getFileHash(), batch.getHeaderTotalAmount());
 
             fileValidationService.validateEarlyRejection(parseResult);
 
             return fileValidationService.validateBatch(batch, parseResult.getDetails());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new RuntimeException("Error leyendo archivo SFTP: " + e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Archivo SFTP inválido: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
             throw new RuntimeException("Error procesando archivo SFTP: " + e.getMessage(), e);
         }
     }

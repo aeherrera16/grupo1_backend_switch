@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import ec.edu.espe.banquito.switchpagos.dto.CoreParameterResponseDTO;
 import ec.edu.espe.banquito.switchpagos.dto.TransferResponseDTO;
 import ec.edu.espe.banquito.switchpagos.service.ICoreBankingClient;
 
@@ -22,6 +23,7 @@ public class CoreBankingClient implements ICoreBankingClient {
     }
 
     @Override
+
     public TransferResponseDTO transfer(String origin, String destination, String beneficiaryIdentification,
                                         BigDecimal amount, String uuid) {
         return restClient.post()
@@ -35,4 +37,12 @@ public class CoreBankingClient implements ICoreBankingClient {
                 .retrieve()
                 .body(TransferResponseDTO.class);
     }
+
+        @Override
+        public CoreParameterResponseDTO getParameter(String code) {
+                return restClient.get()
+                                .uri("/core/v1/integration/parameter/{code}", code)
+                                .retrieve()
+                                .body(CoreParameterResponseDTO.class);
+        }
 }

@@ -23,8 +23,6 @@ public class BatchSummaryDTO {
     public BatchSummaryDTO() {
     }
 
-    // --- GETTERS Y SETTERS MANUALES ---
-
     public Integer getBatchId() {
         return batchId;
     }

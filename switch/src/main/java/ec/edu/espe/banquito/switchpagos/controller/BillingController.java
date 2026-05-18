@@ -27,15 +27,9 @@ import ec.edu.espe.banquito.switchpagos.model.ServiceCharge;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.service.impl.BillingService;
 
-/**
- * RF-06: Controller REST para reportes y gestión de comisiones.
- * Expone los servicios de facturación y comisiones del Switch de Pagos Masivos.
- *
- * Kevin - Comisiones y Reportes
- */
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"})
-@RequestMapping("/api/billing")
+@CrossOrigin(origins = "*")
+@RequestMapping("/switch/v1/billing")
 public class BillingController {
 
     private static final Logger logger = LoggerFactory.getLogger(BillingController.class);
@@ -50,48 +44,34 @@ public class BillingController {
         this.paymentBatchRepository = paymentBatchRepository;
     }
 
-    /**
-     * GET /api/billing/batches/{batchId}/summary
-     * Obtiene el resumen completo de un lote (batch + comisión).
-     *
-     * @param batchId ID del lote
-     * @return BatchSummaryDTO con información consolidada
-     */
     @GetMapping("/batches/{batchId}/summary")
     public ResponseEntity<?> obtenerResumenBatch(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/summary", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/summary", batchId);
 
         try {
-            BatchSummaryDTO resumen = billingService.obtenerResumenBatch(batchId);
-            logger.info("Resumen obtenido exitosamente para lote {}", batchId);
+            BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
+            logger.info("Summary retrieved for batch {}", batchId);
             return ResponseEntity.ok(resumen);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener resumen del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching summary for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el resumen"));
         }
     }
 
-    /**
-     * GET /api/billing/batches/{batchId}/detail
-     * Obtiene los detalles de pago (PaymentDetail) de un lote.
-     *
-     * @param batchId ID del lote
-     * @return Lista de PaymentDetail del lote
-     */
     @GetMapping("/batches/{batchId}/detail")
     public ResponseEntity<?> obtenerDetallesBatch(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/detail", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/detail", batchId);
 
         try {
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
-            logger.info("Se obtuvieron {} detalles para el lote {}", detalles.size(), batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
+            logger.info("Retrieved {} details for batch {}", detalles.size(), batchId);
 
             return ResponseEntity.ok(Map.of(
                     "batchId", batchId,
@@ -100,41 +80,34 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener detalles del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching details for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener los detalles"));
         }
     }
 
-    /**
-     * GET /api/billing/batches/{batchId}/charge
-     * Obtiene el cargo de servicio (ServiceCharge) para un lote.
-     *
-     * @param batchId ID del lote
-     * @return ServiceCharge con información de la comisión
-     */
     @GetMapping("/batches/{batchId}/charge")
     public ResponseEntity<?> obtenerCargoServicio(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/charge", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/charge", batchId);
 
         try {
-            ServiceCharge cargo = billingService.obtenerCargoServicio(batchId)
+            ServiceCharge cargo = billingService.getServiceCharge(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("No hay cargo de servicio para el lote: " + batchId));
-            logger.info("Cargo obtenido exitosamente para lote {}", batchId);
+            logger.info("Charge retrieved for batch {}", batchId);
             return ResponseEntity.ok(cargo);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener cargo del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching charge for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el cargo"));
         }
@@ -142,16 +115,16 @@ public class BillingController {
 
     @GetMapping("/batches/{batchId}/receipt")
     public ResponseEntity<?> obtenerComprobanteLiquidacion(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/receipt", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/receipt", batchId);
 
         try {
-            return ResponseEntity.ok(billingService.generarComprobanteLiquidacion(batchId));
+            return ResponseEntity.ok(billingService.generateSettlementReceipt(batchId));
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al obtener comprobante del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching receipt for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el comprobante"));
         }
@@ -159,21 +132,21 @@ public class BillingController {
 
     @GetMapping("/batches/{batchId}/history")
     public ResponseEntity<?> obtenerHistorialBatch(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/history", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/history", batchId);
 
         try {
-            List<BatchStatusLog> historial = billingService.obtenerHistorialEstadosBatch(batchId);
+            List<BatchStatusLog> historial = billingService.getBatchStatusHistory(batchId);
             return ResponseEntity.ok(Map.of(
                     "batchId", batchId,
                     "totalEventos", historial.size(),
                     "historial", historial
             ));
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al obtener historial del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error fetching history for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el historial del lote"));
         }
@@ -181,21 +154,21 @@ public class BillingController {
 
     @GetMapping("/details/{detailId}/history")
     public ResponseEntity<?> obtenerHistorialDetalle(@PathVariable Integer detailId) {
-        logger.info("GET /api/billing/details/{}/history", detailId);
+        logger.info("GET /switch/v1/billing/details/{}/history", detailId);
 
         try {
-            List<DetailStatusLog> historial = billingService.obtenerHistorialEstadosDetalle(detailId);
+            List<DetailStatusLog> historial = billingService.getDetailStatusHistory(detailId);
             return ResponseEntity.ok(Map.of(
                     "detailId", detailId,
                     "totalEventos", historial.size(),
                     "historial", historial
             ));
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al obtener historial del detalle {}: {}", detailId, e.getMessage(), e);
+            logger.error("Error fetching history for detail {}: {}", detailId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener el historial del detalle"));
         }
@@ -203,56 +176,46 @@ public class BillingController {
 
     @GetMapping(value = "/batches/{batchId}/novelties", produces = "text/csv")
     public ResponseEntity<?> descargarReporteNovedades(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/novelties", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/novelties", batchId);
 
         try {
-            String csv = billingService.generarReporteNovedadesCsv(batchId);
+            String csv = billingService.generateNoveltyReportCsv(batchId);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"novedades_lote_" + batchId + ".csv\"")
                     .contentType(MediaType.parseMediaType("text/csv"))
                     .body(csv);
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al generar novedades del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error generating novelties for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("error", "Error interno al generar novedades"));
         }
     }
 
-    /**
-     * POST /api/billing/test/{batchId}
-     * SOLO PARA PRUEBAS: Fuerza la ejecución de generarCobro en un lote.
-     * Útil para testing y debugging sin esperar al procesador de pagos.
-     *
-     * @param batchId ID del lote
-     * @return Mensaje de resultado de la operación
-     */
     @PostMapping("/test/{batchId}")
     public ResponseEntity<?> forzarGenerarCobro(@PathVariable Integer batchId) {
-        logger.warn("🔧 POST /api/billing/test/{} - OPERACIÓN DE TESTING", batchId);
+        logger.warn("POST /switch/v1/billing/test/{} - TEST OPERATION", batchId);
 
         try {
-            // Obtener el lote
+
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
-            logger.info("Lote encontrado: {}", batch.getFileName());
+            logger.info("Batch found: {}", batch.getFileName());
 
-            // Obtener los detalles del lote
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
-            logger.info("Se obtuvieron {} detalles para procesamiento", detalles.size());
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
+            logger.info("Retrieved {} details for processing", detalles.size());
 
-            // Ejecutar generarCobro
-            logger.info("Ejecutando generarCobro para lote {}", batchId);
-            billingService.generarCobro(batch, detalles);
+            logger.info("Running charge generation for batch {}", batchId);
+            billingService.generateCharge(batch, detalles);
 
-            logger.info("GenerarCobro ejecutado exitosamente");
+            logger.info("Charge generation completed successfully");
 
             return ResponseEntity.ok(Map.of(
                     "mensaje", "GenerarCobro ejecutado exitosamente (TEST)",
@@ -261,35 +224,29 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (IllegalStateException e) {
-            logger.error("Error de estado: {}", e.getMessage());
+            logger.error("State error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al ejecutar generarCobro: {}", e.getMessage(), e);
+            logger.error("Error running charge generation: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Error interno al ejecutar generarCobro: " + e.getMessage()));
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
-    /**
-     * GET /api/billing/charges
-     * Obtiene todos los cargos de servicio registrados.
-     *
-     * @return Lista de todos los ServiceCharge
-     */
     @GetMapping("/charges")
     public ResponseEntity<?> obtenerTodosCargos() {
-        logger.info("GET /api/billing/charges");
+        logger.info("GET /switch/v1/billing/charges");
 
         try {
-            List<ServiceCharge> cargos = billingService.obtenerTodosCargos();
-            logger.info("Se obtuvieron {} cargos totales", cargos.size());
+            List<ServiceCharge> cargos = billingService.getAllCharges();
+            logger.info("Retrieved {} total charges", cargos.size());
 
             return ResponseEntity.ok(Map.of(
                     "totalCargos", cargos.size(),
@@ -297,26 +254,19 @@ public class BillingController {
             ));
 
         } catch (Exception e) {
-            logger.error("Error al obtener todos los cargos: {}", e.getMessage(), e);
+            logger.error("Error fetching all charges: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener los cargos"));
         }
     }
 
-    /**
-     * GET /api/billing/empresa-account/{paramCode}
-     * Obtiene la cuenta empresa desde SwitchParameter.
-     *
-     * @param paramCode Código del parámetro
-     * @return Número de cuenta de la empresa
-     */
     @GetMapping("/empresa-account/{paramCode}")
     public ResponseEntity<?> obtenerCuentaEmpresa(@PathVariable String paramCode) {
-        logger.info("GET /api/billing/empresa-account/{}", paramCode);
+        logger.info("GET /switch/v1/billing/empresa-account/{}", paramCode);
 
         try {
-            String cuentaEmpresa = billingService.obtenerCuentaEmpresa(paramCode);
-            logger.info("Cuenta empresa obtenida: {}", cuentaEmpresa);
+            String cuentaEmpresa = billingService.getCompanyAccount(paramCode);
+            logger.info("Company account retrieved: {}", cuentaEmpresa);
 
             return ResponseEntity.ok(Map.of(
                     "paramCode", paramCode,
@@ -324,30 +274,24 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Parámetro no encontrado: {}", e.getMessage());
+            logger.warn("Parameter not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener cuenta empresa: {}", e.getMessage(), e);
+            logger.error("Error fetching company account: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener la cuenta empresa"));
         }
     }
 
-    /**
-     * GET /api/billing/empresa-account
-     * Obtiene la cuenta empresa con parámetro por defecto "EMPRESA_ACCOUNT".
-     *
-     * @return Número de cuenta de la empresa
-     */
     @GetMapping("/empresa-account")
     public ResponseEntity<?> obtenerCuentaEmpresaDefault() {
-        logger.info("GET /api/billing/empresa-account (default)");
+        logger.info("GET /switch/v1/billing/empresa-account (default)");
 
         try {
-            String cuentaEmpresa = billingService.obtenerCuentaEmpresaDefault();
-            logger.info("Cuenta empresa por defecto obtenida: {}", cuentaEmpresa);
+            String cuentaEmpresa = billingService.getDefaultCompanyAccount();
+            logger.info("Default company account retrieved: {}", cuentaEmpresa);
 
             return ResponseEntity.ok(Map.of(
                     "cuentaEmpresa", cuentaEmpresa,
@@ -355,41 +299,34 @@ public class BillingController {
             ));
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Parámetro por defecto no encontrado: {}", e.getMessage());
+            logger.warn("Default parameter not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al obtener cuenta empresa por defecto: {}", e.getMessage(), e);
+            logger.error("Error fetching default company account: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al obtener la cuenta empresa"));
         }
     }
 
-    /**
-     * GET /api/billing/batches/{batchId}/download/comprobante
-     * Descarga el comprobante de liquidación del lote en formato PDF/TXT.
-     *
-     * @param batchId ID del lote
-     * @return Archivo con el comprobante de liquidación
-     */
     @GetMapping("/batches/{batchId}/download/comprobante")
     public ResponseEntity<?> descargarComprobanteLiquidacion(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/download/comprobante", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/download/comprobante", batchId);
 
         try {
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
-            BatchSummaryDTO resumen = billingService.obtenerResumenBatch(batchId);
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
+            BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
 
             StringBuilder comprobante = new StringBuilder();
             comprobante.append("=".repeat(80)).append("\n");
-            comprobante.append("COMPROBANTE DE LIQUIDACIÓN - PAGOS MASIVOS\n");
+            comprobante.append("COMPROBANTE DE LIQUIDACION - PAGOS MASIVOS\n");
             comprobante.append("=".repeat(80)).append("\n\n");
 
-            comprobante.append("INFORMACIÓN DEL LOTE\n");
+            comprobante.append("INFORMACION DEL LOTE\n");
             comprobante.append("-".repeat(80)).append("\n");
             comprobante.append(String.format("ID Lote: %d%n", batchId));
             comprobante.append(String.format("Archivo: %s%n", resumen.getFileName()));
@@ -404,9 +341,9 @@ public class BillingController {
             comprobante.append(String.format("Registros Exitosos: %d%n", resumen.getSuccessfulRecords()));
             comprobante.append(String.format("Registros Rechazados: %d%n", resumen.getRejectedRecords()));
             comprobante.append(String.format("Monto Total Dispersado: $%.2f%n", resumen.getTotalAmount()));
-            comprobante.append(String.format("Comisión (Subtotal): $%.2f%n", resumen.getCommissionSubtotal()));
-            comprobante.append(String.format("IVA Retenido (15%%): $%.2f%n", resumen.getVatAmount()));
-            comprobante.append(String.format("Total Comisión: $%.2f%n", resumen.getTotalCharge()));
+            comprobante.append(String.format("Subtotal de Comision: $%.2f%n", resumen.getCommissionSubtotal()));
+            comprobante.append("IVA: 15%\n");
+            comprobante.append(String.format("Total a Debitar: $%.2f%n", resumen.getTotalCharge()));
             comprobante.append("\n");
 
             comprobante.append("DETALLE DE PAGOS\n");
@@ -426,7 +363,7 @@ public class BillingController {
 
             comprobante.append("\n");
             comprobante.append("=".repeat(80)).append("\n");
-            comprobante.append("Documento generado automáticamente por el Sistema de Pagos Masivos\n");
+            comprobante.append("Documento generado automaticamente por el Sistema de Pagos Masivos\n");
             comprobante.append("=".repeat(80)).append("\n");
 
             byte[] content = comprobante.toString().getBytes();
@@ -438,41 +375,34 @@ public class BillingController {
                     .body(content);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al descargar comprobante del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error downloading receipt for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al descargar el comprobante"));
         }
     }
 
-    /**
-     * GET /api/billing/batches/{batchId}/download/novedades
-     * Descarga el reporte de novedades (rechazos) del lote.
-     *
-     * @param batchId ID del lote
-     * @return Archivo con el reporte de novedades en formato CSV
-     */
     @GetMapping("/batches/{batchId}/download/novedades")
     public ResponseEntity<?> descargarReporteNovedadesDetallado(@PathVariable Integer batchId) {
-        logger.info("GET /api/billing/batches/{}/download/novedades", batchId);
+        logger.info("GET /switch/v1/billing/batches/{}/download/novedades", batchId);
 
         try {
             PaymentBatch batch = paymentBatchRepository.findById(batchId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + batchId));
 
-            BatchSummaryDTO resumen = billingService.obtenerResumenBatch(batchId);
-            List<PaymentDetail> detalles = billingService.obtenerDetallesBatch(batchId);
+            BatchSummaryDTO resumen = billingService.getBatchSummary(batchId);
+            List<PaymentDetail> detalles = billingService.getBatchDetails(batchId);
 
             StringBuilder reporte = new StringBuilder();
             reporte.append("REPORTE DE NOVEDADES - PAGOS MASIVOS\n");
             reporte.append(String.format("Lote ID: %d%n", batchId));
             reporte.append(String.format("Archivo: %s%n", resumen.getFileName()));
             reporte.append(String.format("RUC: %s%n", resumen.getRuc()));
-            reporte.append(String.format("Fecha Generación: %s%n", resumen.getReceivedAt()));
+            reporte.append(String.format("Fecha Generacion: %s%n", resumen.getReceivedAt()));
             reporte.append("\n");
 
             reporte.append("RESUMEN\n");
@@ -480,7 +410,7 @@ public class BillingController {
             reporte.append("\n");
 
             reporte.append("DETALLE DE RECHAZOS\n");
-            reporte.append("No.,Beneficiario,Cédula,Monto,Motivo Rechazo\n");
+            reporte.append("No.,Beneficiario,Cedula,Monto,Motivo Rechazo\n");
 
             int rechazoNum = 1;
             for (PaymentDetail det : detalles) {
@@ -508,12 +438,12 @@ public class BillingController {
                     .body(content);
 
         } catch (ResourceNotFoundException e) {
-            logger.warn("Recurso no encontrado: {}", e.getMessage());
+            logger.warn("Resource not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            logger.error("Error al descargar reporte de novedades del lote {}: {}", batchId, e.getMessage(), e);
+            logger.error("Error downloading novelty report for batch {}: {}", batchId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno al descargar el reporte de novedades"));
         }

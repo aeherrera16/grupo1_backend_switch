@@ -6,7 +6,9 @@ public enum BatchStatusEnum {
     PROCESSING("En Proceso"),
     PROCESSED("Procesado"),
     REJECTED("Rechazado"),
-    ENCOLADO("Encolado");
+    ENCOLADO("Encolado"),
+    PENDIENTE("Pendiente"),
+    PROGRAMADO("Programado");
 
     private final String displayName;
 

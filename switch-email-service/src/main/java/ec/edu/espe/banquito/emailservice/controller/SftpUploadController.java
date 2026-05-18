@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,9 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ec.edu.espe.banquito.emailservice.client.SwitchApiClient;
 
-/**
- * Controlador para recibir archivos SFTP directamente
- */
 @RestController
 @RequestMapping("/api/sftp")
 public class SftpUploadController {
@@ -42,33 +40,27 @@ public class SftpUploadController {
         this.switchApiClient = switchApiClient;
     }
 
-    /**
-     * Endpoint para recibir archivos SFTP directamente
-     */
     @PostMapping("/upload")
     public ResponseEntity<Map<String, Object>> receiveSftpFile(@RequestParam("file") MultipartFile file) {
-        LOG.info("Archivo SFTP recibido: {}", file.getOriginalFilename());
-        LOG.info("Tamano: {} bytes", file.getSize());
+        LOG.info("SFTP file received: {}", file.getOriginalFilename());
+        LOG.info("Size: {} bytes", file.getSize());
 
         try {
-            // Crear directorio si no existe
             Path uploadPath = Paths.get(localDirectory);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
-                LOG.info("Directorio creado: {}", localDirectory);
+                LOG.info("Directory created: {}", localDirectory);
             }
 
-            // Guardar archivo localmente
             String fileName = file.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            
-            LOG.info("Archivo guardado en: {}", filePath);
 
-            // Enviar archivo al switch principal
-            LOG.info("Enviando archivo al Switch principal");
+            LOG.info("File saved at: {}", filePath);
+
+            LOG.info("Sending file to the main Switch");
             File savedFile = filePath.toFile();
-            boolean sentToSwitch = switchApiClient.sendFileToSwitch(savedFile);
+            boolean sentToSwitch = switchApiClient.sendFileToSwitch(savedFile, null);
 
             Map<String, Object> response = new HashMap<>();
             response.put("fileName", fileName);
@@ -78,31 +70,40 @@ public class SftpUploadController {
             response.put("timestamp", java.time.LocalDateTime.now());
 
             if (sentToSwitch) {
-                LOG.info("Archivo procesado y enviado al Switch exitosamente");
+                Path processedPath = moveToSubdirectory(filePath, "processed");
+                LOG.info("File processed and sent to the Switch successfully");
+                response.put("processedPath", processedPath.toString());
                 response.put("status", "SUCCESS");
                 return ResponseEntity.ok(response);
             } else {
-                LOG.error("Error enviando archivo al Switch");
+                Path errorPath = moveToSubdirectory(filePath, "errors");
+                LOG.error("Error sending file to the Switch");
+                response.put("errorPath", errorPath.toString());
                 response.put("status", "ERROR_SENDING_TO_SWITCH");
                 return ResponseEntity.internalServerError().body(response);
             }
 
         } catch (IOException e) {
-            LOG.error("Error procesando archivo SFTP: {}", e.getMessage(), e);
+            LOG.error("Error processing SFTP file: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error procesando archivo: " + e.getMessage(),
+                "error", "Error processing file: " + e.getMessage(),
                 "status", "ERROR_PROCESSING_FILE"
             ));
         }
     }
 
-    /**
-     * Endpoint para verificar el estado del servidor SFTP
-     */
+    private Path moveToSubdirectory(Path filePath, String subdirectory) throws IOException {
+        Path targetDirectory = filePath.getParent().resolve(subdirectory);
+        Files.createDirectories(targetDirectory);
+        Path targetPath = targetDirectory.resolve(filePath.getFileName());
+        Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        return targetPath;
+    }
+
     @PostMapping("/status")
     public ResponseEntity<Map<String, Object>> getSftpServerStatus() {
-        LOG.info("Verificando estado del servidor SFTP");
-        
+        LOG.info("Checking SFTP server status");
+
         try {
             Path uploadPath = Paths.get(localDirectory);
             boolean directoryExists = Files.exists(uploadPath);
@@ -133,15 +134,20 @@ public class SftpUploadController {
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
-            LOG.error("Error verificando estado SFTP: {}", e.getMessage(), e);
+            LOG.error("Error checking SFTP status: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error verificando estado: " + e.getMessage()
+                "error", "Error checking status: " + e.getMessage()
             ));
         } catch (RuntimeException e) {
-            LOG.error("Error verificando estado SFTP: {}", e.getMessage(), e);
+            LOG.error("Error checking SFTP status: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error verificando estado: " + e.getMessage()
+                "error", "Error checking status: " + e.getMessage()
             ));
         }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> getSftpServerStatusGet() {
+        return getSftpServerStatus();
     }
 }

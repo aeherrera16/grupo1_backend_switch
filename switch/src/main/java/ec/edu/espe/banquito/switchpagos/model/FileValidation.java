@@ -21,12 +21,10 @@ public class FileValidation {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    // Regla 8: Relación de hijo a padre hacia el lote
     @ManyToOne
     @JoinColumn(name = "payment_batch_id", referencedColumnName = "id", nullable = false)
     private PaymentBatch paymentBatch;
 
-    // Uso estricto de Wrappers (Boolean en vez de boolean)
     @Column(name = "totals_match")
     private Boolean totalsMatch;
 
@@ -45,16 +43,12 @@ public class FileValidation {
     @Column(name = "validated_at")
     private LocalDateTime validatedAt;
 
-    // Regla 6: Constructor vacío mandatorio para JPA
     public FileValidation() {
     }
 
-    // Regla 6: Constructor con clave primaria
     public FileValidation(Integer id) {
         this.id = id;
     }
-
-    // --- GETTERS Y SETTERS MANUALES ---
 
     public Integer getId() {
         return id;
@@ -120,7 +114,6 @@ public class FileValidation {
         this.validatedAt = validatedAt;
     }
 
-    // Regla 5: equals() y hashCode() SOLO de la PK
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -134,7 +127,6 @@ public class FileValidation {
         return Objects.hashCode(id);
     }
 
-    // Regla 7: Sobreescribir toString()
     @Override
     public String toString() {
         return "FileValidation{" +

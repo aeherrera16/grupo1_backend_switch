@@ -39,7 +39,7 @@ public final class CsvBatchParser {
 
         if (trimmedLines.size() < 3) {
             throw new IllegalArgumentException(
-                    "El archivo debe contener cabecera, al menos un detalle y pie de control");
+                    "File must contain header, at least one detail row, and footer");
         }
 
         PaymentBatch batch = new PaymentBatch();
@@ -58,18 +58,18 @@ public final class CsvBatchParser {
         String footerLine = trimmedLines.get(trimmedLines.size() - 1);
         String[] footerParts = footerLine.split(",", -1);
         if (footerParts.length != 3) {
-            throw new IllegalArgumentException("Pie inválido: se esperaban 3 campos [codigo_seguridad,registros,monto]");
+            throw new IllegalArgumentException("Invalid footer: expected 3 fields [security_code,records,amount]");
         }
         String footerSecurityCode = footerParts[0].trim();
         if (footerSecurityCode.isBlank()) {
-            throw new IllegalArgumentException("El código de seguridad del pie es obligatorio");
+            throw new IllegalArgumentException("Footer security code is required");
         }
         int footerDeclaredRecords = parsePositiveInt(
-                "registros declarados en pie", footerParts[1].trim(), "pie del archivo");
-        BigDecimal footerDeclaredAmount = parseAmount("monto declarado en pie", footerParts[2].trim());
+                "footer declared records", footerParts[1].trim(), "footer");
+        BigDecimal footerDeclaredAmount = parseAmount("footer declared amount", footerParts[2].trim());
 
         if (batch.getHeaderTotalRecords() == null || batch.getHeaderTotalAmount() == null) {
-            throw new IllegalArgumentException("Faltan totales en cabecera");
+            throw new IllegalArgumentException("Header totals are missing");
         }
 
         return new CsvParseResult(batch, details, footerSecurityCode, footerDeclaredRecords, footerDeclaredAmount);
@@ -78,29 +78,29 @@ public final class CsvBatchParser {
     private static void parseHeader(String line, PaymentBatch batch) {
         String[] parts = line.split(",", -1);
         if (parts.length < 6) {
-            throw new IllegalArgumentException("Cabecera inválida: se esperaban al menos 6 campos");
+            throw new IllegalArgumentException("Invalid header: expected at least 6 fields");
         }
         batch.setRuc(parts[0].trim());
         batch.setServiceType(parseServiceType(parts[1].trim()));
         batch.setGeneratedAt(LocalDateTime.parse(parts[2].trim()));
         batch.setSourceAccountNumber(parts[3].trim());
-        batch.setHeaderTotalRecords(parsePositiveInt("cantidad registros cabecera", parts[4].trim(), "cabecera"));
-        batch.setHeaderTotalAmount(parseAmount("monto total cabecera", parts[5].trim()));
+        batch.setHeaderTotalRecords(parsePositiveInt("header record count", parts[4].trim(), "header"));
+        batch.setHeaderTotalAmount(parseAmount("header total amount", parts[5].trim()));
     }
 
     private static PaymentDetail parseDetailLine(String line, int physicalLineNum, PaymentBatch batch) {
         String[] parts = line.split(",", -1);
         if (parts.length < 7) {
             throw new IllegalArgumentException(
-                    "Línea detalle inválida (línea " + physicalLineNum + "): se esperaban ≥7 campos");
+                    "Invalid detail row (line " + physicalLineNum + "): expected at least 7 fields");
         }
         PaymentDetail detail = new PaymentDetail();
         detail.setLineNumber(parsePositiveInt(
-                "número línea detalle", parts[0].trim(), physicalLine(physicalLineNum)));
+                "detail line number", parts[0].trim(), physicalLine(physicalLineNum)));
         detail.setBeneficiaryIdentification(parts[1].trim());
         detail.setBeneficiaryName(parts[2].trim());
         detail.setDestinationAccountNumber(parts[3].trim());
-        detail.setAmount(parseAmount("monto detalle", parts[4].trim()));
+        detail.setAmount(parseAmount("detail amount", parts[4].trim()));
         detail.setReference(parts[5].trim());
         detail.setBeneficiaryEmail(parts[6].trim());
         detail.setStatus(PaymentDetailStatusEnum.PENDING);
@@ -109,7 +109,7 @@ public final class CsvBatchParser {
     }
 
     private static String physicalLine(int n) {
-        return "linea física " + n;
+        return "physical line " + n;
     }
 
     private static ServiceTypeEnum parseServiceType(String raw) {
@@ -120,28 +120,28 @@ public final class CsvBatchParser {
         }
     }
 
-    private static int parsePositiveInt(String campo, String raw, String contextLabel) {
+    private static int parsePositiveInt(String field, String raw, String contextLabel) {
         try {
-            int v = Integer.parseInt(raw.trim());
-            if (v < 1) {
+            int value = Integer.parseInt(raw.trim());
+            if (value < 1) {
                 throw new IllegalArgumentException(
-                        campo + " inválido en " + contextLabel + ": se esperaba un valor ≥ 1");
+                        field + " is invalid in " + contextLabel + ": expected a value >= 1");
             }
-            return v;
+            return value;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(campo + " inválido en " + contextLabel + ": " + raw.trim(), e);
+            throw new IllegalArgumentException(field + " is invalid in " + contextLabel + ": " + raw.trim(), e);
         }
     }
 
-    private static BigDecimal parseAmount(String campo, String raw) {
+    private static BigDecimal parseAmount(String field, String raw) {
         try {
-            BigDecimal amt = new BigDecimal(raw.trim());
-            if (amt.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new IllegalArgumentException(campo + " debe ser mayor a cero");
+            BigDecimal amount = new BigDecimal(raw.trim());
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException(field + " must be greater than zero");
             }
-            return amt;
+            return amount;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(campo + " ilegible: " + raw.trim(), e);
+            throw new IllegalArgumentException(field + " is unreadable: " + raw.trim(), e);
         }
     }
 
@@ -150,7 +150,7 @@ public final class CsvBatchParser {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             return HexFormat.of().formatHex(md.digest(content));
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 no disponible", e);
+            throw new IllegalStateException("SHA-256 is not available", e);
         }
     }
 
@@ -163,7 +163,7 @@ public final class CsvBatchParser {
         private final BigDecimal footerDeclaredAmount;
 
         public CsvParseResult(PaymentBatch batch, List<PaymentDetail> details,
-                String footerSecurityCode, int footerDeclaredRecords, BigDecimal footerDeclaredAmount) {
+                              String footerSecurityCode, int footerDeclaredRecords, BigDecimal footerDeclaredAmount) {
             this.batch = batch;
             this.details = details;
             this.footerSecurityCode = footerSecurityCode;

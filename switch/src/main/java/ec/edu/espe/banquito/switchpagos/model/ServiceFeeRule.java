@@ -24,7 +24,7 @@ public class ServiceFeeRule {
     private BigDecimal minAmount;
 
     @Column(name = "max_amount", precision = 18, scale = 2)
-    private BigDecimal maxAmount; // Puede ser null si es "en adelante"
+    private BigDecimal maxAmount;
 
     @Column(name = "min_successful_transactions", nullable = false)
     private Integer minSuccessfulTransactions;
@@ -32,23 +32,18 @@ public class ServiceFeeRule {
     @Column(name = "max_successful_transactions")
     private Integer maxSuccessfulTransactions;
 
-    // Regla 3: Dinero y tarifas en BigDecimal
     @Column(name = "unit_fee", nullable = false, precision = 18, scale = 2)
     private BigDecimal unitFee;
 
     @Column(name = "fee_amount", nullable = false, precision = 18, scale = 2)
     private BigDecimal feeAmount;
 
-    // Regla 6: Constructor vacío mandatorio para JPA
     public ServiceFeeRule() {
     }
 
-    // Regla 6: Constructor solo con la PK
     public ServiceFeeRule(Integer id) {
         this.id = id;
     }
-
-    // --- GETTERS Y SETTERS MANUALES ---
 
     public Integer getId() {
         return id;
@@ -122,7 +117,6 @@ public class ServiceFeeRule {
         this.feeAmount = feeAmount;
     }
 
-    // Regla 5: equals() y hashCode() SOLO de la PK
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,7 +130,6 @@ public class ServiceFeeRule {
         return Objects.hashCode(id);
     }
 
-    // Regla 7: Sobreescribir toString()
     @Override
     public String toString() {
         return "ServiceFeeRule{" +

@@ -12,13 +12,8 @@ import ec.edu.espe.banquito.switchpagos.enums.BatchStatusEnum;
 import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentDetailRepository;
+import ec.edu.espe.banquito.switchpagos.provider.DateTimeProvider;
 
-/**
- * Procesa lotes ENCOLADOS a las 00:01 del siguiente día hábil.
- *
- * Nota: el día hábil se valida contra el core (tabla HOLIDAY). Si el core no está disponible,
- * se aplica fallback lunes-viernes.
- */
 @Service
 public class QueuedBatchSchedulerService {
 
@@ -28,48 +23,59 @@ public class QueuedBatchSchedulerService {
     private final PaymentDetailRepository paymentDetailRepository;
     private final PaymentBatchProcessingService paymentBatchProcessingService;
     private final BusinessDayService businessDayService;
+    private final DateTimeProvider dateTimeProvider;
 
     public QueuedBatchSchedulerService(PaymentBatchRepository paymentBatchRepository,
                                        PaymentDetailRepository paymentDetailRepository,
                                        PaymentBatchProcessingService paymentBatchProcessingService,
-                                       BusinessDayService businessDayService) {
+                                       BusinessDayService businessDayService,
+                                       DateTimeProvider dateTimeProvider) {
         this.paymentBatchRepository = paymentBatchRepository;
         this.paymentDetailRepository = paymentDetailRepository;
         this.paymentBatchProcessingService = paymentBatchProcessingService;
         this.businessDayService = businessDayService;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
-    /**
-     * Por defecto corre todos los días a las 00:01.
-     * (Spring usa formato cron con segundos: sec min hora día mes díaSemana)
-     */
     @Scheduled(cron = "${app.queue.processing.cron:0 1 0 * * *}")
     public void processQueuedBatches() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = dateTimeProvider.today();
         if (!businessDayService.isBusinessDay(today)) {
-            LOG.info("Hoy no es día hábil ({}). Se omite el procesamiento de lotes encolados.", today);
+            LOG.info("Today is not a business day ({}). Queued batch processing is skipped.", today);
             return;
         }
 
         List<PaymentBatch> queued = paymentBatchRepository.findByStatusOrderByReceivedAtAsc(BatchStatusEnum.ENCOLADO);
+        List<PaymentBatch> scheduled = paymentBatchRepository.findByStatusOrderByReceivedAtAsc(BatchStatusEnum.PROGRAMADO);
+
+        List<PaymentBatch> toProcess = new java.util.ArrayList<>(queued);
+
+        for (PaymentBatch s : scheduled) {
+            if (s.getScheduledDate() == null || !s.getScheduledDate().toLocalDate().isAfter(today)) {
+                toProcess.add(s);
+            }
+        }
+
+        queued = toProcess;
+
         if (queued.isEmpty()) {
-            LOG.info("No hay lotes ENCOLADOS para procesar.");
+            LOG.info("No queued batches to process.");
             return;
         }
 
-        LOG.info("Procesando {} lote(s) ENCOLADO(s)...", queued.size());
+        LOG.info("Processing {} queued batch(es)...", queued.size());
         for (PaymentBatch batch : queued) {
             try {
                 var details = paymentDetailRepository.findByPaymentBatchIdOrderByLineNumberAsc(batch.getId());
                 if (details == null || details.isEmpty()) {
-                    LOG.warn("Lote {} ENCOLADO sin detalles. Se omite.", batch.getId());
+                    LOG.warn("Queued batch {} has no details. Skipping.", batch.getId());
                     continue;
                 }
 
                 paymentBatchProcessingService.process(batch, details);
-                LOG.info("Lote {} procesado.", batch.getId());
+                LOG.info("Batch {} processed.", batch.getId());
             } catch (Exception e) {
-                LOG.error("Error procesando lote ENCOLADO {}: {}", batch.getId(), e.getMessage(), e);
+                LOG.error("Error processing queued batch {}: {}", batch.getId(), e.getMessage(), e);
             }
         }
     }

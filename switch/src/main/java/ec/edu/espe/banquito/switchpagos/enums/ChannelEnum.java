@@ -1,8 +1,5 @@
 package ec.edu.espe.banquito.switchpagos.enums;
 
-/**
- * Channel types for file ingestion with full display names.
- */
 public enum ChannelEnum {
     PORTAL("Portal Web"),
     SFTP("SFTP Seguro");

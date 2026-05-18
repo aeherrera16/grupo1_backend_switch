@@ -1,8 +1,5 @@
 package ec.edu.espe.banquito.switchpagos.enums;
 
-/**
- * Service types used in header with full display names.
- */
 public enum ServiceTypeEnum {
     NOM("Nómina"),
     PRV("Proveedores");

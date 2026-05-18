@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ServiceChargeRepository extends JpaRepository<ServiceCharge, Integer> {
 
-    // Para buscar la factura/liquidación de un lote en específico
     Optional<ServiceCharge> findByPaymentBatchId(Integer paymentBatchId);
 }

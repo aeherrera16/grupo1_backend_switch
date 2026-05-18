@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ec.edu.espe.banquito.emailservice.service.ISftpIntegrationService;
 import ec.edu.espe.banquito.emailservice.service.SftpSchedulerService;
 
-/**
- * Controlador para monitoreo y administración del procesamiento de emails
- */
 @RestController
 @RequestMapping("/api/email-processing")
 public class EmailProcessingController {
@@ -35,9 +32,6 @@ public class EmailProcessingController {
         this.sftpSchedulerService = sftpSchedulerService;
     }
 
-    /**
-     * Endpoint para verificar el estado del sistema
-     */
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> getSystemStatus() {
         try {
@@ -54,17 +48,13 @@ public class EmailProcessingController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            LOG.error("Error obteniendo estado del sistema", e);
+            LOG.error("Error getting system status", e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error obteniendo estado: " + e.getMessage()
+                "error", "Error getting status: " + e.getMessage()
             ));
         }
     }
 
-    
-    /**
-     * Endpoint para obtener información detallada del sistema
-     */
     @GetMapping("/info")
     public ResponseEntity<Map<String, String>> getSystemInfo() {
         try {
@@ -73,21 +63,18 @@ public class EmailProcessingController {
             String systemInfo = "Integration: " + integrationInfo + " | Scheduler: " + schedulerInfo;
             return ResponseEntity.ok(Map.of("info", systemInfo));
         } catch (Exception e) {
-            LOG.error("Error obteniendo información del sistema", e);
+            LOG.error("Error getting system information", e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error obteniendo información: " + e.getMessage()
+                "error", "Error getting information: " + e.getMessage()
             ));
         }
     }
 
-    /**
-     * Endpoint de health check específico para el procesador
-     */
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> health() {
         boolean integrationHealthy = sftpIntegrationService.isIntegrationHealthy();
         boolean schedulerHealthy = sftpSchedulerService.isHealthy();
-        
+
         Map<String, Object> health = new HashMap<>();
         health.put("service", "sftp-processor");
         health.put("status", (integrationHealthy && schedulerHealthy) ? "UP" : "DOWN");
@@ -100,41 +87,33 @@ public class EmailProcessingController {
         return ResponseEntity.ok(health);
     }
 
-    // ===== ENDPOINTS SFTP =====
-
-    /**
-     * Endpoint para procesar archivos SFTP manualmente
-     */
     @PostMapping("/sftp/process")
     public ResponseEntity<Map<String, Object>> processSftpFiles() {
         try {
-            LOG.info("Iniciando procesamiento manual de archivos SFTP");
+            LOG.info("Starting manual SFTP file processing");
             sftpSchedulerService.processSftpFiles();
-            
+
             Map<String, Object> response = new HashMap<>();
-            response.put("processedFiles", "Procesamiento iniciado - revisa logs para detalles");
+            response.put("processedFiles", "Processing started - check logs for details");
             response.put("count", 0);
             response.put("timestamp", java.time.LocalDateTime.now());
 
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            LOG.error("Error procesando archivos SFTP manualmente", e);
+            LOG.error("Error processing SFTP files manually", e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error procesando archivos SFTP: " + e.getMessage()
+                "error", "Error processing SFTP files: " + e.getMessage()
             ));
         }
     }
 
-    /**
-     * Endpoint para verificar el estado específico de SFTP
-     */
     @GetMapping("/sftp/status")
     public ResponseEntity<Map<String, Object>> getSftpStatus() {
         try {
             boolean isHealthy = sftpIntegrationService.isIntegrationHealthy();
             String integrationInfo = sftpIntegrationService.getIntegrationInfo();
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("service", "sftp-processor");
             response.put("healthy", isHealthy);
@@ -144,21 +123,18 @@ public class EmailProcessingController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            LOG.error("Error obteniendo estado SFTP", e);
+            LOG.error("Error getting SFTP status", e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error obteniendo estado SFTP: " + e.getMessage()
+                "error", "Error getting SFTP status: " + e.getMessage()
             ));
         }
     }
 
-    /**
-     * Endpoint de health check específico para SFTP
-     */
     @GetMapping("/sftp/health")
     public ResponseEntity<Map<String, Object>> sftpHealth() {
         try {
             boolean isHealthy = sftpIntegrationService.isIntegrationHealthy();
-            
+
             Map<String, Object> health = new HashMap<>();
             health.put("service", "sftp-processor");
             health.put("status", isHealthy ? "UP" : "DOWN");
@@ -170,9 +146,9 @@ public class EmailProcessingController {
             return ResponseEntity.ok(health);
 
         } catch (Exception e) {
-            LOG.error("Error en health check SFTP", e);
+            LOG.error("Error in SFTP health check", e);
             return ResponseEntity.internalServerError().body(Map.of(
-                "error", "Error en health check SFTP: " + e.getMessage()
+                "error", "Error in SFTP health check: " + e.getMessage()
             ));
         }
     }

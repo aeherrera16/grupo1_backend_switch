@@ -19,11 +19,10 @@ import ec.edu.espe.banquito.switchpagos.model.PaymentBatch;
 import ec.edu.espe.banquito.switchpagos.model.PaymentDetail;
 import ec.edu.espe.banquito.switchpagos.repository.FileValidationRepository;
 import ec.edu.espe.banquito.switchpagos.repository.PaymentBatchRepository;
-
-import ec.edu.espe.banquito.switchpagos.service.IFileValidationService;
+import ec.edu.espe.banquito.switchpagos.provider.DateTimeProvider;
 
 @Service
-public class FileValidationService implements IFileValidationService {
+public class FileValidationService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileValidationService.class);
 
@@ -31,27 +30,29 @@ public class FileValidationService implements IFileValidationService {
     private final FileValidationRepository fileValidationRepository;
     private final PaymentBatchRepository paymentBatchRepository;
     private final CoreFacadeService coreFacadeService;
+    private final DateTimeProvider dateTimeProvider;
 
     @Autowired
     public FileValidationService(
             ValidationRulesProperties validationRules,
             FileValidationRepository fileValidationRepository,
             PaymentBatchRepository paymentBatchRepository,
-            CoreFacadeService coreFacadeService) {
+            CoreFacadeService coreFacadeService,
+            DateTimeProvider dateTimeProvider) {
         this.validationRules = validationRules;
         this.fileValidationRepository = fileValidationRepository;
         this.paymentBatchRepository = paymentBatchRepository;
         this.coreFacadeService = coreFacadeService;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
-    @Override
     @Transactional
     public FileValidation validateBatch(PaymentBatch batch, List<PaymentDetail> details) {
         logger.info("Validating batch {} with {} details", batch.getId(), details.size());
 
         FileValidation validation = new FileValidation();
         validation.setPaymentBatch(batch);
-        validation.setValidatedAt(LocalDateTime.now());
+        validation.setValidatedAt(dateTimeProvider.now());
         validation.setStructureValid(true);
         validation.setTotalsMatch(true);
         validation.setDuplicateFileValid(true);
@@ -61,25 +62,24 @@ public class FileValidationService implements IFileValidationService {
         return fileValidationRepository.save(validation);
     }
 
-    @Override
     public void validateEarlyRejection(CsvParseResult parseResult) {
         PaymentBatch batch = parseResult.getBatch();
         List<PaymentDetail> details = parseResult.getDetails();
 
         if (batch.getFileName() == null || batch.getFileName().isBlank()) {
-            throw new IllegalArgumentException("El nombre del archivo es obligatorio para auditoría y control de duplicidad");
+            throw new IllegalArgumentException("File name is required for audit and duplicate control");
         }
         if (batch.getFileHash() == null || batch.getFileHash().isBlank()) {
-            throw new IllegalArgumentException("No se pudo calcular el hash de integridad del archivo");
+            throw new IllegalArgumentException("Could not calculate the file integrity hash");
         }
         if (batch.getRuc() == null || batch.getRuc().trim().isEmpty()) {
-            throw new IllegalArgumentException("El RUC en cabecera es obligatorio");
+            throw new IllegalArgumentException("Header RUC is required");
         }
         if (details.isEmpty()) {
-            throw new IllegalArgumentException("El archivo no tiene líneas de detalle");
+            throw new IllegalArgumentException("The file has no detail rows");
         }
         if (parseResult.getFooterSecurityCode() == null || parseResult.getFooterSecurityCode().isBlank()) {
-            throw new IllegalArgumentException("El código de seguridad del pie es obligatorio");
+            throw new IllegalArgumentException("Footer security code is required");
         }
 
         int counted = details.size();
@@ -89,46 +89,52 @@ public class FileValidationService implements IFileValidationService {
 
         if (!batch.getHeaderTotalRecords().equals(counted)) {
             throw new IllegalArgumentException(String.format(
-                    "Cantidad de registros en cabecera (%d) no coincide con detalle procesado (%d)",
+                    "Header record count (%d) does not match parsed details (%d)",
                     batch.getHeaderTotalRecords(), counted));
         }
         if (parseResult.getFooterDeclaredRecords() != counted) {
             throw new IllegalArgumentException(String.format(
-                    "Registros declarados en pie (%d) no coinciden con detalle procesado (%d)",
+                    "Footer declared records (%d) do not match parsed details (%d)",
                     parseResult.getFooterDeclaredRecords(), counted));
         }
 
         if (parseResult.getFooterDeclaredAmount().compareTo(batch.getHeaderTotalAmount()) != 0) {
             throw new IllegalArgumentException(String.format(
-                    "Monto en pie (%s) no coincide con monto declarado en cabecera (%s)",
+                    "Footer amount (%s) does not match header amount (%s)",
                     parseResult.getFooterDeclaredAmount().toPlainString(),
                     batch.getHeaderTotalAmount().toPlainString()));
         }
         if (batch.getHeaderTotalAmount().compareTo(summed) != 0) {
             throw new IllegalArgumentException(String.format(
-                    "Monto total en cabecera (%s) no coincide con suma del detalle (%s)",
+                    "Header total amount (%s) does not match details sum (%s)",
                     batch.getHeaderTotalAmount().toPlainString(), summed.toPlainString()));
         }
         if (parseResult.getFooterDeclaredAmount().compareTo(summed) != 0) {
             throw new IllegalArgumentException(String.format(
-                    "Monto declarado en pie (%s) no coincide con suma del detalle (%s)",
+                    "Footer declared amount (%s) does not match details sum (%s)",
                     parseResult.getFooterDeclaredAmount().toPlainString(), summed.toPlainString()));
         }
 
         validateNoDuplicateNominaProcessed(batch);
-
         validateRucClientePagosMasivos(batch.getRuc().trim());
 
-        logger.info("Validación RF-02 temprana aprobada para archivo {}", batch.getFileName());
+        logger.info("Early validation passed for file {}", batch.getFileName());
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {
+        LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : dateTimeProvider.now())
+                .minusDays(validationRules.getDuplicateWindowDays());
+
         paymentBatchRepository
-                .findFirstByFileHash(batch.getFileHash())
+                .findFirstByFileNameAndFileHashAndStatusAndReceivedAtAfter(
+                        batch.getFileName(),
+                        batch.getFileHash(),
+                        BatchStatusEnum.PROCESSED,
+                        cutoff)
                 .ifPresent(existing -> {
                     throw new IllegalArgumentException(String.format(
-                            "Duplicidad: el archivo '%s' tiene el mismo contenido que el lote %d registrado el %s con estado %s",
-                            batch.getFileName(), existing.getId(), existing.getReceivedAt(), existing.getStatus()));
+                            "Duplicate file: '%s' with the same hash was already processed successfully in the last %d days (batch %d, received at %s)",
+                            batch.getFileName(), validationRules.getDuplicateWindowDays(), existing.getId(), existing.getReceivedAt()));
                 });
     }
 
@@ -137,12 +143,12 @@ public class FileValidationService implements IFileValidationService {
             Boolean active = coreFacadeService.isMassPaymentsActiveForRuc(ruc);
             if (!Boolean.TRUE.equals(active)) {
                 throw new IllegalArgumentException(
-                        "El RUC no pertenece a un cliente jurídico con el servicio de pagos masivos activo");
+                        "RUC does not belong to a legal customer with active mass-payments service");
             }
         } catch (RestClientException e) {
-            logger.error("Error consultando pagos masivos en Core para RUC {}: {}", ruc, e.getMessage());
+            logger.error("Error validating mass-payments service in Core for RUC {}: {}", ruc, e.getMessage());
             throw new IllegalArgumentException(
-                    "No se pudo validar contra el Core bancario el servicio de pagos masivos del RUC. Intente más tarde.", e);
+                    "Could not validate the RUC mass-payments service against Core. Please try again later.", e);
         }
     }
 }

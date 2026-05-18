@@ -14,7 +14,7 @@ public class SwitchParameter {
 
     @Id
     @Column(name = "code", nullable = false, length = 50)
-    private String code; // La PK es un String
+    private String code;
 
     @Column(name = "name", length = 100)
     private String name;
@@ -37,8 +37,6 @@ public class SwitchParameter {
     public SwitchParameter(String code) {
         this.code = code;
     }
-
-    // --- GETTERS Y SETTERS MANUALES ---
 
     public String getCode() {
         return code;
