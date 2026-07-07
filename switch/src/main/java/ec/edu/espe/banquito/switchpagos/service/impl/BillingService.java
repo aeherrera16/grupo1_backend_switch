@@ -38,6 +38,7 @@ import ec.edu.espe.banquito.switchpagos.repository.SwitchParameterRepository;
 public class BillingService {
 
     private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
+    private static final BigDecimal VAT_RATE = new BigDecimal("0.15");
 
     private final ServiceFeeRuleRepository serviceFeeRuleRepository;
     private final ServiceChargeRepository serviceChargeRepository;
@@ -131,8 +132,8 @@ public class BillingService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        BigDecimal vatAmount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
-        BigDecimal total = dispersedAmount.add(subtotal).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal vatAmount = subtotal.multiply(VAT_RATE).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = subtotal.add(vatAmount).setScale(2, RoundingMode.HALF_UP);
 
         logger.info("Commission breakdown - Disbursed: {}, Subtotal: {}, VAT: {}, Total: {}",
                 dispersedAmount, subtotal, vatAmount, total);

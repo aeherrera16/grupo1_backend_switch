@@ -172,8 +172,6 @@ public class PaymentBatchController {
                     && "SUCCESS".equals(validation.getValidationResult());
 
             if (willProcess) {
-                persistedBatch.setStatus(BatchStatusEnum.PROCESSING);
-                paymentBatchRepository.save(persistedBatch);
                 paymentBatchProcessingService.process(persistedBatch, parseResult.getDetails());
             }
 
@@ -222,8 +220,6 @@ public class PaymentBatchController {
         }
 
         PaymentBatch batch = batchOpt.get();
-        batch.setStatus(BatchStatusEnum.PROCESSING);
-        paymentBatchRepository.save(batch);
 
         var details = paymentDetailRepository.findByPaymentBatchIdOrderByLineNumberAsc(id);
         paymentBatchProcessingService.process(batch, details);

@@ -64,11 +64,10 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
     @Async
     public void process(PaymentBatch batch, List<PaymentDetail> details) {
         logger.info("Processing batch {} with {} details", batch.getId(), details.size());
+        Integer batchId = batch.getId();
 
         try {
-            recordBatchStatusChange(batch, batch.getStatus(), BatchStatusEnum.PROCESSING);
-            batch.setStatus(BatchStatusEnum.PROCESSING);
-            batch = paymentBatchRepository.save(batch);
+            batch = updateBatchStatusWithRetry(batchId, BatchStatusEnum.PROCESSING);
 
             BigDecimal maxAmount = resolveMaxAmountForTransfer(batch);
             String companyName = resolveCompanyName(batch);
@@ -93,22 +92,42 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
 
             billingService.generateCharge(batch, details);
 
-            recordBatchStatusChange(batch, batch.getStatus(), BatchStatusEnum.PROCESSED);
-            batch.setStatus(BatchStatusEnum.PROCESSED);
-            paymentBatchRepository.save(batch);
+            // generateCharge() commits its own updates to the batch row in a separate
+            // transaction, so the in-memory instance held here may now be behind the
+            // database version. Re-fetching with retry avoids an OptimisticLockException
+            // if another transaction bumped the row's version concurrently.
+            updateBatchStatusWithRetry(batchId, BatchStatusEnum.PROCESSED);
 
-            logger.info("Batch {} processed successfully", batch.getId());
+            logger.info("Batch {} processed successfully", batchId);
 
         } catch (Exception e) {
-            logger.error("Error processing batch {}: {}", batch.getId(), e.getMessage());
+            logger.error("Error processing batch {}: {}", batchId, e.getMessage());
             try {
-                recordBatchStatusChange(batch, batch.getStatus(), BatchStatusEnum.REJECTED);
-                batch.setStatus(BatchStatusEnum.REJECTED);
-                paymentBatchRepository.save(batch);
+                updateBatchStatusWithRetry(batchId, BatchStatusEnum.REJECTED);
             } catch (Exception saveEx) {
-                logger.error("Could not persist REJECTED status for batch {}: {}", batch.getId(), saveEx.getMessage());
+                logger.error("Could not persist REJECTED status for batch {}: {}", batchId, saveEx.getMessage());
             }
         }
+    }
+
+    private PaymentBatch updateBatchStatusWithRetry(Integer batchId, BatchStatusEnum newStatus) {
+        final int maxAttempts = 5;
+        RuntimeException lastFailure = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                PaymentBatch fresh = paymentBatchRepository.findById(batchId)
+                        .orElseThrow(() -> new IllegalStateException("Batch not found: " + batchId));
+                recordBatchStatusChange(fresh, fresh.getStatus(), newStatus);
+                fresh.setStatus(newStatus);
+                return paymentBatchRepository.save(fresh);
+            } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e) {
+                lastFailure = e;
+                logger.warn("Optimistic lock conflict updating batch {} to {} (attempt {}/{}), retrying",
+                        batchId, newStatus, attempt, maxAttempts);
+            }
+        }
+        throw lastFailure != null ? lastFailure
+                : new IllegalStateException("Could not update batch " + batchId + " to " + newStatus);
     }
 
     private void recordBatchStatusChange(PaymentBatch batch, BatchStatusEnum previousStatus, BatchStatusEnum newStatus) {

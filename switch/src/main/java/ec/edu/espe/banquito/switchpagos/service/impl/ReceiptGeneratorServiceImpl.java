@@ -337,8 +337,8 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
 
             addMoneyRow(
                     financialTable,
-                    "IVA",
-                    "15%",
+                    "IVA (15%)",
+                    "$ " + receipt.get("vatAmount"),
                     boldFont,
                     normalFont,
                     light,
@@ -348,7 +348,7 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             PdfPCell totalLabel =
                     new PdfPCell(
                             new Phrase(
-                                    "TOTAL A DEBITAR",
+                                    "TOTAL COMISION A DEBITAR (aparte del monto dispersado)",
                                     totalFont
                             )
                     );
@@ -378,6 +378,42 @@ public class ReceiptGeneratorServiceImpl implements IReceiptGeneratorService {
             financialTable.addCell(totalLabel);
 
             financialTable.addCell(totalValue);
+
+            java.math.BigDecimal dispersedForGrandTotal =
+                    receipt.get("successfulDispersedAmount") instanceof java.math.BigDecimal
+                            ? (java.math.BigDecimal) receipt.get("successfulDispersedAmount")
+                            : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal commissionForGrandTotal =
+                    receipt.get("totalDebitedForServices") instanceof java.math.BigDecimal
+                            ? (java.math.BigDecimal) receipt.get("totalDebitedForServices")
+                            : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal grandTotal = dispersedForGrandTotal.add(commissionForGrandTotal);
+
+            PdfPCell grandTotalLabel =
+                    new PdfPCell(
+                            new Phrase(
+                                    "TOTAL GENERAL DEBITADO DE LA CUENTA (dispersado + comision)",
+                                    totalFont
+                            )
+                    );
+            grandTotalLabel.setBackgroundColor(accent);
+            grandTotalLabel.setBorderColor(accent);
+            grandTotalLabel.setPadding(12);
+
+            PdfPCell grandTotalValue =
+                    new PdfPCell(
+                            new Phrase(
+                                    "$ " + grandTotal,
+                                    totalFont
+                            )
+                    );
+            grandTotalValue.setBackgroundColor(accent);
+            grandTotalValue.setBorderColor(accent);
+            grandTotalValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            grandTotalValue.setPadding(12);
+
+            financialTable.addCell(grandTotalLabel);
+            financialTable.addCell(grandTotalValue);
 
             document.add(financialTable);
 
