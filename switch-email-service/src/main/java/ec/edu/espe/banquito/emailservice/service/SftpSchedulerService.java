@@ -29,7 +29,6 @@ public class SftpSchedulerService {
     @Value("${sftp.scheduler.interval}")
     private String schedulerInterval;
 
-    // Usar el directorio real del servidor SFTP embebido, no sftp.local.directory
     @Value("${sftp.server.upload-directory:./sftp-uploads}")
     private String uploadDirectory;
 
@@ -54,10 +53,8 @@ public class SftpSchedulerService {
                 return;
             }
 
-            // Procesar CSVs en el directorio raíz
             processFilesInDirectory(uploadPath, null);
 
-            // Procesar CSVs en subdirectorios de usuario (estructura por RUC)
             Files.list(uploadPath)
                 .filter(Files::isDirectory)
                 .filter(p -> {

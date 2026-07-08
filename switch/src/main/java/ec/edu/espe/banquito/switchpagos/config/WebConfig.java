@@ -22,8 +22,6 @@ public class WebConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        // Sin timeout, una caida/reinicio del Core dejaba el hilo de procesamiento
-        // del lote esperando para siempre en esa linea (lote atascado en "En Proceso").
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(5_000);
         factory.setReadTimeout(20_000);
