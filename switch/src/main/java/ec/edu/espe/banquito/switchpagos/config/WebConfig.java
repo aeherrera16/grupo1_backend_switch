@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -21,7 +22,12 @@ public class WebConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        // Sin timeout, una caida/reinicio del Core dejaba el hilo de procesamiento
+        // del lote esperando para siempre en esa linea (lote atascado en "En Proceso").
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5_000);
+        factory.setReadTimeout(20_000);
+        return new RestTemplate(factory);
     }
 
     private List<String> resolveAllowedOrigins() {
