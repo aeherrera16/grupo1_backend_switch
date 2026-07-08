@@ -123,7 +123,7 @@ public class FileValidationService {
     }
 
     private void validateNoDuplicateNominaProcessed(PaymentBatch batch) {
-        // 1. Mismo archivo ya procesado exitosamente en los últimos 30 días
+
         LocalDateTime cutoff = (batch.getReceivedAt() != null ? batch.getReceivedAt() : dateTimeProvider.now())
                 .minusDays(validationRules.getDuplicateWindowDays());
 
@@ -140,7 +140,6 @@ public class FileValidationService {
                             existing.getId(), existing.getReceivedAt()));
                 });
 
-        // 2. Mismo contenido (hash) actualmente en proceso o recibido (evita doble envío simultáneo)
         paymentBatchRepository
                 .findFirstByFileHashAndStatusIn(
                         batch.getFileHash(),
