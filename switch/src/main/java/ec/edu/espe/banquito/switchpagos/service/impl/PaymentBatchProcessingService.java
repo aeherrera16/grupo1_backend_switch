@@ -91,11 +91,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
             }
 
             billingService.generateCharge(batch, details);
-
-            // generateCharge() commits its own updates to the batch row in a separate
-            // transaction, so the in-memory instance held here may now be behind the
-            // database version. Re-fetching with retry avoids an OptimisticLockException
-            // if another transaction bumped the row's version concurrently.
+            
             updateBatchStatusWithRetry(batchId, BatchStatusEnum.PROCESSED);
 
             logger.info("Batch {} processed successfully", batchId);
