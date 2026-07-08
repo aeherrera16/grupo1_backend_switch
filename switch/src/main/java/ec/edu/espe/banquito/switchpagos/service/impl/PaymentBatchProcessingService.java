@@ -156,16 +156,16 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
 
     private void processPaymentDetail(PaymentDetail detail, BigDecimal maxAmount) {
         if (detail.getAmount() == null || detail.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Invalid amount");
+            throw new IllegalArgumentException("Monto invalido");
         }
 
         if (detail.getAmount().compareTo(maxAmount) > 0) {
-            throw new IllegalArgumentException("The line amount exceeds the maximum allowed limit: "
+            throw new IllegalArgumentException("El monto de la linea supera el limite maximo permitido: "
                     + maxAmount.toPlainString());
         }
 
         if (detail.getDestinationAccountNumber() == null || detail.getDestinationAccountNumber().trim().isEmpty()) {
-            throw new IllegalArgumentException("Destination account is required");
+            throw new IllegalArgumentException("La cuenta destino es obligatoria");
         }
 
         String originAccount = detail.getPaymentBatch().getSourceAccountNumber();
@@ -183,7 +183,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
         if (response == null || !Boolean.TRUE.equals(response.getSuccess())) {
             String reason = response != null && response.getMessage() != null
                     ? response.getMessage()
-                    : "Transfer rejected by Core";
+                    : "Transferencia rechazada por el Core";
             throw new IllegalStateException(reason);
         }
         logger.info("Transfer completed successfully for detail {}", detail.getId());
@@ -261,7 +261,7 @@ public class PaymentBatchProcessingService implements IPaymentBatchProcessingSer
                 logger.warn("Could not fetch parameter {} from Core: {}", candidateCode, e.getMessage());
             } catch (NumberFormatException e) {
                 throw new IllegalStateException(
-                        "The max limit returned by Core is not a valid numeric format for " + candidateCode,
+                        "El limite maximo devuelto por el Core no tiene un formato numerico valido para " + candidateCode,
                         e);
             }
         }
