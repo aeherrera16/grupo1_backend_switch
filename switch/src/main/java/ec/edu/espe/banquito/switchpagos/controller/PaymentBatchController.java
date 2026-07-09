@@ -114,7 +114,7 @@ public class PaymentBatchController {
                         "error", "Could not read file: " + e.getMessage(),
                         "rejectedEarly", true));
             }
-            logger.info("CSV parsed successfully - {} detail rows", parseRessult.getDetails().size());
+            logger.info("CSV parsed successfully - {} detail rows", parseResult.getDetails().size());
 
             PaymentBatch batch = parseResult.getBatch();
             batch.setChannel(channel);
