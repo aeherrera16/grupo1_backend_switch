@@ -94,6 +94,7 @@ public class PaymentBatchController {
                                        @RequestParam(value = "scheduledDate", required = false) java.time.LocalDateTime scheduledDate) {
         logger.info("------------------------------------------------------------");
         logger.info("Nuevo csv subido");
+        logger.info("------------------------------------------------------------");
         logger.info("File: {}, Size: {} bytes, Channel: {}",
                 file.getOriginalFilename(), file.getSize(), channel);
 
