@@ -92,7 +92,7 @@ public class PaymentBatchController {
                                        @RequestParam("channel") ChannelEnum channel,
                                        @RequestParam(value = "ruc", required = false) String ruc,
                                        @RequestParam(value = "scheduledDate", required = false) java.time.LocalDateTime scheduledDate) {
-        logger.info("New CSV upload request");
+        logger.info("Nuevo csv subido");
         logger.info("File: {}, Size: {} bytes, Channel: {}",
                 file.getOriginalFilename(), file.getSize(), channel);
 
@@ -114,7 +114,7 @@ public class PaymentBatchController {
                         "error", "Could not read file: " + e.getMessage(),
                         "rejectedEarly", true));
             }
-            logger.info("CSV parsed successfully - {} detail rows", parseResult.getDetails().size());
+            logger.info("CSV parsed successfully - {} detail rows", parseRessult.getDetails().size());
 
             PaymentBatch batch = parseResult.getBatch();
             batch.setChannel(channel);

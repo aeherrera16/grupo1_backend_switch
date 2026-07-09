@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ public class SftpSchedulerService {
     @Value("${sftp.scheduler.interval}")
     private String schedulerInterval;
 
+    // Usar el directorio real del servidor SFTP embebido, no sftp.local.directory
     @Value("${sftp.server.upload-directory:./sftp-uploads}")
     private String uploadDirectory;
 
@@ -53,18 +55,22 @@ public class SftpSchedulerService {
                 return;
             }
 
+            // Procesar CSVs en el directorio raíz
             processFilesInDirectory(uploadPath, null);
 
-            Files.list(uploadPath)
-                .filter(Files::isDirectory)
-                .filter(p -> {
-                    String name = p.getFileName().toString();
-                    return !name.equals("processed") && !name.equals("errors");
-                })
-                .forEach(userDir -> {
-                    String ruc = userDir.getFileName().toString();
-                    processFilesInDirectory(userDir, ruc);
-                });
+            // Procesar CSVs en subdirectorios de usuario (estructura por RUC)
+            try (Stream<Path> dirStream = Files.list(uploadPath)) {
+                dirStream
+                    .filter(Files::isDirectory)
+                    .filter(p -> {
+                        String name = p.getFileName().toString();
+                        return !name.equals("processed") && !name.equals("errors");
+                    })
+                    .forEach(userDir -> {
+                        String ruc = userDir.getFileName().toString();
+                        processFilesInDirectory(userDir, ruc);
+                    });
+            }
 
         } catch (IOException e) {
             LOG.error("Error processing SFTP files: {}", e.getMessage(), e);

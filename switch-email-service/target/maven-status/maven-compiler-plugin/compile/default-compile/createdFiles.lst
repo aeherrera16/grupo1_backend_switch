@@ -1,1 +1,13 @@
-ec\edu\espe\banquito\emailservice\config\SftpServerConfig$1.class
+ec/edu/espe/banquito/emailservice/config/SftpServerConfig.class
+ec/edu/espe/banquito/emailservice/service/ISftpIntegrationService.class
+ec/edu/espe/banquito/emailservice/client/SwitchApiClient$1.class
+ec/edu/espe/banquito/emailservice/service/Imp/SftpIntegrationService.class
+ec/edu/espe/banquito/emailservice/service/SftpServerService.class
+ec/edu/espe/banquito/emailservice/controller/SftpUploadController.class
+ec/edu/espe/banquito/emailservice/SwitchEmailServiceApplication.class
+ec/edu/espe/banquito/emailservice/service/SftpSchedulerService.class
+ec/edu/espe/banquito/emailservice/controller/EmailProcessingController.class
+ec/edu/espe/banquito/emailservice/service/ISftpClientService.class
+ec/edu/espe/banquito/emailservice/client/SwitchApiClient.class
+ec/edu/espe/banquito/emailservice/service/Imp/SftpClientService.class
+ec/edu/espe/banquito/emailservice/config/SftpServerConfig$1.class

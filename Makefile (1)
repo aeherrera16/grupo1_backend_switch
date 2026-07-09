@@ -1,0 +1,46 @@
+# --- CARGAR VARIABLES DE ENTORNO ---
+-include .env
+export
+
+# Variables
+SONAR_TOKEN ?= "" # Reemplazar vía línea de comandos o exportar variable de entorno
+PROJECT_NAME = corebanking
+
+# --- COMANDOS DEL PROYECTO JAVA ---
+.PHONY: clean compile test build analyze
+
+clean:
+	@echo "Limpiando el proyecto..."
+	mvn clean
+
+compile:
+	@echo "Compilando el proyecto..."
+	mvn compile
+
+test:
+	@echo "Ejecutando pruebas y generando reporte JaCoCo..."
+	mvn test
+
+build:
+	@echo "Construyendo el proyecto (sin tests)..."
+	mvn clean package -DskipTests
+
+# Comando maestro para DevSecOps
+analyze:
+	@if [ -z "$(SONAR_TOKEN)" ]; then \
+		echo "ERROR: Debes proporcionar el SONAR_TOKEN. Uso: make analyze SONAR_TOKEN=tu_token"; \
+		exit 1; \
+	fi
+	@echo "Ejecutando análisis de SonarQube..."
+	mvn clean verify sonar:sonar -Dsonar.login=$(SONAR_TOKEN)
+
+# --- COMANDOS PARA LA APP (Tu Compose actual) ---
+.PHONY: app-up app-down
+
+app-up:
+	@echo "Levantando Core Banking y MariaDB..."
+	docker compose up -d
+
+app-down:
+	@echo "Deteniendo Core Banking..."
+	docker compose down

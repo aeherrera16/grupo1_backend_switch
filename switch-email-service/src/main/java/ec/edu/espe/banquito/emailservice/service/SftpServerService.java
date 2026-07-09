@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,9 @@ public class SftpServerService {
                 LOG.warn("Upload directory does not exist: {}", uploadDirectory);
                 return;
             }
-            try {
-                Files.list(uploadPath)
+            // First process any CSV files placed directly in the upload directory
+            try (Stream<Path> fileStream = Files.list(uploadPath)) {
+                fileStream
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().toLowerCase().endsWith(".csv"))
                     .forEach(file -> processFile(file, null));
@@ -48,18 +50,21 @@ public class SftpServerService {
                 LOG.warn("No regular files to process in upload directory: {}", e.getMessage());
             }
 
-            Files.list(uploadPath)
-                .filter(Files::isDirectory)
-                .filter(path -> !path.getFileName().toString().equals("processed") && !path.getFileName().toString().equals("errors"))
-                .forEach(userDir -> {
-                    try {
-                        Files.list(userDir)
-                            .filter(path -> path.toString().toLowerCase().endsWith(".csv"))
-                            .forEach(file -> processFile(file, userDir.getFileName().toString()));
-                    } catch (IOException e) {
-                        LOG.error("Error processing files for user {}: {}", userDir.getFileName(), e.getMessage());
-                    }
-                });
+            // Then process CSV files placed under user subdirectories (legacy behavior)
+            try (Stream<Path> dirStream = Files.list(uploadPath)) {
+                dirStream
+                    .filter(Files::isDirectory)
+                    .filter(path -> !path.getFileName().toString().equals("processed") && !path.getFileName().toString().equals("errors"))
+                    .forEach(userDir -> {
+                        try (Stream<Path> userFileStream = Files.list(userDir)) {
+                            userFileStream
+                                .filter(path -> path.toString().toLowerCase().endsWith(".csv"))
+                                .forEach(file -> processFile(file, userDir.getFileName().toString()));
+                        } catch (IOException e) {
+                            LOG.error("Error processing files for user {}: {}", userDir.getFileName(), e.getMessage());
+                        }
+                    });
+            }
 
         } catch (IOException e) {
             LOG.error("Error processing uploaded files: {}", e.getMessage(), e);
